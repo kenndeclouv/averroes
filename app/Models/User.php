@@ -57,7 +57,7 @@ class User extends Authenticatable
     }
     private function getConsistentColor()
     {
-        $hash = md5($this->name ?? 'Guest');
+        $hash = md5($this->name ?? 'Averroes');
         $color = substr($hash, 0, 6);
 
         return $color;
@@ -68,7 +68,7 @@ class User extends Authenticatable
             return $value;
         }
         $color = $this->getConsistentColor();
-        $name = $this->name ?? 'Imam';
+        $name = $this->name ?? 'Averroes';
 
         return "https://api.dicebear.com/6.x/initials/svg?seed=" . urlencode($name) . "&backgroundColor=" . $color;
     }

@@ -20,21 +20,21 @@
 
 @if (session('success'))
     <script>
-        Swal.fire(getSwalOptions('success', 'Success!', '{{ session('success') }}'));
+        Swal.fire(getSwalOptions('success', 'Berhasil!', '{{ session('success') }}'));
     </script>
 @elseif (session('error'))
     <script>
-        Swal.fire(getSwalOptions('error', 'Error!', '{{ session('error') }}'));
+        Swal.fire(getSwalOptions('error', 'Yahh Error :(', '{{ session('error') }}'));
     </script>
 @endif
 @if (session('info'))
     <script>
-        Swal.fire(getSwalOptions('info', 'Info!', '{{ session('info') }}'));
+        Swal.fire(getSwalOptions('info', 'Informasi', '{{ session('info') }}'));
     </script>
 @endif
 @if (session('warning'))
     <script>
-        Swal.fire(getSwalOptions('warning', 'Warning!', '{{ session('warning') }}'));
+        Swal.fire(getSwalOptions('warning', 'Peringatan!', '{{ session('warning') }}'));
     </script>
 @endif
 
@@ -49,7 +49,7 @@
         `;
 
         Swal.fire({
-            ...getSwalOptions('error', 'Terjadi Kesalahan!', ''),
+            ...getSwalOptions('error', 'Yahh Terjadi Kesalahan :(', ''),
             html: errorHtml,
         });
     </script>

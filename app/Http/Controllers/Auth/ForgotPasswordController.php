@@ -17,7 +17,7 @@ class ForgotPasswordController extends Controller
     }
     public function email(Request $request)
     {
-        $request->validate(['email' => 'required|email']);
+        $request->validate(['email' => 'required|email'], ['email.required'=> 'Email Tidak boleh kosong', 'email.email'=> 'Isi format email dengan benar']);
         $user = \App\Models\User::where('email', $request->email)->first();
         if (!$user) {
             return back()->withErrors(['error' => 'Email tidak ditemukan']);
@@ -36,6 +36,13 @@ class ForgotPasswordController extends Controller
             'token' => 'required',
             'email' => 'required|email',
             'password' => 'required|confirmed|min:8',
+        ], [
+            'token.required' => 'Token tidak boleh kosong',
+            'email.required' => 'Email tidak boleh kosong',
+            'email.email' => 'Format email tidak valid',
+            'password.required' => 'Password tidak boleh kosong',
+            'password.confirmed' => 'Konfirmasi password tidak cocok',
+            'password.min' => 'Password minimal 8 karakter'
         ]);
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),

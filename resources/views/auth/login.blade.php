@@ -74,9 +74,9 @@
                                             Ingat saya
                                         </label>
                                     </div>
-                                    {{-- <a href="{{ route('password.request') }}">
+                                    <a href="{{ route('password.request') }}">
                                         <span>Lupa password?</span>
-                                    </a> --}}
+                                    </a>
                                 </div>
                             </div>
                             <div class="mb-2">

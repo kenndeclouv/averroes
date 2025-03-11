@@ -56,6 +56,14 @@ class StudentController extends Controller
             $file = $studentRequest->file('attachment_diploma');
             $validatedStudent['attachment_diploma'] = uploadFile($file, 'uploads/diplomas');
         }
+        if ($studentRequest->hasFile('attachment_father_identity_card')) {
+            $file = $studentRequest->file('attachment_father_identity_card');
+            $validatedStudent['attachment_father_identity_card'] = uploadFile($file, 'uploads/father_identity_cards');
+        }
+        if ($studentRequest->hasFile('attachment_mother_identity_card')) {
+            $file = $studentRequest->file('attachment_mother_identity_card');
+            $validatedStudent['attachment_mother_identity_card'] = uploadFile($file, 'uploads/mother_identity_cards');
+        }
 
         // Buat student baru
         Student::create(array_merge(
@@ -65,6 +73,8 @@ class StudentController extends Controller
                 'attachment_family_register' => $validatedStudent['attachment_family_register'] ?? null,
                 'attachment_birth_certificate' => $validatedStudent['attachment_birth_certificate'] ?? null,
                 'attachment_diploma' => $validatedStudent['attachment_diploma'] ?? null,
+                'attachment_father_identity_card' => $validatedStudent['attachment_father_identity_card'] ?? null,
+                'attachment_mother_identity_card' => $validatedStudent['attachment_mother_identity_card'] ?? null
             ]
         ));
 
@@ -115,6 +125,23 @@ class StudentController extends Controller
             }
             $validatedStudent['attachment_diploma'] = uploadFile($file, 'uploads/diplomas');
         }
+        if ($studentRequest->hasFile('attachment_father_identity_card')) {
+            $file = $studentRequest->file('attachment_father_identity_card');
+            // Hapus file lama jika ada
+            if ($student->attachment_father_identity_card) {
+                deleteFile('uploads/identity_cards/' . basename($student->attachment_father_identity_card));
+            }
+            $validatedStudent['attachment_father_identity_card'] = uploadFile($file, 'uploads/identity_cards');
+        }
+
+        if ($studentRequest->hasFile('attachment_mother_identity_card')) {
+            $file = $studentRequest->file('attachment_mother_identity_card');
+            // Hapus file lama jika ada
+            if ($student->attachment_mother_identity_card) {
+                deleteFile('uploads/identity_cards/' . basename($student->attachment_mother_identity_card));
+            }
+            $validatedStudent['attachment_mother_identity_card'] = uploadFile($file, 'uploads/identity_cards');
+        }
 
         // Update data student
         $student->update(array_merge(
@@ -123,6 +150,8 @@ class StudentController extends Controller
                 'attachment_family_register' => $validatedStudent['attachment_family_register'] ?? $student->attachment_family_register,
                 'attachment_birth_certificate' => $validatedStudent['attachment_birth_certificate'] ?? $student->attachment_birth_certificate,
                 'attachment_diploma' => $validatedStudent['attachment_diploma'] ?? $student->attachment_diploma,
+                'attachment_father_identity_card' => $validatedStudent['attachment_father_identity_card'] ?? $student->attachment_father_identity_card,
+                'attachment_mother_identity_card' => $validatedStudent['attachment_mother_identity_card'] ?? $student->attachment_mother_identity_card,
             ]
         ));
 

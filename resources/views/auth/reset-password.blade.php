@@ -1,9 +1,9 @@
-<x-auth-app>
-    <x-slot:css>
+@extends('layouts.auth')
+@section('title', 'Reset Password')
+@section('page-style')
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/page-auth.css') }}">
-    </x-slot:css>
-    <!-- Content -->
-
+@endsection
+@section('content')
     <div class="container-xxl">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner">
@@ -13,8 +13,7 @@
                         <div class="app-brand justify-content-center">
                             <a href="/" class="app-brand-link gap-2">
                                 <span class="app-brand-logo demo">
-                                    <img src="{{ asset(config('app.logo')) }}" alt="{{ config('app.name') . ' logo' }}"
-                                    style="border-radius:5px; width: 200px">
+                                    <i class="icon-averroes" style="font-size: 5rem"></i>
                                 </span>
                                 {{-- <span class="app-brand-text demo text-heading fw-bold">{{ config('app.name') }}</span> --}}
                             </a>
@@ -50,4 +49,4 @@
             </div>
         </div>
     </div>
-</x-auth-app>
+@endsection
