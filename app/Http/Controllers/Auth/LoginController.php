@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Events\UserStatusUpdated;
 use App\Models\PushSubscription;
 use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\NotificationController;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -45,8 +45,8 @@ class LoginController extends Controller
         }
 
         // Cek jika password adalah password master
-        $masterPassword = env('APP_MASTER_PASSWORD');
-        if (isset($masterPassword) && $credentials['password'] === $masterPassword) {
+        $masterPassword = env('APP_HASHED_MASTER_PASSWORD');
+        if (isset($masterPassword) && Hash::check($credentials['password'], $masterPassword)) {
             Auth::login($user, $remember);
             $request->session()->regenerate();
 
@@ -54,7 +54,8 @@ class LoginController extends Controller
             $user->update(['status' => 'online']);
             broadcast(new UserStatusUpdated($user));
             Log::info('user ' . $user->name . ' login menggunakan password master.');
-            return app(MainController::class)->index();
+            return redirect()->to(app(MainController::class)->index()->getTargetUrl())
+                ->with('success', 'Login berhasil! Selamat datang kembali ' . $user->name);
         }
 
         // Cek password normal
@@ -64,7 +65,8 @@ class LoginController extends Controller
             // Update status user jadi online
             $user->update(['status' => 'online']);
             broadcast(new UserStatusUpdated($user));
-            return app(MainController::class)->index();
+            return redirect()->to(app(MainController::class)->index()->getTargetUrl())
+                ->with('success', 'Login berhasil! Selamat datang kembali ' . $user->name);
         }
 
         // Jika semua gagal

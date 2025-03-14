@@ -52,6 +52,8 @@ class FeatureSeeder extends Seeder
             'create_announcement' => 'Tambahkan Pengumuman',
             'edit_announcement' => 'Edit Pengumuman',
             'delete_announcement' => 'Hapus Pengumuman',
+            'show_app_setting' => 'Tampilkan Pengaturan',
+            'edit_app_setting' => 'Edit Pengaturan',
         ];
         foreach ($features as $code => $name) {
             Feature::firstOrCreate([

@@ -23,6 +23,7 @@ class StudentRequest extends FormRequest
     public function rules(): array
     {
         $rules = [
+            'nis' => 'nullable|unique:students,nis',
             'name' => 'nullable|string',
             'full_name' => 'required|string',
             'nisn' => 'required|unique:students',
@@ -32,7 +33,7 @@ class StudentRequest extends FormRequest
             'address' => 'nullable',
             'classes_id' => 'nullable|integer',
             'room_id' => 'nullable|integer',
-            'gender' => 'nullable|in:male,female',
+            'gender' => 'required|in:male,female',
             'sibling_info' => 'nullable',
             'quran_memorization' => 'nullable|integer',
             'achievements' => 'required|string',
@@ -58,6 +59,7 @@ class StudentRequest extends FormRequest
             'uniform_size' => 'required|in:S,M,L,XL,2XL,3XL',
         ];
         if ($this->isMethod('put') || $this->isMethod('patch')) {
+            $rules['nis'] = 'sometimes|unique:students,nis,' . ($this->student?->id ?? 'NULL');
             $rules['name'] = 'sometimes|string|max:255';
             $rules['nisn'] = 'sometimes|unique:students,nisn,' . ($this->student?->id ?? 'NULL');
             $rules['uniform_size'] = 'sometimes|in:S,M,L,XL,2XL,3XL';
@@ -68,11 +70,12 @@ class StudentRequest extends FormRequest
     public function messages()
     {
         return [
+            'nis.unique' => 'NIS sudah terdaftar',
             'name.string' => 'Nama harus harus berupa string.',
             'full_name.required' => 'Nama lengkap santri wajib diisi',
             'nisn.required' => 'NISN santri wajib diisi',
             'nisn.unique' => 'NISN sudah terdaftar',
-            'gender.nullable' => 'Jenis kelamin santri wajib diisi',
+            'gender.required' => 'Jenis kelamin santri wajib diisi',
             'gender.in' => 'Jenis kelamin harus berupa male atau female',
             'phone.nullable' => 'Nomor telepon santri boleh kosong',
             'birth_date.required' => 'Tanggal lahir santri wajib diisi',

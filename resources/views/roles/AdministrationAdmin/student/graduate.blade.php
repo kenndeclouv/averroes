@@ -48,7 +48,7 @@
                 <table class="table table-bordered" id="table">
                     <thead>
                         <tr>
-                            <th>Id</th>
+                            <th>NIS</th>
                             <th>Nama</th>
                             <th>NISN</th>
                             {{-- <th>Kelas</th> --}}
@@ -63,9 +63,9 @@
                     <tbody>
                         @foreach ($students as $student)
                             <tr>
-                                <td>{{ $student->id }}</td>
-                                <td>{{ $student->name }}</td>
-                                <td>{{ $student->nisn }}</td>
+                                <td>{{ $student->nis ?? '-' }}</td>
+                                <td>{{ $student->name ?? '-' }}</td>
+                                <td>{{ $student->nisn ?? '-' }}</td>
                                 {{-- <td>{{ $student->Class->name ?? '-' }}</td> --}}
                                 @if (
                                     $permissions->contains('show_student') ||

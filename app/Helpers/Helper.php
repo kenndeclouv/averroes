@@ -57,17 +57,28 @@
  *     - Penggunaan:
  *       $type = teacherType('teacher'); // Mengembalikan 'Pengajar'
  *
+ *  ©️ 2025 by kenndeclouv
+ *  https://kenndeclouv.my.id
  */
 
 use Illuminate\Support\Facades\Storage;
+use App\Models\AppSetting;
+use App\Models\Student;
 
-if (! function_exists('getGender')) {
+if (!function_exists('getGender')) {
     function getGender($value)
     {
-        return $value === 'male' ? 'Laki-laki' : 'Perempuan';
+        // return $value === 'male' ? 'Laki-laki' : 'Perempuan';
+        if ($value === 'male') {
+            return 'Laki-laki';
+        } else if ($value === 'female') {
+            return 'Perempuan';
+        } else {
+            return '-';
+        }
     }
 }
-if (! function_exists('formatDate')) {
+if (!function_exists('formatDate')) {
     function formatDate($date, $format = 'd F Y')
     {
         return \Carbon\Carbon::parse($date)->translatedFormat($format);
@@ -110,7 +121,7 @@ if (!function_exists('getStatusLabel')) {
         return $labels[$type][$status] ?? 'Unknown';
     }
 }
-if (! function_exists('uploadFile')) {
+if (!function_exists('uploadFile')) {
     function uploadFile($file, $folder, $disk = 'public')
     {
         $filename = time() . '_' . preg_replace('/[^a-zA-Z0-9_\.-]/', '', $file->getClientOriginalName());
@@ -118,7 +129,7 @@ if (! function_exists('uploadFile')) {
         return $filename;
     }
 }
-if (! function_exists('deleteFile')) {
+if (!function_exists('deleteFile')) {
     function deleteFile($path)
     {
         if (Storage::disk('public')->exists($path)) {
@@ -126,13 +137,13 @@ if (! function_exists('deleteFile')) {
         }
     }
 }
-if (! function_exists('indonesianCurrency')) {
+if (!function_exists('indonesianCurrency')) {
     function indonesianCurrency($number)
     {
         return 'Rp ' . number_format($number, 0, ',', '.');
     }
 }
-if (! function_exists('formatPhoneToInternational')) {
+if (!function_exists('formatPhoneToInternational')) {
     function formatPhoneToInternational($phone)
     {
         $phone = preg_replace('/\D/', '', $phone);
@@ -142,7 +153,7 @@ if (! function_exists('formatPhoneToInternational')) {
         return $phone;
     }
 }
-if (! function_exists('teacherType')) {
+if (!function_exists('teacherType')) {
     function teacherType($type)
     {
         $types = [
@@ -180,6 +191,34 @@ if (!function_exists('convertCase')) {
                 return strtoupper($normalized);
             default:
                 throw new InvalidArgumentException("Invalid target case: $targetCase");
+        }
+    }
+    
+    if (!function_exists('generateNIS')) {
+        function generateNIS()
+        {
+            $settings = AppSetting::first();
+            $prefix = $settings->nis_prefix ?? ''; // default ''
+            $start = $settings->nis_start_number ?? 1; // default 1
+            $padding = $settings->nis_padding ?? 4; // default 4 (0001)
+            $suffix = $settings->nis_suffix ?? ''; // default ''
+
+            // cari semua NIS yang pernah ada, bukan cuma yang pakai format sekarang
+            $lastNIS = Student::where('nis', 'REGEXP', '[0-9]+') // cari yang ada angka
+                ->latest('id')
+                ->value('nis');
+
+            // ambil angka terakhir pakai regex
+            preg_match('/\d+/', $lastNIS, $matches);
+            $lastNumber = isset($matches[0]) ? (int) $matches[0] : null;
+
+            // jika tidak ada data, pakai start number
+            $newNumber = $lastNumber !== null ? $lastNumber + 1 : $start;
+
+            // format sesuai padding
+            $formattedNumber = str_pad($newNumber, $padding, '0', STR_PAD_LEFT);
+
+            return "{$prefix}{$formattedNumber}{$suffix}";
         }
     }
 }

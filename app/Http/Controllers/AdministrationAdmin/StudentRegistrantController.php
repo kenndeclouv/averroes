@@ -69,7 +69,9 @@ class StudentRegistrantController extends Controller
         ]);
         Student::create([
             "name" => $studentRegistrant->name,
+            "nis" => generateNIS(),
             "full_name" => $studentRegistrant->full_name,
+            "gender" => $studentRegistrant->gender,
             "birth_date" => $studentRegistrant->birth_date,
             "birth_place" => $studentRegistrant->birth_place,
             "address" => $studentRegistrant->address,

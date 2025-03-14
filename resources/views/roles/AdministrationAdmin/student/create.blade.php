@@ -84,7 +84,11 @@
                             <h5 class="mb-0">Data Santri</h5>
                         </div>
                         <div class="card-body">
-                            @csrf
+                            @if (isset($lastNis))
+                                <div class="alert alert-info alert-dismissible mb-3" role="alert">
+                                    NIS terakhir adalah: {{ $lastNis }}
+                                </div>
+                            @endif
                             <div class="mb-3">
                                 <label class="form-label" for="name">Nama Lengkap</label>
                                 <input type="text" class="form-control @error('full_name') is-invalid @enderror"
@@ -93,16 +97,32 @@
                                 @errorFeedback('full_name')
                             </div>
                             <div class="mb-3">
+                                <label class="form-label" for="nis">NIS</label>
+                                <div class="row">
+                                    <div class="col-12 col-lg-8">
+                                        <input type="text" class="form-control @error('nis') is-invalid @enderror" id="nis"
+                                            name="nis" placeholder="NIS Santri" value="{{ old('nis') }}">
+                                        @errorFeedback('nis')
+                                    </div>
+                                    <div class="col-12 col-lg-4">
+                                        <div class="alert alert-info py-2 m-0" role="alert">
+                                            <i class="fa-solid fa-info-circle me-2"></i> Kosongkan NIS jika ingin
+                                            otomatis
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label" for="nisn">NISN</label>
                                 <input type="text" class="form-control @error('nisn') is-invalid @enderror"
                                     id="nisn" name="nisn" placeholder="NISN Santri" value="{{ old('nisn') }}">
                                 @errorFeedback('nisn')
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="gender">Gender</label>
+                                <label class="form-label" for="gender">Jenis Kelamin</label>
                                 <select class="form-select select2 @error('gender') is-invalid @enderror" id="gender"
                                     name="gender">
-                                    <option value="" disabled selected>Pilih Gender</option>
+                                    <option value="" disabled selected>Pilih Jenis Kelamin</option>
                                     <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Laki-laki
                                     </option>
                                     <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Perempuan

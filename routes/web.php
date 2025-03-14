@@ -32,13 +32,16 @@
  *      Route::get('/', [PascalCase::class, 'camelCase'])->name('kebab-case');
  *      Route::put('lowercase/{camelCase}', [PascalCase::class, 'camelCase'])->name('kebab-case');
  *  });
+ * 
+ *  ©️ 2025 by kenndeclouv
+ *  https://kenndeclouv.my.id
  */
 
 // **Dependencies**
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Models\PushSubscription;
 use Illuminate\Http\Request;
-
 // **Controllers**
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -66,11 +69,14 @@ use App\Http\Controllers\AdministrationAdmin\TeacherController as Administration
 use App\Http\Controllers\AdministrationAdmin\StudentRegistrantController as AdministrationAdminStudentRegistrant;
 use App\Http\Controllers\StudentRegistrant\HomeController as StudentRegistrantHome;
 use App\Http\Controllers\SuperAdmin\PushSubscriptionController as SuperAdminPushSubscription;
-
+use App\Http\Controllers\AdministrationAdmin\AppSettingController as AdministrationAdminAppSetting;
+use App\Http\Controllers\SuperAdmin\EnvController as SuperAdminEnv;
 /**
  * **Root**
  */
-Route::redirect('/', '/login');
+Route::get('/', function () {
+    return view('index');
+});
 
 /**
  * **Auth Routes**
@@ -89,7 +95,7 @@ Route::post('/email/verification-notification', [EmailVerificationController::cl
 Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])->middleware('auth')->name('verification.verify');
 
 Route::post('/api/subscribe', function (Request $request) {
-    $user = auth()->user();
+    $user = Auth::user();
     PushSubscription::create([
         'user_id' => $user->id,
         'data' => $request->getContent()
@@ -183,6 +189,11 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'can:isSup
         Route::post('send/{sub}', [SuperAdminPushSubscription::class, 'sendNotification'])->name('send');
         Route::post('send-all', [SuperAdminPushSubscription::class, 'sendNotificationToAll'])->name('send-all');
     });
+
+    Route::prefix('env')->name('env.')->group(function () {
+        Route::get('/', [SuperAdminEnv::class, 'index'])->name('index');
+        Route::put('update', [SuperAdminEnv::class, 'update'])->name('update');
+    });
 });
 
 /**
@@ -203,8 +214,15 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
 
         Route::prefix('graduate')->name('graduate.')->group(function () {
             Route::get('/', [AdministrationAdminStudent::class, 'graduateIndex'])->name('index');
-            Route::put('{student}', [AdministrationAdminStudent::class, 'graduate'])->name('graduate');
-            Route::put('undo/{student}', [AdministrationAdminStudent::class, 'undoGraduate'])->name('undo-graduate');
+            Route::put('{student}', [AdministrationAdminStudent::class, 'graduate'])->middleware('permission:edit_student')->name('graduate');
+            Route::put('undo/{student}', [AdministrationAdminStudent::class, 'undoGraduate'])->middleware('permission:edit_student')->name('undo-graduate');
+        });
+
+        Route::prefix('nis')->name('nis.')->middleware(['permission:show_student'])->group(function () {
+            Route::get('/', [AdministrationAdminStudent::class, 'nisIndex'])->name('index');
+            Route::put('update/{student}', [AdministrationAdminStudent::class, 'nisUpdate'])->middleware('permission:edit_student')->name('update');
+            Route::delete('destroy/{student}', [AdministrationAdminStudent::class, 'nisDestroy'])->middleware('permission:delete_student')->name('destroy');
+            Route::put('auto-generate/{student}', [AdministrationAdminStudent::class, 'nisAutoGenerate'])->middleware('permission:edit_student')->name('auto-generate');
         });
     });
     Route::prefix('teacher')->name('teacher.')->middleware(['permission:show_teacher'])->group(function () {
@@ -274,6 +292,11 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
         Route::get('edituser/{user}', [AdministrationAdminStudentRegistrant::class, 'editUser'])->middleware('permission:edit_student_registrant_user')->name('edit-user');
         Route::put('updateuser/{user}', [AdministrationAdminStudentRegistrant::class, 'updateUser'])->middleware('permission:edit_student_registrant_user')->name('update-user');
         Route::delete('destroyuser/{user}', [AdministrationAdminStudentRegistrant::class, 'destroyUser'])->middleware('permission:delete_student_registrant_user')->name('destroy-user');
+    });
+
+    Route::prefix('appsetting')->name('appsetting.')->middleware(['permission:show_app_setting'])->group(function () {
+        Route::get('/', [AdministrationAdminAppSetting::class, 'index'])->name('index');
+        Route::put('/update', [AdministrationAdminAppSetting::class, 'update'])->name('update');
     });
 });
 

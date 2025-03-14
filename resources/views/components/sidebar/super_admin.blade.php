@@ -58,14 +58,14 @@
         </div>
     </a>
 </li>
-<li class="menu-item {{ request()->routeIs('superadmin.system.*') ? 'open active' : '' }}">
+{{-- <li class="menu-item {{ request()->routeIs('superadmin.system.*') ? 'open active' : '' }}">
     <a href="{{ route('superadmin.system.index') }}" class="menu-link ">
         <i class="menu-icon fa-solid fa-cogs fs-6"></i>
         <div class="text-truncate">
             System
         </div>
     </a>
-</li>
+</li> --}}
 <li class="menu-item {{ request()->routeIs('superadmin.notification.*') ? 'open active' : '' }}">
     <a href="{{ route('superadmin.notification.index') }}" class="menu-link ">
         <i class="menu-icon fa-solid fa-bell fs-6"></i>
@@ -74,7 +74,16 @@
         </div>
     </a>
 </li>
-<li class="menu-header small text-uppercase">
+<li class="menu-item {{ request()->routeIs('superadmin.env.*') ? 'open active' : '' }}">
+    <a href="{{ route('superadmin.env.index') }}" class="menu-link ">
+        <i class="menu-icon fa-solid fa-gear fs-6"></i>
+        <div class="text-truncate">
+            System Setting
+        </div>
+    </a>
+</li>
+
+{{-- <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Menu setiap role</span>
 </li>
 @foreach (App\Models\Role::where('code', '!=', 'super_admin')->get() as $role)
@@ -85,4 +94,4 @@
         <span class="menu-header-text">{{ $role->name }}</span>
     </li>
     @include('components.sidebar.' . $role->code)
-@endforeach
+@endforeach --}}

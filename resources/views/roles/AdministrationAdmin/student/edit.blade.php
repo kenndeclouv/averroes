@@ -26,7 +26,8 @@
 @endsection
 
 @section('content')
-    <form action="{{ route('administrationadmin.student.update', $student->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('administrationadmin.student.update', $student->id) }}" method="POST"
+        enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="container-xxl flex-grow-1 container-p-y">
@@ -74,12 +75,23 @@
                             <h5 class="mb-0">Data Santri</h5>
                         </div>
                         <div class="card-body">
+                            @if (!$student->nis && isset($nisFormat))
+                                <div class="alert alert-info alert-dismissible mb-3" role="alert">
+                                    Format NIS adalah: {{ $nisFormat }}
+                                </div>
+                            @endif
                             <div class="mb-3">
                                 <label class="form-label" for="full_name">Nama Lengkap</label>
                                 <input type="text" class="form-control @error('full_name') is-invalid @enderror"
                                     id="full_name" name="full_name" placeholder="Nama Santri"
                                     value="{{ old('full_name', $student->full_name) }}">
                                 @errorFeedback('full_name')
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="nis">NIS</label>
+                                <input type="text" class="form-control @error('nis') is-invalid @enderror" id="nis"
+                                    name="nis" value="{{ old('nis', $student->nis) }}" placeholder="NIS Santri">
+                                @errorFeedback('nis')
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="nisn">NISN</label>
@@ -89,10 +101,10 @@
                                 @errorFeedback('nisn')
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="gender">Gender</label>
+                                <label class="form-label" for="gender">Jenis Kelamin</label>
                                 <select class="form-select select2 @error('gender') is-invalid @enderror" id="gender"
                                     name="gender">
-                                    <option value="" disabled>Pilih Gender</option>
+                                    <option value="" disabled>Pilih Jenis Kelamin</option>
                                     <option value="male"
                                         {{ old('gender', $student->gender) == 'male' ? 'selected' : '' }}>Laki-laki
                                     </option>
@@ -189,8 +201,10 @@
                                 <label class="form-label" for="father_income">Penghasilan Ayah</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text">Rp</span>
-                                    <input type="text" class="form-control @error('father_income') is-invalid @enderror"
-                                        placeholder="Penghasilan Ayah" value="{{ old('father_income', number_format($student->father_income, 0, ',', '.')) }}"
+                                    <input type="text"
+                                        class="form-control @error('father_income') is-invalid @enderror"
+                                        placeholder="Penghasilan Ayah"
+                                        value="{{ old('father_income', number_format($student->father_income, 0, ',', '.')) }}"
                                         oninput="formatCurrency(this, 'father_income')">
                                     @errorFeedback('father_income')
                                 </div>
@@ -217,8 +231,10 @@
                                 <label class="form-label" for="mother_income">Penghasilan Ibu</label>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text">Rp</span>
-                                    <input type="text" class="form-control @error('mother_income') is-invalid @enderror"
-                                        placeholder="Penghasilan Ibu" value="{{ old('mother_income', number_format($student->mother_income, 0, ',', '.')) }}"
+                                    <input type="text"
+                                        class="form-control @error('mother_income') is-invalid @enderror"
+                                        placeholder="Penghasilan Ibu"
+                                        value="{{ old('mother_income', number_format($student->mother_income, 0, ',', '.')) }}"
                                         oninput="formatCurrency(this, 'mother_income')">
                                     @errorFeedback('mother_income')
                                 </div>
@@ -260,35 +276,53 @@
                                 <label class="form-label" for="uniform_size">Ukuran Seragam</label>
                                 <div class="row">
                                     <div class="col-12 col-md-9">
-                                        <select class="form-select select2 @error('uniform_size') is-invalid @enderror" id="uniform_size" name="uniform_size">
+                                        <select class="form-select select2 @error('uniform_size') is-invalid @enderror"
+                                            id="uniform_size" name="uniform_size">
                                             <option value="" disabled selected>Pilih Ukuran Seragam</option>
-                                            <option value="S" {{ old('uniform_size', $student->uniform_size) == 'S' ? 'selected' : '' }}>S</option>
-                                            <option value="M" {{ old('uniform_size', $student->uniform_size) == 'M' ? 'selected' : '' }}>M</option>
-                                            <option value="L" {{ old('uniform_size', $student->uniform_size) == 'L' ? 'selected' : '' }}>L</option>
-                                            <option value="XL" {{ old('uniform_size', $student->uniform_size) == 'XL' ? 'selected' : '' }}>XL</option>
-                                            <option value="2XL" {{ old('uniform_size', $student->uniform_size) == '2XL' ? 'selected' : '' }}>2XL</option>
-                                            <option value="3XL" {{ old('uniform_size', $student->uniform_size) == '3XL' ? 'selected' : '' }}>3XL</option>
+                                            <option value="S"
+                                                {{ old('uniform_size', $student->uniform_size) == 'S' ? 'selected' : '' }}>
+                                                S</option>
+                                            <option value="M"
+                                                {{ old('uniform_size', $student->uniform_size) == 'M' ? 'selected' : '' }}>
+                                                M</option>
+                                            <option value="L"
+                                                {{ old('uniform_size', $student->uniform_size) == 'L' ? 'selected' : '' }}>
+                                                L</option>
+                                            <option value="XL"
+                                                {{ old('uniform_size', $student->uniform_size) == 'XL' ? 'selected' : '' }}>
+                                                XL</option>
+                                            <option value="2XL"
+                                                {{ old('uniform_size', $student->uniform_size) == '2XL' ? 'selected' : '' }}>
+                                                2XL</option>
+                                            <option value="3XL"
+                                                {{ old('uniform_size', $student->uniform_size) == '3XL' ? 'selected' : '' }}>
+                                                3XL</option>
                                         </select>
                                     </div>
                                     <div class="col-12 col-md-3">
-                                        <button type="button" class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#uniformSizeModal">
+                                        <button type="button" class="btn btn-info w-100" data-bs-toggle="modal"
+                                            data-bs-target="#uniformSizeModal">
                                             <i class="fa-solid fa-info-circle me-2"></i> Ukuran Seragam
                                         </button>
                                     </div>
 
                                     <!-- Modal -->
-                                    <div class="modal fade" id="uniformSizeModal" tabindex="-1" aria-labelledby="uniformSizeModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="uniformSizeModal" tabindex="-1"
+                                        aria-labelledby="uniformSizeModalLabel" aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="uniformSizeModalLabel">Ukuran Seragam</h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <img src="{{ asset('assets/img/uniform_size.jpg') }}" alt="Ukuran Seragam" class="img-fluid">
+                                                    <img src="{{ asset('assets/img/uniform_size.jpg') }}"
+                                                        alt="Ukuran Seragam" class="img-fluid">
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-bs-dismiss="modal">Close</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -337,7 +371,8 @@
                                     id="attachment_father_identity_card" name="attachment_father_identity_card">
                                 @errorFeedback('attachment_father_identity_card')
                                 @if ($student->attachment_father_identity_card)
-                                    <a href="{{ $student->attachment_father_identity_card }}" target="_blank">klik untuk melihat gambar</a>
+                                    <a href="{{ $student->attachment_father_identity_card }}" target="_blank">klik untuk
+                                        melihat gambar</a>
                                 @endif
                             </div>
                             <div class="mb-3">
@@ -347,7 +382,8 @@
                                     id="attachment_mother_identity_card" name="attachment_mother_identity_card">
                                 @errorFeedback('attachment_mother_identity_card')
                                 @if ($student->attachment_mother_identity_card)
-                                    <a href="{{ $student->attachment_mother_identity_card }}" target="_blank">klik untuk melihat gambar</a>
+                                    <a href="{{ $student->attachment_mother_identity_card }}" target="_blank">klik untuk
+                                        melihat gambar</a>
                                 @endif
                             </div>
                             <button type="submit" class="btn btn-primary">Simpan</button>

@@ -28,7 +28,12 @@ class StudentController extends Controller
     {
         $classes = Classes::all();
         $rooms = Room::all();
-        return view('roles.AdministrationAdmin.student.create', compact('classes', 'rooms'));
+        $lastNis = Student::selectRaw("nis, CAST(REGEXP_SUBSTR(nis, '[0-9]+') AS UNSIGNED) as nis_number")
+            ->orderByDesc('nis_number')
+            ->first()
+                ?->nis;
+
+        return view('roles.AdministrationAdmin.student.create', compact('classes', 'rooms', 'lastNis'));
     }
 
     public function store(StudentRequest $studentRequest, UserRequest $userRequest)
@@ -43,6 +48,9 @@ class StudentController extends Controller
             'is_active' => true,
         ]));
 
+        if (empty($validatedStudent['nis'])) {
+            $validatedStudent['nis'] = generateNIS();
+        }
         // Proses file upload jika ada
         if ($studentRequest->hasFile('attachment_family_register')) {
             $file = $studentRequest->file('attachment_family_register');
@@ -86,7 +94,8 @@ class StudentController extends Controller
     {
         $classes = Classes::all();
         $rooms = Room::all();
-        return view('roles.AdministrationAdmin.student.edit', compact('student', 'classes', 'rooms'));
+        $nisFormat = generateNIS();
+        return view('roles.AdministrationAdmin.student.edit', compact('student', 'classes', 'rooms', 'nisFormat'));
     }
 
     public function update(StudentRequest $studentRequest, UserRequest $userRequest, Student $student)
@@ -186,5 +195,44 @@ class StudentController extends Controller
             'is_graduate' => false,
         ]);
         return redirect()->route('administrationadmin.student.graduate.index')->with('success', 'Santri ' . $student->name . ' dibatalkan lulus!');
+    }
+
+    public function nisIndex()
+    {
+        $students = Student::all();
+        $lastNis = Student::selectRaw("nis, CAST(REGEXP_SUBSTR(nis, '[0-9]+') AS UNSIGNED) as nis_number")
+        ->orderByDesc('nis_number')
+            ->first()
+            ?->nis;
+        return view('roles.AdministrationAdmin.student.nis', compact('students', 'lastNis'));
+    }
+
+    public function nisUpdate(Request $request, Student $student)
+    {
+        $request->validate([
+            'nis' => 'nullable|string|unique:students,nis,' . $student->id,
+        ], [
+            'nis.unique' => 'NIS sudah ada',
+        ]);
+        $student->update([
+            'nis' => $request->nis,
+        ]);
+        return redirect()->route('administrationadmin.student.nis.index')->with('success', 'NIS santri berhasil diperbarui');
+    }
+
+    public function nisDestroy(Student $student)
+    {
+        $student->update([
+            'nis' => null,
+        ]);
+        return redirect()->route('administrationadmin.student.nis.index')->with('success', 'NIS santri berhasil dihapus');
+    }
+
+    public function nisAutoGenerate(Student $student)
+    {
+        $student->update([
+            'nis' => generateNIS(),
+        ]);
+        return redirect()->route('administrationadmin.student.nis.index')->with('success', 'NIS santri berhasil di generate');
     }
 }

@@ -40,6 +40,22 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-4">
+                        <strong>Jurusan</strong>
+                    </div>
+                    <div class="col-md-8">
+                        : {{ $student->major }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>NIS</strong>
+                    </div>
+                    <div class="col-md-8">
+                        : {{ $student->nis }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
                         <strong>NISN</strong>
                     </div>
                     <div class="col-md-8">

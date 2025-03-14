@@ -74,6 +74,17 @@
                             @errorFeedback('full_name')
                         </div>
                         <div class="mb-3">
+                            <label for="gender" class="form-label">Jenis Kelamin</label>
+                            <select class="form-control select2 @error('gender') is-invalid @enderror" id="gender"
+                                name="gender">
+                                <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Laki-laki
+                                </option>
+                                <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Perempuan
+                                </option>
+                            </select>
+                            @errorFeedback('gender')
+                        </div>
+                        <div class="mb-3">
                             <label for="birth_date" class="form-label">Tanggal Lahir</label>
                             <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
                                 id="birth_date" name="birth_date" value="{{ old('birth_date') }}">
@@ -346,6 +357,17 @@
                             <label for="full_name" class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control @error('full_name') is-invalid @enderror"
                                 id="full_name" name="full_name" value="{{ $data->full_name }}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label for="gender" class="form-label">Jenis Kelamin</label>
+                            <select class="form-control select2 @error('gender') is-invalid @enderror" id="gender"
+                                name="gender">
+                                <option value="male" {{ $data->gender == 'male' ? 'selected' : '' }}>Laki-laki
+                                </option>
+                                <option value="female" {{ $data->gender == 'female' ? 'selected' : '' }}>Perempuan
+                                </option>
+                            </select>
+                            @errorFeedback('gender')
                         </div>
                         <div class="mb-3">
                             <label for="birth_date" class="form-label">Tanggal Lahir</label>

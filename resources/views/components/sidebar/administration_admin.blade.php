@@ -3,7 +3,7 @@
     $rolePrefix = 'administrationadmin';
 @endphp
 @if ($permissions->contains('show_student'))
-    <li class="menu-item {{ request()->routeIs($rolePrefix . '.student.*') ? 'open active' : '' }}">
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.student.*') && !request()->routeIs($rolePrefix . '.student.nis.*') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.student.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-user fs-6"></i>
             <div class="text-truncate">
@@ -84,9 +84,9 @@
         </ul>
     </li>
 @endif
-@if ($permissions->contains('show_room') || $permissions->contains('show_class'))
+@if ($permissions->contains('show_room') || $permissions->contains('show_class') || $permissions->contains('show_student'))
     <li
-        class="menu-item {{ request()->routeIs($rolePrefix . '.class.*', $rolePrefix . '.room.*') ? 'open active' : '' }}">
+        class="menu-item {{ request()->routeIs($rolePrefix . '.class.*', $rolePrefix . '.room.*', $rolePrefix . '.student.nis.*') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.class.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-folders fs-6"></i>
             <div class="text-truncate">
@@ -104,6 +104,12 @@
                 <li
                     class="menu-item {{ request()->routeIs($rolePrefix . '.room.index', $rolePrefix . '.room.show', $rolePrefix . '.room.edit') ? 'active' : '' }}">
                     <a href="{{ route($rolePrefix . '.room.index') }}" class="menu-link">Master Kamar</a>
+                </li>
+            @endif
+            @if ($permissions->contains('show_student'))
+                <li
+                    class="menu-item {{ request()->routeIs($rolePrefix . '.student.nis.index', $rolePrefix . '.student.nis.show', $rolePrefix . '.student.nis.edit') ? 'active' : '' }}">
+                    <a href="{{ route($rolePrefix . '.student.nis.index') }}" class="menu-link">Master NIS</a>
                 </li>
             @endif
         </ul>
@@ -132,5 +138,15 @@
                 </li>
             @endif
         </ul>
+    </li>
+@endif
+@if ($permissions->contains('show_app_setting'))
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.appsetting.*') ? 'open active' : '' }}">
+        <a href="{{ route($rolePrefix . '.appsetting.index') }}" class="menu-link">
+            <i class="menu-icon fa-solid fa-gear fs-6"></i>
+            <div class="text-truncate">
+                Pengaturan
+            </div>
+        </a>
     </li>
 @endif
