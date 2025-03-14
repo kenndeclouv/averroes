@@ -535,7 +535,7 @@
                                                 name="parent_whatsapp" value="{{ $user->Student->parent_whatsapp ?? '' }}">
                                             @errorFeedback('parent_whatsapp')
                                         </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
+                                        <div class="col-12 fv-plugins-icon-container">
                                             <label for="student_status" class="form-label">Status Siswa</label>
                                             <select class="form-control select2" id="student_status" name="student_status">
                                                 <option value="">Pilih Status</option>

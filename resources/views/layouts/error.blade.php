@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>@yield('title') | {{ ucwords(str_replace('_', ' ', config('app.name'))) }}</title>
     <link rel="icon" type="image/x-icon" href="{{ asset('averroes.svg') }}">
-
+    
     @include('layouts.layout_partials.seo')
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
