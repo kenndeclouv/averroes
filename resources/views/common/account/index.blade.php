@@ -445,6 +445,15 @@
                                             @errorFeedback('full_name')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
+                                            <label for="gender" class="form-label">Jenis Kelamin</label>
+                                            <select class="form-control select2" id="gender" name="gender">
+                                                <option value="">Pilih Jenis Kelamin</option>
+                                                <option value="male" {{ ($user->Student->gender ?? '') == 'male' ? 'selected' : '' }}>Laki-laki</option>
+                                                <option value="female" {{ ($user->Student->gender ?? '') == 'female' ? 'selected' : '' }}>Perempuan</option>
+                                            </select>
+                                            @errorFeedback('gender')
+                                        </div>
+                                        <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="birth_date" class="form-label">Tanggal Lahir</label>
                                             <input class="form-control" type="date" id="birth_date" placeholder="-"
                                                 name="birth_date" value="{{ $user->Student->birth_date ?? '' }}">
