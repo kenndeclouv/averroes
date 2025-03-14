@@ -282,7 +282,7 @@
                                         <input type="file" id="upload" class="account-file-input" hidden=""
                                             name="photo" accept="photo/*">
                                     </label>
-
+                                    @errorFeedback('photo')
                                     <div>Diizinkan JPG, JPEG, atau PNG. Ukuran maksimum 5 Mb</div>
                                 </div>
                             </div>
@@ -291,27 +291,21 @@
                             <div class="row g-6">
                                 <div class="col-md-6 fv-plugins-icon-container">
                                     <label for="name" class="form-label">Nama</label>
-                                    <input class="form-control" type="text" id="name" name="name"
+                                    <input class="form-control @error('name') is-invalid @enderror" type="text" id="name" name="name"
                                         value="{{ $user->name }}">
-                                    <div
-                                        class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                                    </div>
+                                    @errorFeedback('name')
                                 </div>
                                 <div class="col-md-6 fv-plugins-icon-container">
                                     <label for="username" class="form-label">Username</label>
-                                    <input class="form-control" type="text" name="username" id="username"
+                                    <input class="form-control @error('username') is-invalid @enderror" type="text" name="username" id="username"
                                         value="{{ $user->username }}">
-                                    <div
-                                        class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                                    </div>
+                                    @errorFeedback('username')
                                 </div>
                                 <div class="col-md-6 fv-plugins-icon-container">
                                     <label for="email" class="form-label">Email</label>
-                                    <input class="form-control" type="text" name="email" id="email"
+                                    <input class="form-control @error('email') is-invalid @enderror" type="text" name="email" id="email"
                                         value="{{ $user->email }}">
-                                    <div
-                                        class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                                    </div>
+                                    @errorFeedback('email')
                                 </div>
                             </div>
                             <div class="mt-6">
@@ -338,28 +332,24 @@
                                     <div class="mb-4 col-12 col-sm-6 form-password-toggle fv-plugins-icon-container">
                                         <label class="form-label" for="newPassword">New Password</label>
                                         <div class="input-group input-group-merge has-validation">
-                                            <input class="form-control" type="password" id="newPassword" name="password"
+                                            <input class="form-control @error('password') is-invalid @enderror" type="password" id="newPassword" name="password"
                                                 placeholder="············">
                                             <span class="input-group-text cursor-pointer"><i
                                                     class="fa fa-eye-slash"></i></span>
                                         </div>
-                                        <div
-                                            class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                                        </div>
+                                        @errorFeedback('password')
                                     </div>
 
                                     <div class="mb-4 col-12 col-sm-6 form-password-toggle fv-plugins-icon-container">
                                         <label class="form-label" for="confirmPassword">Confirm New
                                             Password</label>
                                         <div class="input-group input-group-merge has-validation">
-                                            <input class="form-control" type="password" name="password_confirmation"
+                                            <input class="form-control @error('password_confirmation') is-invalid @enderror" type="password" name="password_confirmation"
                                                 id="confirmPassword" placeholder="············">
                                             <span class="input-group-text cursor-pointer"><i
                                                     class="fa fa-eye-slash"></i></span>
                                         </div>
-                                        <div
-                                            class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-                                        </div>
+                                        @errorFeedback('password_confirmation')
                                     </div>
                                     <div>
                                         <button type="submit" class="btn btn-primary me-2">Ganti
@@ -384,37 +374,37 @@
                                     <div class="row g-6">
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="name" class="form-label">Nama</label>
-                                            <input class="form-control" type="text" id="name" placeholder="-"
+                                            <input class="form-control @error('name') is-invalid @enderror" type="text" id="name" placeholder="-"
                                                 name="name" value="{{ $user->Teacher->name ?? '' }}">
                                             @errorFeedback('name')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="ktp" class="form-label">KTP</label>
-                                            <input class="form-control" type="text" id="ktp" placeholder="-"
+                                            <input class="form-control @error('ktp') is-invalid @enderror" type="text" id="ktp" placeholder="-"
                                                 name="ktp" value="{{ $user->Teacher->ktp ?? '' }}">
                                             @errorFeedback('ktp')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="birth_date" class="form-label">Tanggal Lahir</label>
-                                            <input class="form-control" type="date" id="birth_date" placeholder="-"
+                                            <input class="form-control @error('birth_date') is-invalid @enderror" type="date" id="birth_date" placeholder="-"
                                                 name="birth_date" value="{{ $user->Teacher->birth_date ?? '' }}">
                                             @errorFeedback('birth_date')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="birth_place" class="form-label">Tempat Lahir</label>
-                                            <input class="form-control" type="text" id="birth_place" placeholder="-"
+                                            <input class="form-control @error('birth_place') is-invalid @enderror" type="text" id="birth_place" placeholder="-"
                                                 name="birth_place" value="{{ $user->Teacher->birth_place ?? '' }}">
                                             @errorFeedback('birth_place')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="phone" class="form-label">No. Telp</label>
-                                            <input class="form-control" type="text" id="phone" placeholder="-"
+                                            <input class="form-control @error('phone') is-invalid @enderror" type="text" id="phone" placeholder="-"
                                                 name="phone" value="{{ $user->Teacher->phone ?? '' }}">
                                             @errorFeedback('phone')
                                         </div>
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="address" class="form-label">Alamat</label>
-                                            <textarea class="form-control" id="address" placeholder="-" name="address">{{ $user->Teacher->address ?? '' }}</textarea>
+                                            <textarea class="form-control @error('address') is-invalid @enderror" id="address" placeholder="-" name="address">{{ $user->Teacher->address ?? '' }}</textarea>
                                             @errorFeedback('address')
                                         </div>
                                     </div>
@@ -440,7 +430,7 @@
                                     <div class="row g-6">
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="full_name" class="form-label">Nama Lengkap</label>
-                                            <input class="form-control" type="text" id="full_name" placeholder="-"
+                                            <input class="form-control @error('full_name') is-invalid @enderror" type="text" id="full_name" placeholder="-"
                                                 name="full_name" value="{{ $user->Student->full_name ?? '' }}">
                                             @errorFeedback('full_name')
                                         </div>
@@ -455,39 +445,39 @@
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="birth_date" class="form-label">Tanggal Lahir</label>
-                                            <input class="form-control" type="date" id="birth_date" placeholder="-"
+                                            <input class="form-control @error('birth_date') is-invalid @enderror" type="date" id="birth_date" placeholder="-"
                                                 name="birth_date" value="{{ $user->Student->birth_date ?? '' }}">
                                             @errorFeedback('birth_date')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="birth_place" class="form-label">Tempat Lahir</label>
-                                            <input class="form-control" type="text" id="birth_place" placeholder="-"
+                                            <input class="form-control @error('birth_place') is-invalid @enderror" type="text" id="birth_place" placeholder="-"
                                                 name="birth_place" value="{{ $user->Student->birth_place ?? '' }}">
                                             @errorFeedback('birth_place')
                                         </div>
 
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="education_sd" class="form-label">Pendidikan SD</label>
-                                            <input class="form-control" type="text" id="education_sd" placeholder="-"
+                                            <input class="form-control @error('education_sd') is-invalid @enderror" type="text" id="education_sd" placeholder="-"
                                                 name="education_sd" value="{{ $user->Student->education_sd ?? '' }}">
                                             @errorFeedback('education_sd')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="education_smp" class="form-label">Pendidikan SMP</label>
-                                            <input class="form-control" type="text" id="education_smp" placeholder="-"
+                                            <input class="form-control @error('education_smp') is-invalid @enderror" type="text" id="education_smp" placeholder="-"
                                                 name="education_smp" value="{{ $user->Student->education_smp ?? '' }}">
                                             @errorFeedback('education_smp')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="nisn" class="form-label">NISN</label>
-                                            <input class="form-control" type="text" id="nisn" placeholder="-"
+                                            <input class="form-control @error('nisn') is-invalid @enderror" type="text" id="nisn" placeholder="-"
                                                 name="nisn" value="{{ $user->Student->nisn ?? '' }}">
                                             @errorFeedback('nisn')
                                         </div>
 
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="quran_memorization" class="form-label">Hafalan Al-Quran</label>
-                                            <input class="form-control" type="text" id="quran_memorization" placeholder="-"
+                                            <input class="form-control @error('quran_memorization') is-invalid @enderror" type="text" id="quran_memorization" placeholder="-"
                                                 name="quran_memorization" value="{{ $user->Student->quran_memorization ?? '' }}">
                                             @errorFeedback('quran_memorization')
                                         </div>
@@ -505,43 +495,43 @@
 
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="father_name" class="form-label">Nama Ayah</label>
-                                            <input class="form-control" type="text" id="father_name" placeholder="-"
+                                            <input class="form-control @error('father_name') is-invalid @enderror" type="text" id="father_name" placeholder="-"
                                                 name="father_name" value="{{ $user->Student->father_name ?? '' }}">
                                             @errorFeedback('father_name')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="father_occupation" class="form-label">Pekerjaan Ayah</label>
-                                            <input class="form-control" type="text" id="father_occupation" placeholder="-"
+                                            <input class="form-control @error('father_occupation') is-invalid @enderror" type="text" id="father_occupation" placeholder="-"
                                                 name="father_occupation" value="{{ $user->Student->father_occupation ?? '' }}">
                                             @errorFeedback('father_occupation')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="father_income" class="form-label">Penghasilan Ayah</label>
-                                            <input class="form-control" type="number" id="father_income" placeholder="-"
+                                            <input class="form-control @error('father_income') is-invalid @enderror" type="number" id="father_income" placeholder="-"
                                                 name="father_income" value="{{ $user->Student->father_income ?? '' }}">
                                             @errorFeedback('father_income')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="mother_name" class="form-label">Nama Ibu</label>
-                                            <input class="form-control" type="text" id="mother_name" placeholder="-"
+                                            <input class="form-control @error('mother_name') is-invalid @enderror" type="text" id="mother_name" placeholder="-"
                                                 name="mother_name" value="{{ $user->Student->mother_name ?? '' }}">
                                             @errorFeedback('mother_name')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="mother_occupation" class="form-label">Pekerjaan Ibu</label>
-                                            <input class="form-control" type="text" id="mother_occupation" placeholder="-"
+                                            <input class="form-control @error('mother_occupation') is-invalid @enderror" type="text" id="mother_occupation" placeholder="-"
                                                 name="mother_occupation" value="{{ $user->Student->mother_occupation ?? '' }}">
                                             @errorFeedback('mother_occupation')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="mother_income" class="form-label">Penghasilan Ibu</label>
-                                            <input class="form-control" type="number" id="mother_income" placeholder="-"
+                                            <input class="form-control @error('mother_income') is-invalid @enderror" type="number" id="mother_income" placeholder="-"
                                                 name="mother_income" value="{{ $user->Student->mother_income ?? '' }}">
                                             @errorFeedback('mother_income')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="parent_whatsapp" class="form-label">WhatsApp Orang Tua</label>
-                                            <input class="form-control" type="text" id="parent_whatsapp" placeholder="-"
+                                            <input class="form-control @error('parent_whatsapp') is-invalid @enderror" type="text" id="parent_whatsapp" placeholder="-"
                                                 name="parent_whatsapp" value="{{ $user->Student->parent_whatsapp ?? '' }}">
                                             @errorFeedback('parent_whatsapp')
                                         </div>
@@ -578,6 +568,7 @@
                                                         <option value="2XL" {{ ($user->Student->uniform_size ?? '') == '2XL' ? 'selected' : '' }}>2XL</option>
                                                         <option value="3XL" {{ ($user->Student->uniform_size ?? '') == '3XL' ? 'selected' : '' }}>3XL</option>
                                                     </select>
+                                                    @errorFeedback('uniform_size')
                                                 </div>
                                                 <div class="col-12 col-md-4">
                                                     <button type="button" class="btn btn-info w-100" data-bs-toggle="modal"
@@ -589,7 +580,7 @@
                                         </div>
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="attachment_family_register" class="form-label">Kartu Keluarga</label>
-                                            <input class="form-control" type="file" id="attachment_family_register"
+                                            <input class="form-control @error('attachment_family_register') is-invalid @enderror" type="file" id="attachment_family_register"
                                                 name="attachment_family_register">
                                             @errorFeedback('attachment_family_register')
                                             @if ($user->Student->attachment_family_register)
@@ -599,7 +590,7 @@
                                         </div>
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="attachment_birth_certificate" class="form-label">Akta Kelahiran</label>
-                                            <input class="form-control" type="file" id="attachment_birth_certificate"
+                                            <input class="form-control @error('attachment_birth_certificate') is-invalid @enderror" type="file" id="attachment_birth_certificate"
                                                 name="attachment_birth_certificate">
                                             @errorFeedback('attachment_birth_certificate')
                                             @if ($user->Student->attachment_birth_certificate)
@@ -610,7 +601,7 @@
                                         </div>
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="attachment_diploma" class="form-label">Ijazah</label>
-                                            <input class="form-control" type="file" id="attachment_diploma"
+                                            <input class="form-control @error('attachment_diploma') is-invalid @enderror" type="file" id="attachment_diploma"
                                                 name="attachment_diploma">
                                             @errorFeedback('attachment_diploma')
                                             @if ($user->Student->attachment_diploma)
@@ -620,7 +611,7 @@
                                         </div>
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="attachment_father_identity_card" class="form-label">KTP Ayah</label>
-                                            <input class="form-control" type="file" id="attachment_father_identity_card"
+                                            <input class="form-control @error('attachment_father_identity_card') is-invalid @enderror" type="file" id="attachment_father_identity_card"
                                                 name="attachment_father_identity_card">
                                             @errorFeedback('attachment_father_identity_card')
                                             @if ($user->Student->attachment_father_identity_card)
@@ -631,7 +622,7 @@
                                         </div>
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="attachment_mother_identity_card" class="form-label">KTP Ibu</label>
-                                            <input class="form-control" type="file" id="attachment_mother_identity_card"
+                                            <input class="form-control @error('attachment_mother_identity_card') is-invalid @enderror" type="file" id="attachment_mother_identity_card"
                                                 name="attachment_mother_identity_card">
                                             @errorFeedback('attachment_mother_identity_card')
                                             @if ($user->Student->attachment_mother_identity_card)
@@ -642,30 +633,30 @@
                                         </div>
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="school_motivation" class="form-label">Motivasi Sekolah</label>
-                                            <textarea class="form-control" id="school_motivation" placeholder="-" name="school_motivation">{{ $user->Student->school_motivation ?? '' }}</textarea>
+                                            <textarea class="form-control @error('school_motivation') is-invalid @enderror" id="school_motivation" placeholder="-" name="school_motivation">{{ $user->Student->school_motivation ?? '' }}</textarea>
                                             @errorFeedback('school_motivation')
                                         </div>
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="address" class="form-label">Alamat</label>
-                                            <textarea class="form-control" id="address" placeholder="-" name="address">{{ $user->Student->address ?? '' }}</textarea>
+                                            <textarea class="form-control @error('address') is-invalid @enderror" id="address" placeholder="-" name="address">{{ $user->Student->address ?? '' }}</textarea>
                                             @errorFeedback('address')
                                         </div>
 
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="sibling_info" class="form-label">Informasi Saudara</label>
-                                            <textarea class="form-control" id="sibling_info" placeholder="-" name="sibling_info">{{ $user->Student->sibling_info ?? '' }}</textarea>
+                                            <textarea class="form-control @error('sibling_info') is-invalid @enderror" id="sibling_info" placeholder="-" name="sibling_info">{{ $user->Student->sibling_info ?? '' }}</textarea>
                                             @errorFeedback('sibling_info')
                                         </div>
 
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="achievements" class="form-label">Prestasi</label>
-                                            <textarea class="form-control" id="achievements" placeholder="-" name="achievements">{{ $user->Student->achievements ?? '' }}</textarea>
+                                            <textarea class="form-control @error('achievements') is-invalid @enderror" id="achievements" placeholder="-" name="achievements">{{ $user->Student->achievements ?? '' }}</textarea>
                                             @errorFeedback('achievements')
                                         </div>
 
                                         <div class="col-md-12 fv-plugins-icon-container">
                                             <label for="medical_history" class="form-label">Riwayat Kesehatan</label>
-                                            <textarea class="form-control" id="medical_history" placeholder="-" name="medical_history">{{ $user->Student->medical_history ?? '' }}</textarea>
+                                            <textarea class="form-control @error('medical_history') is-invalid @enderror" id="medical_history" placeholder="-" name="medical_history">{{ $user->Student->medical_history ?? '' }}</textarea>
                                             @errorFeedback('medical_history')
                                         </div>
                                     </div>
