@@ -23,7 +23,7 @@
     </li>
 @endif
 @if ($permissions->contains('show_teacher'))
-    <li class="menu-item {{ request()->routeIs($rolePrefix . '.teacher.*') ? 'open active' : '' }}">
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.teacher.*') && !request()->routeIs($rolePrefix . '.teacher.nip.*') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.teacher.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-user-vneck fs-6"></i>
             <div class="text-truncate">
@@ -84,9 +84,9 @@
         </ul>
     </li>
 @endif
-@if ($permissions->contains('show_room') || $permissions->contains('show_class') || $permissions->contains('show_student'))
+@if ($permissions->contains('show_room') || $permissions->contains('show_class') || $permissions->contains('show_student') || $permissions->contains('show_teacher'))
     <li
-        class="menu-item {{ request()->routeIs($rolePrefix . '.class.*', $rolePrefix . '.room.*', $rolePrefix . '.student.nis.*') ? 'open active' : '' }}">
+        class="menu-item {{ request()->routeIs($rolePrefix . '.class.*', $rolePrefix . '.room.*', $rolePrefix . '.student.nis.*', $rolePrefix . '.teacher.nip.*') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.class.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-folders fs-6"></i>
             <div class="text-truncate">
@@ -110,6 +110,12 @@
                 <li
                     class="menu-item {{ request()->routeIs($rolePrefix . '.student.nis.index', $rolePrefix . '.student.nis.show', $rolePrefix . '.student.nis.edit') ? 'active' : '' }}">
                     <a href="{{ route($rolePrefix . '.student.nis.index') }}" class="menu-link">Master NIS</a>
+                </li>
+            @endif
+            @if ($permissions->contains('show_teacher'))
+                <li
+                    class="menu-item {{ request()->routeIs($rolePrefix . '.teacher.nip.index', $rolePrefix . '.teacher.nip.show', $rolePrefix . '.teacher.nip.edit') ? 'active' : '' }}">
+                    <a href="{{ route($rolePrefix . '.teacher.nip.index') }}" class="menu-link">Master NIP</a>
                 </li>
             @endif
         </ul>

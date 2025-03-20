@@ -11,5 +11,10 @@ class AppSetting extends Model
         'nis_start_number',
         'nis_padding',
         'nis_suffix',
+        'nip_prefix',
+        'nip_start_number',
+        'nip_padding',
+        'nip_suffix',
+        
     ];
 }

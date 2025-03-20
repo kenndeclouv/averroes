@@ -238,26 +238,20 @@
                 <div class="card mb-6 ">
                     <div class="card-body">
                         <small class="card-text text-uppercase text-muted small">About</small>
-                        <div class="row mt-3">
-                            <div class="col"><i class="text-primary fa fa-user me-2"></i> Nama</div>
-                            <div class="col">: {{ $user->name ?? '-' }}</div>
+                        <div class="mt-3">
+                            <i class="text-primary fa fa-user me-2"></i> <span style="opacity: 0.5">Nama</span> <br> <span style="margin-left: 25px"> {{ $user->name ?? '-' }} </span>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col"><i class="text-success fa fa-user me-2"></i> Username</div>
-                            <div class="col">: {{ $user->username }}</div>
+                        <div class="mt-3">
+                            <i class="text-success fa fa-user me-2"></i> <span style="opacity: 0.5">Username</span> <br> <span style="margin-left: 25px"> {{ $user->username }} </span>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col"><i class="text-info fa fa-crown me-2"></i> Role</div>
-                            <div class="col">: {{ $user->Role->name ?? '-' }}</div>
+                        <div class="mt-3">
+                            <i class="text-info fa fa-crown me-2"></i> <span style="opacity: 0.5">Role</span> <br> <span style="margin-left: 25px"> {{ $user->Role->name ?? '-' }} </span>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col"><i class="text-secondary fa fa-envelope me-2"></i> Email</div>
-                            <div class="col">: {{ $user->email }}</div>
+                        <div class="mt-3">
+                            <i class="text-secondary fa fa-envelope me-2"></i> <span style="opacity: 0.5">Email</span> <br> <span style="margin-left: 25px"> {{ $user->email }} </span>
                         </div>
-                        <div class="row mt-3">
-                            <div class="col"><i class="text-warning fa fa-calendar-alt me-2"></i> Terdaftar
-                            </div>
-                            <div class="col">: {{ formatDate($user->created_at) }}</div>
+                        <div class="mt-3">
+                            <i class="text-warning fa fa-calendar-alt me-2"></i> <span style="opacity: 0.5">Terdaftar</span> <br> <span style="margin-left: 25px"> {{ formatDate($user->created_at) }} </span>
                         </div>
                     </div>
                 </div>
@@ -379,10 +373,13 @@
                                             @errorFeedback('name')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="ktp" class="form-label">KTP</label>
-                                            <input class="form-control @error('ktp') is-invalid @enderror" type="text" id="ktp" placeholder="-"
-                                                name="ktp" value="{{ $user->Teacher->ktp ?? '' }}">
-                                            @errorFeedback('ktp')
+                                            <label for="gender" class="form-label">Jenis Kelamin</label>
+                                            <select class="form-control select2 @error('gender') is-invalid @enderror" id="gender" name="gender">
+                                                <option value="">Pilih Jenis Kelamin</option>
+                                                <option value="male" {{ ($user->Teacher->gender ?? '') == 'male' ? 'selected' : '' }}>Laki-laki</option>
+                                                <option value="female" {{ ($user->Teacher->gender ?? '') == 'female' ? 'selected' : '' }}>Perempuan</option>
+                                            </select>
+                                            @errorFeedback('gender')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="birth_date" class="form-label">Tanggal Lahir</label>
@@ -395,6 +392,12 @@
                                             <input class="form-control @error('birth_place') is-invalid @enderror" type="text" id="birth_place" placeholder="-"
                                                 name="birth_place" value="{{ $user->Teacher->birth_place ?? '' }}">
                                             @errorFeedback('birth_place')
+                                        </div>
+                                        <div class="col-md-6 fv-plugins-icon-container">
+                                            <label for="last_degree" class="form-label">Pendidikan Terakhir</label>
+                                            <input class="form-control @error('last_degree') is-invalid @enderror" type="text" id="last_degree" placeholder="-"
+                                                name="last_degree" value="{{ $user->Teacher->last_degree ?? '' }}">
+                                            @errorFeedback('last_degree')
                                         </div>
                                         <div class="col-md-6 fv-plugins-icon-container">
                                             <label for="phone" class="form-label">No. Telp</label>

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Permission;
 use App\Models\Student;
 use App\Models\Teacher;
+use App\Models\TeacherType;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -18,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             FeatureSeeder::class,
+            TeacherTypeSeeder::class
         ]);
         // Super Admin
         $user = User::create([

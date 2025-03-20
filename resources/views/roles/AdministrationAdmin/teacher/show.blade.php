@@ -16,6 +16,14 @@
                 <h5 class="card-title">Detail Ustadz</h5>
                 <div class="row mb-3">
                     <div class="col-md-4">
+                        <strong>Username</strong>
+                    </div>
+                    <div class="col-md-8">
+                        : {{ $teacher->User->username }}
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
                         <strong>Nama</strong>
                     </div>
                     <div class="col-md-8">
@@ -24,18 +32,26 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <strong>KTP</strong>
+                        <strong>NIP</strong>
                     </div>
                     <div class="col-md-8">
-                        : {{ $teacher->ktp ?? '-' }}
+                        : {{ $teacher->nip ?? '-' }}
                     </div>
                 </div>
-                <div class="row mb-3">
+                {{-- <div class="row mb-3">
                     <div class="col-md-4">
                         <strong>Kamar</strong>
                     </div>
                     <div class="col-md-8">
                         : {{ $teacher->Room->name ?? '-' }}
+                    </div>
+                </div> --}}
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <strong>Pendidikan Terakhir</strong>
+                    </div>
+                    <div class="col-md-8">
+                        : {{ $teacher->last_degree ?? '-' }}
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -88,18 +104,18 @@
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <strong>Tipe</strong>
+                        <strong>Jabatan Fungsional</strong>
                     </div>
                     <div class="col-md-8">
-                        : {{ teacherType($teacher->type) ?? '-' }}
+                        : {{ implode(', ', $teacher->functional_types) ?? '-' }}
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="col-md-4">
-                        <strong>Tipe Sekunder</strong>
+                        <strong>Amanah Mengajar</strong>
                     </div>
                     <div class="col-md-8">
-                        : {{ teacherType($teacher->secondary_type) ?? '-' }}
+                        : {{ implode(', ', $teacher->teaching_mandatory_types) ?? '-' }}
                     </div>
                 </div>
 

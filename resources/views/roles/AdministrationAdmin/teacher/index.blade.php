@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Daftar Ustadz')
+@section('title', 'Daftar Pegawai')
 
 @section('page-script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -22,13 +22,13 @@
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-                <h5 class="card-title">Daftar Ustadz</h5>
+                <h5 class="card-title">Daftar Pegawai</h5>
             </div>
             <div class="card-body pb-0 pt-4">
                 <div class="d-flex justify-content-end">
                     @if ($permissions->contains('create_teacher'))
                         <a href="{{ route('administrationadmin.teacher.create') }}" class="btn btn-primary mb-3"
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Ustadz">Tambah Ustadz</a>
+                            data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Pegawai">Tambah Pegawai</a>
                     @endif
                 </div>
             </div>
@@ -36,9 +36,9 @@
                 <table class="table table-bordered" id="table">
                     <thead>
                         <tr>
-                            <th>No</th>
+                            <th>NIP</th>
                             <th>Nama</th>
-                            <th>Tipe</th>
+                            <th>Jabatan Fungsional</th>
                             @if (
                                 $permissions->contains('show_teacher') ||
                                     $permissions->contains('edit_teacher') ||
@@ -50,9 +50,9 @@
                     <tbody>
                         @foreach ($teachers as $teacher)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $teacher->nip ?? "-" }}</td>
                                 <td>{{ $teacher->name }}</td>
-                                <td>{{ teacherType($teacher->type) ?? '-' }}</td>
+                                <td>{{ Str::limit(implode(', ', $teacher->functional_types), 50) }}</td>
                                 @if (
                                     $permissions->contains('show_teacher') ||
                                         $permissions->contains('edit_teacher') ||
@@ -60,16 +60,16 @@
                                     <td>
                                         @if ($permissions->contains('show_teacher'))
                                             <a href="{{ route('administrationadmin.teacher.show', $teacher->id) }}"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Detail Ustadz"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Detail Pegawai"
                                                 class="btn btn-info "><i class="fa-solid fa-eye fs-6"></i></a>
                                         @endif
                                         @if ($permissions->contains('edit_teacher'))
                                             <a href="{{ route('administrationadmin.teacher.edit', $teacher->id) }}"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Ustadz"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Pegawai"
                                                 class="btn btn-warning "><i class="fa-solid fa-edit fs-6"></i></a>
                                         @endif
                                         @if ($permissions->contains('delete_teacher'))
-                                            <x-delete :route="route('administrationadmin.teacher.destroy', $teacher->id)" :message="'Apakah kamu yakin ingin menghapus data ustadz ini?'" :title="'Hapus Ustadz'" />
+                                            <x-delete :route="route('administrationadmin.teacher.destroy', $teacher->id)" :message="'Apakah kamu yakin ingin menghapus data Pegawai ini?'" :title="'Hapus Pegawai'" />
                                         @endif
                                     </td>
                                 @endif

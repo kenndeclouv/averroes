@@ -24,8 +24,6 @@ class TeacherRequest extends FormRequest
         $rules = [
             'name' => 'required',
             'full_name' => 'required',
-
-            'ktp' => 'required|integer|unique:teachers',
             'phone' => 'nullable',
             'birth_date' => 'required',
             'birth_place' => 'required',
@@ -33,33 +31,25 @@ class TeacherRequest extends FormRequest
             'room_id' => 'nullable',
             'classes_id' => 'nullable',
             'gender' => 'required|in:male,female',
-            'type' => 'required|in:teacher,companion,headmaster',
-            'secondary_type' => 'nullable|in:teacher,companion,headmaster',
+            'last_degree' => 'nullable|string|unique:teachers,nip,' . ($this->teacher?->id ?? 'NULL'),
         ];
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
-            $rules['ktp'] = 'sometimes|string|max:255';
-        }
         return $rules;
     }
 
     public function messages()
     {
         return [
-            'name.required' => 'Nama ustadz wajib diisi',
-            'full_name.required' => 'Nama lengkap ustadz wajib diisi',
-            'ktp.required' => 'KTP wajib diisi',
-            'ktp.unique' => 'KTP sudah terdaftar',
-            'gender.required' => 'Jenis kelamin ustadz wajib diisi',
+            'name.required' => 'Nama Pegawai wajib diisi',
+            'full_name.required' => 'Nama lengkap Pegawai wajib diisi',
+            'gender.required' => 'Jenis kelamin Pegawai wajib diisi',
             'gender.in' => 'Jenis kelamin tidak valid',
-            'phone.nullable' => 'Nomor telepon ustadz boleh kosong',
-            'address.nullable' => 'Alamat ustadz boleh kosong',
-            'room_id.nullable' => 'Kamar ustadz boleh kosong',
-            'classes_id.nullable' => 'Kelas ustadz boleh kosong',
-            'birth_date.required' => 'Tanggal lahir ustadz wajib diisi',
-            'birth_place.required' => 'Tempat lahir ustadz wajib diisi',
-            'type.required' => 'Tipe ustadz wajib diisi',
-            'type.in' => 'Tipe ustadz tidak valid',
-            'secondary_type.in' => 'Tipe ustadz tidak valid',
+            'phone.nullable' => 'Nomor telepon Pegawai boleh kosong',
+            'address.nullable' => 'Alamat Pegawai boleh kosong',
+            'room_id.nullable' => 'Kamar Pegawai boleh kosong',
+            'classes_id.nullable' => 'Kelas Pegawai boleh kosong',
+            'birth_date.required' => 'Tanggal lahir Pegawai wajib diisi',
+            'birth_place.required' => 'Tempat lahir Pegawai wajib diisi',
+            'last_degree.string' => 'Pendidikan terakhir Pegawai harus berupa teks',
         ];
     }
 }

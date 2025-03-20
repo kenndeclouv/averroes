@@ -2,7 +2,13 @@ self.addEventListener("install", (event) => {
     event.waitUntil(
         caches.open("averroes-cache").then((cache) => {
             const urlsToCache = [
+                "/",
                 "/login",
+                "/assets/css/style.css",
+                "/assets/js/app.min.js",
+                "/assets/vendor/form-validator/bundle.v1.0.0.js", 
+                "/assets/vendor/swiper/swiper-bundle.min.js",
+                "/assets/main.js",
                 "/assets/css/demo.css",
                 "/assets/js/app.js",
                 "/192.png",
@@ -39,21 +45,17 @@ self.addEventListener("install", (event) => {
 self.addEventListener("fetch", (event) => {
     const url = new URL(event.request.url);
 
-    if (url.pathname === "/") {
-        event.respondWith(Response.redirect("/login", 302));
-    } else if (
-        url.pathname === "/login" ||
-        url.pathname === "/sanctum/csrf-cookie"
-    ) {
-        // Selalu ambil fresh data untuk halaman login & csrf token
+    // biarkan request ke /login dan /sanctum/csrf-cookie langsung ke network
+    if (url.pathname === "/login" || url.pathname === "/sanctum/csrf-cookie") {
         event.respondWith(fetch(event.request));
-    } else {
-        event.respondWith(
-            caches.match(event.request).then((response) => {
-                return response || fetch(event.request);
-            })
-        );
+        return;
     }
+
+    event.respondWith(
+        caches.match(event.request).then((response) => {
+            return response || fetch(event.request);
+        })
+    );
 });
 
 self.addEventListener("push", (event) => {

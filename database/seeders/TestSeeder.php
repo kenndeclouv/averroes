@@ -10,6 +10,7 @@ use App\Models\Room;
 use App\Models\Student;
 use App\Models\StudentPermit;
 use App\Models\Teacher;
+use App\Models\TeacherHasType;
 use App\Models\User;
 
 class TestSeeder extends Seeder
@@ -109,7 +110,8 @@ class TestSeeder extends Seeder
                 'password' => 'password',
                 'role_id' => 3,
             ]);
-            Teacher::create([
+
+            $teacher = Teacher::create([
                 'name' => explode(' ', $teacher)[0],
                 'full_name' => $teacher,
                 'user_id' => $user->id,
@@ -118,6 +120,11 @@ class TestSeeder extends Seeder
                 'gender' => 'male',
                 'birth_date' => fake()->date(),
                 'birth_place' => fake()->city(),
+            ]);
+
+            TeacherHasType::create([
+                'teacher_id' => $teacher->id,
+                'teacher_type_id' => 8,
             ]);
         }
         for ($i = 1; $i <= 30; $i++) {
@@ -131,23 +138,23 @@ class TestSeeder extends Seeder
             ]);
         }
 
-        for ($i=1; $i < 10; $i++) {
-            Message::create([
-                'user_id' => 2,
-                'recipient_id' => rand(3,9),
-                'message' => fake()->text(),
-                'created_at' =>now(),
-                'updated_at' =>now(),
-            ]);
-        }
-        for ($i=1; $i < 10; $i++) {
-            Message::create([
-                'user_id' => rand(3,9),
-                'recipient_id' => 2,
-                'message' => fake()->text(),
-                'created_at' =>now(),
-                'updated_at' =>now(),
-            ]);
-        }
+        // for ($i=1; $i < 10; $i++) {
+        //     Message::create([
+        //         'user_id' => 2,
+        //         'recipient_id' => rand(3,9),
+        //         'message' => fake()->text(),
+        //         'created_at' =>now(),
+        //         'updated_at' =>now(),
+        //     ]);
+        // }
+        // for ($i=1; $i < 10; $i++) {
+        //     Message::create([
+        //         'user_id' => rand(3,9),
+        //         'recipient_id' => 2,
+        //         'message' => fake()->text(),
+        //         'created_at' =>now(),
+        //         'updated_at' =>now(),
+        //     ]);
+        // }
     }
 }

@@ -233,6 +233,13 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
         Route::get('edit/{teacher}', [AdministrationAdminTeacher::class, 'edit'])->middleware('permission:edit_teacher')->name('edit');
         Route::put('update/{teacher}', [AdministrationAdminTeacher::class, 'update'])->middleware('permission:edit_teacher')->name('update');
         Route::delete('destroy/{teacher}', [AdministrationAdminTeacher::class, 'destroy'])->middleware('permission:delete_teacher')->name('destroy');
+
+        Route::prefix('nip')->name('nip.')->middleware(['permission:show_teacher'])->group(function () {
+            Route::get('/', [AdministrationAdminTeacher::class, 'nipIndex'])->name('index');
+            Route::put('update/{teacher}', [AdministrationAdminTeacher::class, 'nipUpdate'])->middleware('permission:edit_teacher')->name('update');
+            Route::delete('destroy/{teacher}', [AdministrationAdminTeacher::class, 'nipDestroy'])->middleware('permission:delete_teacher')->name('destroy');
+            Route::put('auto-generate/{teacher}', [AdministrationAdminTeacher::class, 'nipAutoGenerate'])->middleware('permission:edit_teacher')->name('auto-generate');
+        });
     });
     Route::prefix('class')->name('class.')->middleware(['permission:show_class'])->group(function () {
         Route::get('/', [AdministrationAdminClasses::class, 'index'])->name('index');

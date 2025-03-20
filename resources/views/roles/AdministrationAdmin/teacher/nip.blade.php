@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Master NIS')
+@section('title', 'Master NIP')
 
 @section('page-script')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -49,8 +49,8 @@
                                 <i class="fa-solid fa-id-card fs-3"></i>
                             </span>
                         </div>
-                        <span class="d-block mb-1 text-muted">NIS Terakhir</span>
-                        <h3 class="card-title mb-2">{{ $lastNis ?? '-' }}</h3>
+                        <span class="d-block mb-1 text-muted">NIP Terakhir</span>
+                        <h3 class="card-title mb-2">{{ $lastNip ?? '-' }}</h3>
                     </div>
                 </div>
             </div>
@@ -62,8 +62,8 @@
                                 <i class="fa-solid fa-list-ol fs-3"></i>
                             </span>
                         </div>
-                        <span class="d-block mb-1 text-muted">Format NIS</span>
-                        <h3 class="card-title mb-2">{{ generateNIS() }}</h3>
+                        <span class="d-block mb-1 text-muted">Format NIP</span>
+                        <h3 class="card-title mb-2">{{ generateNIP() }}</h3>
                     </div>
                 </div>
             </div>
@@ -75,9 +75,9 @@
                                 <i class="fa-solid fa-gear fs-3"></i>
                             </span>
                         </div>
-                        <span class="d-block mb-1 text-muted">Pengaturan NIS</span>
-                        <button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Pengaturan NIS">
-                            <i class="fa-solid fa-gear me-2"></i>Atur NIS
+                        <span class="d-block mb-1 text-muted">Pengaturan NIP</span>
+                        <button class="btn btn-warning" data-bs-toggle="tooltip" data-bs-placement="top" title="Pengaturan NIP">
+                            <i class="fa-solid fa-gear me-2"></i>Atur NIP
                         </button>
                     </div>
                 </div>
@@ -85,67 +85,64 @@
         </div>
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
-                <h5 class="card-title">Master NIS</h5>
+                <h5 class="card-title">Master NIP</h5>
             </div>
             <div class="card-datatable table-responsive text-start text-nowrap">
                 <table class="table table-bordered" id="table">
                     <thead>
                         <tr>
-                            <th>nis</th>
+                            <th>nip</th>
                             <th>Nama</th>
-                            <th>NISN</th>
-                            <th>Kelas</th>
                             @if (
-                                $permissions->contains('show_student') ||
-                                    $permissions->contains('edit_student') ||
-                                    $permissions->contains('delete_student'))
+                                $permissions->contains('show_teacher') ||
+                                    $permissions->contains('edit_teacher') ||
+                                    $permissions->contains('delete_teacher'))
                                 <th>Aksi</th>
                             @endif
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($students as $student)
+                        @foreach ($teachers as $teacher)
                             <tr>
-                                <td>{{ $student->nis ?? '-' }}</td>
-                                <td>{{ $student->name ?? '-' }}</td>
-                                <td>{{ $student->nisn ?? '-' }}</td>
-                                <td>{{ $student->Classes->name ?? '-' }}</td>
+                                <td>{{ $teacher->nip ?? '-' }}</td>
+                                <td>{{ $teacher->name ?? '-' }}</td>
                                 @if (
-                                    $permissions->contains('show_student') ||
-                                        $permissions->contains('edit_student') ||
-                                        $permissions->contains('delete_student'))
+                                    $permissions->contains('show_teacher') ||
+                                        $permissions->contains('edit_teacher') ||
+                                        $permissions->contains('delete_teacher'))
                                     <td>
-                                        @if ($permissions->contains('edit_student'))
+                                        @if ($permissions->contains('edit_teacher'))
                                             <!-- Button trigger modal -->
-                                            @if ($student->nis == null)
-                                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah NIS Santri" class="d-inline">
-                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nisModal{{ $student->id }}">
+                                            @if ($teacher->nip == null)
+                                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah NIP Pegawai" class="d-inline">
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nipModal{{ $teacher->id }}">
                                                     <i class="fa-solid fa-plus fs-6"></i>
                                                 </button>
                                             </div>
+                                            
                                             @else
-                                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Edit NIS Santri" class="d-inline">
-                                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#nisModal{{ $student->id }}">
+                                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Edit NIP Pegawai" class="d-inline">
+                                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#nipModal{{ $teacher->id }}">
                                                     <i class="fa-solid fa-edit fs-6"></i>
                                                 </button>
                                             </div>
                                             @endif
 
                                             <!-- Modal -->
-                                            <div class="modal fade" id="nisModal{{ $student->id }}" tabindex="-1" aria-labelledby="nisModalLabel{{ $student->id }}" aria-hidden="true">
+                                            <div class="modal fade" id="nipModal{{ $teacher->id }}" tabindex="-1" aria-labelledby="nipModalLabel{{ $teacher->id }}" aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="nisModalLabel{{ $student->id }}">Tentukan NIS Santri {{ $student->name }}</h5>
+                                                            <h5 class="modal-title" id="nipModalLabel{{ $teacher->id }}">Tentukan NIP Pegawai {{ $teacher->name }}</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                        <form action="{{ route('administrationadmin.student.nis.update', $student->id) }}" method="POST">
+                                                        <form action="{{ route('administrationadmin.teacher.nip.update', $teacher->id) }}" method="POST">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="modal-body">
                                                                 <div class="mb-3">
-                                                                    <label for="nis" class="form-label">NIS</label>
-                                                                    <input type="text" class="form-control" id="nis" name="nis" value="{{ $student->nis }}" required>
+                                                                    <label for="nip" class="form-label">NIP</label>
+                                                                    <input type="text" class="form-control" id="nip" name="nip" value="{{ $teacher->nip }}" required>
                                                                 </div>
                                                             </div>
                                                             <div class="modal-footer">
@@ -157,12 +154,12 @@
                                                 </div>
                                             </div>
                                         @endif
-                                        @if ($permissions->contains('edit_student'))
-                                            <x-delete :route="route('administrationadmin.student.nis.destroy', $student->id)" :message="'Apakah kamu yakin ingin menghapus NIS santri ini?'" :title="'Hapus NIS Santri'" />
+                                        @if ($permissions->contains('edit_teacher') && $teacher->nip != null)
+                                            <x-delete :route="route('administrationadmin.teacher.nip.destroy', $teacher->id)" :message="'Apakah kamu yakin ingin menghapus NIP pegawai ini?'" :title="'Hapus NIP Pegawai'" />
                                         @endif
-                                        @if ($student->nis == null)
-                                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Generate NIS Santri" class="d-inline">
-                                                <form action="{{ route('administrationadmin.student.nis.auto-generate', $student->id) }}" method="POST" class="d-inline">
+                                        @if ($permissions->contains('edit_teacher') && $teacher->nip == null)
+                                            <div data-bs-toggle="tooltip" data-bs-placement="top" title="Generate NIP Pegawai" class="d-inline">
+                                                <form action="{{ route('administrationadmin.teacher.nip.auto-generate', $teacher->id) }}" method="POST" class="d-inline">
                                                     @csrf
                                                     @method('PUT')
                                                     <button type="submit" class="btn btn-success">

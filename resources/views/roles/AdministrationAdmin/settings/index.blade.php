@@ -21,12 +21,29 @@
             $('#nis_preview').val(preview);
         }
 
+        function updateNIPPreview() {
+            let nip_prefix = $('#nip_prefix').val();
+            let nip_start_number = $('#nip_start_number').val();
+            let nip_padding = parseInt($('#nip_padding').val()) || 0;
+            let nip_suffix = $('#nip_suffix').val();
+
+            // Create padding of zeros based on padding value
+            let padding = '0'.repeat(nip_padding - 1);
+
+            // Combine in correct order: PREFIX + PADDING + STARTNUMBER + SUFFIX
+            let preview = nip_prefix + padding + nip_start_number + nip_suffix;
+
+            $('#nip_preview').val(preview);
+        }
+
         // Initialize on document load
         $(document).ready(function() {
             updateNISPreview();
+            updateNIPPreview();
         });
-        
+
         $('#nis_prefix, #nis_start_number, #nis_padding, #nis_suffix').on('input', updateNISPreview);
+        $('#nip_prefix, #nip_start_number, #nip_padding, #nip_suffix').on('input', updateNIPPreview);
     </script>
 @endsection
 
@@ -86,6 +103,55 @@
                                             id="nis_suffix" name="nis_suffix" placeholder="-"
                                             value="{{ old('nis_suffix', $appSetting->nis_suffix ?? '') }}">
                                         @errorFeedback('nis_suffix')
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <h5 class="mb-0">NIP Setting</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-12 mb-3">
+                                    <input type="text" class="form-control" id="nip_preview" disabled>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="nip_prefix">Prefix</label>
+                                        <input type="text" class="form-control @error('nip_prefix') is-invalid @enderror"
+                                            id="nip_prefix" name="nip_prefix" placeholder="-"
+                                            value="{{ old('nip_prefix', $appSetting->nip_prefix ?? '') }}">
+                                        @errorFeedback('nip_prefix')
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="nip_start_number">Nomor Awal</label>
+                                        <input type="number"
+                                            class="form-control @error('nip_start_number') is-invalid @enderror"
+                                            id="nip_start_number" name="nip_start_number" placeholder="-"
+                                            value="{{ old('nip_start_number', $appSetting->nip_start_number ?? '') }}">
+                                        @errorFeedback('nip_start_number')
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="nip_padding">Padding</label>
+                                        <input type="number"
+                                            class="form-control @error('nip_padding') is-invalid @enderror" id="nip_padding"
+                                            name="nip_padding" placeholder="-"
+                                            value="{{ old('nip_padding', $appSetting->nip_padding ?? '') }}" max="5">
+                                        @errorFeedback('nip_padding')
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-3">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="nip_suffix">Suffix</label>
+                                        <input type="text"
+                                            class="form-control @error('nip_suffix') is-invalid @enderror" id="nip_suffix"
+                                            name="nip_suffix" placeholder="-"
+                                            value="{{ old('nip_suffix', $appSetting->nip_suffix ?? '') }}">
+                                        @errorFeedback('nip_suffix')
                                     </div>
                                 </div>
                             </div>

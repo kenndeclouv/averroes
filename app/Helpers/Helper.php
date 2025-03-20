@@ -64,6 +64,7 @@
 use Illuminate\Support\Facades\Storage;
 use App\Models\AppSetting;
 use App\Models\Student;
+use App\Models\Teacher;
 
 if (!function_exists('getGender')) {
     function getGender($value)
@@ -193,7 +194,7 @@ if (!function_exists('convertCase')) {
                 throw new InvalidArgumentException("Invalid target case: $targetCase");
         }
     }
-    
+
     if (!function_exists('generateNIS')) {
         function generateNIS()
         {
@@ -210,6 +211,33 @@ if (!function_exists('convertCase')) {
 
             // ambil angka terakhir pakai regex
             preg_match('/\d+/', $lastNIS, $matches);
+            $lastNumber = isset($matches[0]) ? (int) $matches[0] : null;
+
+            // jika tidak ada data, pakai start number
+            $newNumber = $lastNumber !== null ? $lastNumber + 1 : $start;
+
+            // format sesuai padding
+            $formattedNumber = str_pad($newNumber, $padding, '0', STR_PAD_LEFT);
+
+            return "{$prefix}{$formattedNumber}{$suffix}";
+        }
+    }
+    if (!function_exists('generateNIP')) {
+        function generateNIP()
+        {
+            $settings = AppSetting::first();
+            $prefix = $settings->nip_prefix ?? ''; // default ''
+            $start = $settings->nip_start_number ?? 1; // default 1
+            $padding = $settings->nip_padding ?? 4; // default 4 (0001)
+            $suffix = $settings->nip_suffix ?? ''; // default ''
+
+            // cari semua NIP yang pernah ada, bukan cuma yang pakai format sekarang
+            $lastNIP = Teacher::where('nip', 'REGEXP', '[0-9]+') // cari yang ada angka
+                ->latest('id')
+                ->value('nip');
+
+            // ambil angka terakhir pakai regex
+            preg_match('/\d+/', $lastNIP, $matches);
             $lastNumber = isset($matches[0]) ? (int) $matches[0] : null;
 
             // jika tidak ada data, pakai start number
