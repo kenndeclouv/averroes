@@ -58,6 +58,9 @@ class TeacherTypeSeeder extends Seeder
             ['name' => 'Bahasa Inggris', 'slug' => 'bahasa-inggris', 'type' => 'teaching_mandatory'],
             ['name' => 'Bahasa Arab', 'slug' => 'bahasa-arab', 'type' => 'teaching_mandatory'],
             ['name' => 'lainnya', 'slug' => 'teaching_mandatory-lainnya', 'type' => 'teaching_mandatory'],
+
+            // Bendahara
+            ['name' => 'Bendahara', 'slug' => 'treasurer', 'type' => 'functional_position'],
         ];
 
         foreach ($teacherTypes as $teacherType) {

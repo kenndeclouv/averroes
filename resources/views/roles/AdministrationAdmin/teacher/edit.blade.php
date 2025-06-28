@@ -65,6 +65,19 @@
                                 @errorFeedback('username')
                             </div>
                             <div class="mb-3">
+                                <label class="form-label" for="role">Role</label>
+                                <select class="form-control select2 @error('role_id') is-invalid @enderror" id="role"
+                                    name="role_id">
+                                    <option value="" disabled>Pilih Role</option>
+                                    <option value="3" {{ old('role', $teacher->user->role_id) == '3' ? 'selected' : '' }}>
+                                        Pengajar</option>
+                                    <option value="7" {{ old('role', $teacher->user->role_id) == '7' ? 'selected' : '' }}>
+                                        Bendahara
+                                    </option>
+                                </select>
+                                @errorFeedback('role_id')
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label" for="email">Email</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"
                                     id="email" name="email" value="{{ old('email', $teacher->user->email) }}"
@@ -169,8 +182,8 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="fn_type">Jabatan Fungsional</label>
-                                <select class="form-control select2 @error('fn_type') is-invalid @enderror" id="fn_type"
-                                    name="fn_type[]" multiple>
+                                <select class="form-control select2 @error('fn_type') is-invalid @enderror"
+                                    id="fn_type" name="fn_type[]" multiple>
                                     @foreach ($FNTypes as $type)
                                         <option value="{{ $type->id }}" data-slug="{{ $type->slug }}"
                                             {{ in_array($type->id, old('fn_type', $selectedFNs ?? [])) ? 'selected' : '' }}>
@@ -191,8 +204,8 @@
 
                             <div class="mb-3">
                                 <label class="form-label" for="tm_type">Amanah Mengajar</label>
-                                <select class="form-control select2 @error('tm_type') is-invalid @enderror" id="tm_type"
-                                    name="tm_type[]" multiple>
+                                <select class="form-control select2 @error('tm_type') is-invalid @enderror"
+                                    id="tm_type" name="tm_type[]" multiple>
                                     @foreach ($TMTypes as $type)
                                         <option value="{{ $type->id }}" data-slug="{{ $type->slug }}"
                                             {{ in_array($type->id, old('tm_type', $selectedTMs ?? [])) ? 'selected' : '' }}>

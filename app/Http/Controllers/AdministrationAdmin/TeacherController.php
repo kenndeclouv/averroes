@@ -48,7 +48,7 @@ class TeacherController extends Controller
     {
         $validatedUser = $requestUser->validated();
         $validatedTeacher = $teacherRequest->validated();
-        $validatedUser["role_id"] = 3;
+        $validatedUser["role_id"] = $validatedTeacher['role_id'];
         $user = User::create($validatedUser);
 
         $validatedTeacher['user_id'] = $user->id;
@@ -121,6 +121,7 @@ class TeacherController extends Controller
     {
         $validatedUser = $userRequest->validated();
         $validatedTeacher = $teacherRequest->validated();
+        $validatedUser["role_id"] = $validatedTeacher['role_id'] ;
         $validatedTeacherHasType = $teacherHasTypeRequest->validated();
         // Validasi input fn_type & tm_type
         $validatedTeacherHasType = $teacherHasTypeRequest->validated();

@@ -14,7 +14,7 @@
  *
  *    Route::prefix('role')->name('role.')->middleware(['auth', 'can:isRole'])->group(function () {
  *        Route::redirect('/', '/role/home', 301); // Redirect ke halaman home role
- *        Route::get('/home', [RoleHome::class, 'index'])->name('home'); // Mendefinisikan route home
+ *        Route::get('home', [RoleHome::class, 'index'])->name('home'); // Mendefinisikan route home
  *        // Di sini, Kamu dapat menambahkan semua grup fitur lainnya yang relevan untuk role ini.
  *    });
  *
@@ -33,21 +33,24 @@
  *      Route::put('lowercase/{camelCase}', [PascalCase::class, 'camelCase'])->name('kebab-case');
  *  });
  * 
- *  ©️ 2025 by kenndeclouv
- *  https://kenndeclouv.my.id
+ *  © 2025 by kenndeclouv
+ *  https://kenn.my.id
  */
 
-// **Dependencies**
+// DEPENDENCIES
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PushSubscription;
 use Illuminate\Http\Request;
-// **Controllers**
+
+// GLOBAL CONTROLLER
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\AccountController;
+
+// SUPER ADMIN
 use App\Http\Controllers\SuperAdmin\HomeController as SuperAdminHome;
 use App\Http\Controllers\SuperAdmin\AdminController as SuperAdminAdmin;
 use App\Http\Controllers\SuperAdmin\LogViewerController as SuperAdminLogViewer;
@@ -56,21 +59,30 @@ use App\Http\Controllers\SuperAdmin\RouteListController as SuperAdminRouteList;
 use App\Http\Controllers\SuperAdmin\PerformanceController as SuperAdminPerformance;
 use App\Http\Controllers\SuperAdmin\SystemController as SuperAdminSystem;
 use App\Http\Controllers\SuperAdmin\DatabaseController as SuperAdminDatabase;
+use App\Http\Controllers\SuperAdmin\PushSubscriptionController as SuperAdminPushSubscription;
+use App\Http\Controllers\SuperAdmin\EnvController as SuperAdminEnv;
+// ADMIN
 use App\Http\Controllers\AdministrationAdmin\HomeController as AdministrationAdminHome;
 use App\Http\Controllers\AdministrationAdmin\AnnouncementController as AdministrationAdminAnnouncement;
-use App\Http\Controllers\Teacher\AnnouncementController as TeacherAnnouncement;
 use App\Http\Controllers\AdministrationAdmin\ClassesController as AdministrationAdminClasses;
 use App\Http\Controllers\AdministrationAdmin\RoomController as AdministrationAdminRoom;
 use App\Http\Controllers\AdministrationAdmin\StudentController as AdministrationAdminStudent;
 use App\Http\Controllers\AdministrationAdmin\StudentPermitController as AdministrationAdminStudentPermit;
-use App\Http\Controllers\Student\StudentPermitController as StudentStudentPermit;
-use App\Http\Controllers\Teacher\StudentPermitController as TeacherStudentPermit;
 use App\Http\Controllers\AdministrationAdmin\TeacherController as AdministrationAdminTeacher;
 use App\Http\Controllers\AdministrationAdmin\StudentRegistrantController as AdministrationAdminStudentRegistrant;
-use App\Http\Controllers\StudentRegistrant\HomeController as StudentRegistrantHome;
-use App\Http\Controllers\SuperAdmin\PushSubscriptionController as SuperAdminPushSubscription;
 use App\Http\Controllers\AdministrationAdmin\AppSettingController as AdministrationAdminAppSetting;
-use App\Http\Controllers\SuperAdmin\EnvController as SuperAdminEnv;
+// TEACHER
+use App\Http\Controllers\Teacher\AnnouncementController as TeacherAnnouncement;
+use App\Http\Controllers\Teacher\StudentPermitController as TeacherStudentPermit;
+// STUDENT
+use App\Http\Controllers\Student\StudentPermitController as StudentStudentPermit;
+// STUDENT REGISTRANT
+use App\Http\Controllers\StudentRegistrant\HomeController as StudentRegistrantHome;
+// TREASURER
+use App\Http\Controllers\Treasurer\HomeController as TreasurerHome;
+use App\Http\Controllers\Treasurer\TransactionController as TreasurerTransaction;
+
+
 /**
  * **Root**
  */
@@ -137,7 +149,7 @@ Route::prefix('kanban')->name('kanban.')->middleware(['auth'])->group(function (
  */
 Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'can:isSuperAdmin'])->group(function () {
     Route::redirect('/', '/superadmin/home', 301);
-    Route::get('/home', [SuperAdminHome::class, 'index'])->name('home');
+    Route::get('home', [SuperAdminHome::class, 'index'])->name('home');
     Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [SuperAdminAdmin::class, 'index'])->name('index');
         Route::get('create', [SuperAdminAdmin::class, 'create'])->name('create');
@@ -201,7 +213,7 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'can:isSup
  */
 Route::prefix('administrationadmin')->name('administrationadmin.')->middleware(['auth', 'can:isAdministrationAdmin'])->group(function () {
     Route::redirect('/', '/administrationadmin/home', 301);
-    Route::get('/home', [AdministrationAdminHome::class, 'index'])->name('home');
+    Route::get('home', [AdministrationAdminHome::class, 'index'])->name('home');
 
     Route::prefix('student')->name('student.')->middleware('permission:show_student')->group(function () {
         Route::get('/', [AdministrationAdminStudent::class, 'index'])->name('index');
@@ -312,7 +324,7 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
  */
 Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'can:isTeacher'])->group(function () {
     Route::redirect('/', '/teacher/home', 301);
-    Route::get('/home', [AdministrationAdminHome::class, 'index'])->name('home');
+    Route::get('home', [AdministrationAdminHome::class, 'index'])->name('home');
 
     Route::prefix('studentpermit')->name('studentpermit.')->group(function () {
         Route::get('/', [TeacherStudentPermit::class, 'index'])->name('index');
@@ -341,7 +353,7 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'can:isTeacher']
  */
 Route::prefix('student')->name('student.')->middleware(['auth', 'can:isStudent'])->group(function () {
     Route::redirect('/', '/student/home', 301);
-    Route::get('/home', [AdministrationAdminHome::class, 'index'])->name('home');
+    Route::get('home', [AdministrationAdminHome::class, 'index'])->name('home');
 
     Route::prefix('permit')->name('permit.')->group(function () {
         Route::get('/', [StudentStudentPermit::class, 'index'])->name('index');
@@ -359,8 +371,32 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'can:isStudent']
  */
 Route::prefix('studentregistrant')->name('studentregistrant.')->middleware(['auth', 'can:isStudentRegistrant'])->group(function () {
     Route::redirect('/', '/studentregistrant/home', 301);
-    Route::get('/home', [StudentRegistrantHome::class, 'index'])->name('home');
+    Route::get('home', [StudentRegistrantHome::class, 'index'])->name('home');
 
     Route::post('store', [StudentRegistrantHome::class, 'store'])->name('store');
     Route::put('update/{studentRegistrant}', [StudentRegistrantHome::class, 'update'])->name('update');
+});
+
+/**
+ * **Treasurer Routes**
+ */
+Route::prefix('treasurer')->name('treasurer.')->middleware(['auth', 'can:isTreasurer'])->group(function () {
+    Route::redirect('/', '/treasurer/home', 301);
+    Route::get('home', [TreasurerHome::class, 'index'])->name('home');
+
+    Route::prefix('transaction')->name('transaction.')->group(function () {
+        Route::get('/', [TreasurerTransaction::class, 'index'])->name('index');
+        Route::get('create', [TreasurerTransaction::class, 'create'])->name('create');
+        Route::post('store', [TreasurerTransaction::class, 'store'])->name('store');
+        Route::get('show/{transaction}', [TreasurerTransaction::class, 'show'])->name('show');
+        Route::get('edit/{transaction}', [TreasurerTransaction::class, 'edit'])->name('edit');
+        Route::put('update/{transaction}', [TreasurerTransaction::class, 'update'])->name('update');
+        Route::delete('destroy/{transaction}', [TreasurerTransaction::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('transactioncategory')->name('transactioncategory.')->group(function () {
+        Route::post('store', [TreasurerTransaction::class, 'categoryStore'])->name('store');
+        Route::put('update/{category}', [TreasurerTransaction::class, 'categoryUpdate'])->name('update');
+        Route::delete('destroy/{category}', [TreasurerTransaction::class, 'categoryDestroy'])->name('destroy');
+    });
 });

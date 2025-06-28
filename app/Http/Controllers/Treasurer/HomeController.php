@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Teacher;
+namespace App\Http\Controllers\Treasurer;
 
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -40,6 +40,6 @@ class HomeController extends Controller
             ->take(2)
             ->get();
 
-        return view("roles.Teacher.index", compact('totalSantri', 'totalSantriAktif', 'totalSantriNonAktif', 'totalUstadz', 'totalIjin', 'announcements', 'permits'));
+        return view("roles.Treasurer.index", compact('totalSantri', 'totalSantriAktif', 'totalSantriNonAktif', 'totalUstadz', 'totalIjin', 'announcements', 'permits'));
     }
 }

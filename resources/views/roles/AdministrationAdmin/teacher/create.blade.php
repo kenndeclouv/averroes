@@ -63,6 +63,17 @@
                                 @errorFeedback('username')
                             </div>
                             <div class="mb-3">
+                                <label class="form-label" for="role">Role</label>
+                                <select class="form-control select2 @error('role_id') is-invalid @enderror" id="role"
+                                    name="role_id">
+                                    <option value="" disabled>Pilih Role</option>
+                                    <option value="3" {{ old('role_id') == '3' ? 'selected' : '' }}>Pengajar</option>
+                                    <option value="7" {{ old('role_id') == '7' ? 'selected' : '' }}>Bendahara
+                                    </option>
+                                </select>
+                                @errorFeedback('role_id')
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label" for="email">Email</label>
                                 <input type="email" class="form-control @error('email') is-invalid @enderror"
                                     id="email" name="email" placeholder="Email Pegawai" value="{{ old('email') }}">
@@ -200,7 +211,8 @@
                                 </select>
                                 @errorFeedback('fn_type')
 
-                                <div id="fn_type_lainnya_div" class="mt-3" style="{{ in_array($FNOtherTypeId, old('fn_type', $selectedFNs ?? [])) ? '' : 'display: none;' }}">
+                                <div id="fn_type_lainnya_div" class="mt-3"
+                                    style="{{ in_array($FNOtherTypeId, old('fn_type', $selectedFNs ?? [])) ? '' : 'display: none;' }}">
                                     <label class="form-label" for="fn_type_lainnya_des">Jabatan Fungsional Lainnya</label>
                                     <input type="text" class="form-control" id="fn_type_lainnya_des"
                                         placeholder="Isi Jabatan Fungsional Lainnya" name="fn_type_lainnya_des"

@@ -60,7 +60,7 @@ class TestSeeder extends Seeder
             $user = User::create([
                 'name' => $student,
                 'username' => $name,
-                'email' => $name . '@example.com',
+                'email' => $name . '@averroes.com',
                 'password' => 'password',
                 'role_id' => 4,
             ]);
@@ -106,7 +106,7 @@ class TestSeeder extends Seeder
             $user = User::create([
                 'name' => $teacher,
                 'username' => $name,
-                'email' => $name . '@example.com',
+                'email' => $name . '@averroes.com',
                 'password' => 'password',
                 'role_id' => 3,
             ]);
@@ -135,6 +135,36 @@ class TestSeeder extends Seeder
                 'to' => fake()->dateTimeBetween('now', '+1 week'),
                 'reason' => fake()->realText(70),
                 'status' => fake()->randomElement(['pending', 'approved', 'rejected']),
+            ]);
+        }
+
+        $treasurers = [
+            "Ita Rahayu",
+        ];
+        foreach ($treasurers as $treasurer) {
+            $name = str_replace([" ", "'", "-"], "", strtolower($treasurer));
+            $user = User::create([
+                'name' => $treasurer,
+                'username' => $name,
+                'email' => $name . '@averroes.com',
+                'password' => 'password',
+                'role_id' => 7,
+            ]);
+
+            $treasurer = Teacher::create([
+                'name' => explode(' ', $treasurer)[0],
+                'full_name' => $treasurer,
+                'user_id' => $user->id,
+                'phone' => fake()->phoneNumber(),
+                'address' => fake()->address(),
+                'gender' => 'female',
+                'birth_date' => fake()->date(),
+                'birth_place' => fake()->city(),
+            ]);
+
+            TeacherHasType::create([
+                'teacher_id' => $treasurer->id,
+                'teacher_type_id' => 21,
             ]);
         }
 

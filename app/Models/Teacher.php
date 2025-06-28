@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
 {
-    protected $guarded = [];
+    protected $fillable = ['name', 'full_name', 'phone', 'birth_date', 'birth_place', 'address', 'room_id', 'classes_id', 'gender', 'last_degree'];
     protected static function boot()
     {
         parent::boot();
