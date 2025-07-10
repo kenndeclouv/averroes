@@ -71,6 +71,8 @@ use App\Http\Controllers\AdministrationAdmin\StudentPermitController as Administ
 use App\Http\Controllers\AdministrationAdmin\TeacherController as AdministrationAdminTeacher;
 use App\Http\Controllers\AdministrationAdmin\StudentRegistrantController as AdministrationAdminStudentRegistrant;
 use App\Http\Controllers\AdministrationAdmin\AppSettingController as AdministrationAdminAppSetting;
+use App\Http\Controllers\AdministrationAdmin\TransactionController as AdministrationAdminTransaction;
+
 // TEACHER
 use App\Http\Controllers\Teacher\AnnouncementController as TeacherAnnouncement;
 use App\Http\Controllers\Teacher\StudentPermitController as TeacherStudentPermit;
@@ -316,6 +318,12 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
     Route::prefix('appsetting')->name('appsetting.')->middleware(['permission:show_app_setting'])->group(function () {
         Route::get('/', [AdministrationAdminAppSetting::class, 'index'])->name('index');
         Route::put('/update', [AdministrationAdminAppSetting::class, 'update'])->name('update');
+    });
+
+    // TRANSACTION
+    Route::prefix('transaction')->name('transaction.')->middleware(['permission:show_transaction'])->group(function () {
+        Route::get('/', [AdministrationAdminTransaction::class, 'index'])->name('index');
+        Route::get('show/{transaction}', [AdministrationAdminTransaction::class, 'show'])->name('show');
     });
 });
 

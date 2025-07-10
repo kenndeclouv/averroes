@@ -3,7 +3,8 @@
     $rolePrefix = 'administrationadmin';
 @endphp
 @if ($permissions->contains('show_student'))
-    <li class="menu-item {{ request()->routeIs($rolePrefix . '.student.*') && !request()->routeIs($rolePrefix . '.student.nis.*') ? 'open active' : '' }}">
+    <li
+        class="menu-item {{ request()->routeIs($rolePrefix . '.student.*') && !request()->routeIs($rolePrefix . '.student.nis.*') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.student.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-user fs-6"></i>
             <div class="text-truncate">
@@ -15,15 +16,15 @@
                 class="menu-item {{ request()->routeIs($rolePrefix . '.student.index', $rolePrefix . '.student.show', $rolePrefix . '.student.edit') ? 'active' : '' }}">
                 <a href="{{ route($rolePrefix . '.student.index') }}" class="menu-link">Data Santri</a>
             </li>
-            <li
-                class="menu-item {{ request()->routeIs($rolePrefix . '.student.graduate.index') ? 'active' : '' }}">
+            <li class="menu-item {{ request()->routeIs($rolePrefix . '.student.graduate.index') ? 'active' : '' }}">
                 <a href="{{ route($rolePrefix . '.student.graduate.index') }}" class="menu-link">Santri Lulus</a>
             </li>
         </ul>
     </li>
 @endif
 @if ($permissions->contains('show_teacher'))
-    <li class="menu-item {{ request()->routeIs($rolePrefix . '.teacher.*') && !request()->routeIs($rolePrefix . '.teacher.nip.*') ? 'open active' : '' }}">
+    <li
+        class="menu-item {{ request()->routeIs($rolePrefix . '.teacher.*') && !request()->routeIs($rolePrefix . '.teacher.nip.*') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.teacher.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-user-vneck fs-6"></i>
             <div class="text-truncate">
@@ -84,7 +85,11 @@
         </ul>
     </li>
 @endif
-@if ($permissions->contains('show_room') || $permissions->contains('show_class') || $permissions->contains('show_student') || $permissions->contains('show_teacher'))
+@if (
+    $permissions->contains('show_room') ||
+        $permissions->contains('show_class') ||
+        $permissions->contains('show_student') ||
+        $permissions->contains('show_teacher'))
     <li
         class="menu-item {{ request()->routeIs($rolePrefix . '.class.*', $rolePrefix . '.room.*', $rolePrefix . '.student.nis.*', $rolePrefix . '.teacher.nip.*') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.class.index') }}" class="menu-link menu-toggle">
@@ -118,6 +123,22 @@
                     <a href="{{ route($rolePrefix . '.teacher.nip.index') }}" class="menu-link">Master NIP</a>
                 </li>
             @endif
+        </ul>
+    </li>
+@endif
+@if ($permissions->contains('show_transaction'))
+    <li class="menu-item {{ request()->routeIs('administrationadmin.transaction.*') ? 'open active' : '' }}">
+        <a href="{{ route('administrationadmin.transaction.index') }}" class="menu-link menu-toggle">
+            <i class="menu-icon fa-solid fa-dollar fs-6"></i>
+            <div class="text-truncate">
+                Transaksi
+            </div>
+        </a>
+        <ul class="menu-sub">
+            <li
+                class="menu-item {{ request()->routeIs('administrationadmin.transaction.index', 'administrationadmin.transaction.show', 'administrationadmin.transaction.edit') ? 'active' : '' }}">
+                <a href="{{ route('administrationadmin.transaction.index') }}" class="menu-link">Daftar Transaksi</a>
+            </li>
         </ul>
     </li>
 @endif

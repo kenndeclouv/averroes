@@ -42,18 +42,6 @@
                     ]
                 }]
             });
-
-            // script buat handle edit category
-            $('button[id^="edit-category-button-"]').on('click', function() {
-                const categoryId = $(this).data('id');
-                const categoryName = $(this).data('name');
-                const formAction = "{{ url('treasurer/transactioncategory/update') }}/" + categoryId;
-
-                $('#editCategoryModal').modal('show');
-                $('#edit-category-id').val(categoryId);
-                $('#editCategoryName').val(categoryName);
-                $('#edit-category-form').attr('action', formAction);
-            });
         });
     </script>
 @endsection
@@ -84,13 +72,11 @@
             <div class="card-body pb-0 pt-4">
                 <div class="d-flex justify-content-between align-items-center">
                     <form method="GET" class="d-flex align-items-center"
-                        action="{{ route('treasurer.transaction.index') }}">
+                        action="{{ route('administrationadmin.transaction.index') }}">
                         <label for="month" class="me-2 mb-0">Bulan:</label>
                         <input type="month" id="month" name="month" class="form-control me-2"
                             value="{{ $monthYear ?? now()->format('Y-m') }}" onchange="this.form.submit()">
                     </form>
-                    <a href="{{ route('treasurer.transaction.create') }}" class="btn btn-primary mb-3"
-                        data-bs-toggle="tooltip" data-bs-placement="top" title="Tambah Transaksi">Tambah Transaksi</a>
                 </div>
             </div>
             <div class="card-datatable table-responsive text-start text-nowrap">
@@ -102,7 +88,6 @@
                             <th>Kategori</th>
                             <th>Debit</th>
                             <th>Kredit</th>
-                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -113,15 +98,6 @@
                                 <td>{{ $transaction->Category ? $transaction->Category->name : '-' }}</td>
                                 <td>{{ $transaction->debit ? indonesianCurrency($transaction->debit) : '-' }}</td>
                                 <td>{{ $transaction->credit ? indonesianCurrency($transaction->credit) : '-' }}</td>
-                                <td>
-                                    <a href="{{ route('treasurer.transaction.show', $transaction->id) }}"
-                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Detail Transaksi"
-                                        class="btn btn-info"><i class="fa-solid fa-eye"></i></a>
-                                    <a href="{{ route('treasurer.transaction.edit', $transaction->id) }}"
-                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Edit Transaksi"
-                                        class="btn btn-warning"><i class="fa-solid fa-edit"></i></a>
-                                    <x-delete :route="route('treasurer.transaction.destroy', $transaction->id)" :message="'Apakah kamu yakin ingin menghapus transaksi ini?'" :title="'Hapus Transaksi'"></x-delete>
-                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -139,7 +115,7 @@
                 </table>
             </div>
         </div>
-        <div class="row mt-4">
+        {{-- <div class="row mt-4">
             <div class="col-md-6">
                 <div class="card shadow-sm">
                     <div class="card-header d-flex justify-content-between align-items-center">
@@ -166,7 +142,6 @@
                                                 data-id="{{ $category->id }}" data-name="{{ $category->name }}">
                                                 <i class="fa fa-edit"></i>
                                             </button>
-                                            <x-delete :route="route('treasurer.transactioncategory.destroy', $category->id)" :message="'Apakah kamu yakin ingin menghapus kategori ini?'" :title="'Hapus Kategori'"></x-delete>
                                         </td>
                                     </tr>
                                 @empty
@@ -179,58 +154,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Add Category Modal -->
-        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <form action="{{ route('treasurer.transactioncategory.store') }}" method="POST" class="modal-content">
-                    @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addCategoryModalLabel">Tambah Kategori</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="categoryName" class="form-label">Nama Kategori</label>
-                            <input type="text" class="form-control" id="categoryName" name="name" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Tambah</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Edit Category Modal -->
-        <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <form action="" method="POST" class="modal-content" id="edit-category-form">
-                    @csrf
-                    @method('PUT')
-                    <input type="hidden" id="edit-category-id" name="id">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editCategoryModalLabel">
-                            Edit Kategori</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="editCategoryName" class="form-label">Nama Kategori</label>
-                            <input type="text" class="form-control" id="editCategoryName" name="name"
-                                value="" required>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+        </div> --}}
     </div>
 @endsection
