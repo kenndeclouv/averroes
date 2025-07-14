@@ -83,6 +83,7 @@
                 <table class="table table-bordered" id="transactionTable">
                     <thead>
                         <tr>
+                            <th>No</th>
                             <th>Tanggal</th>
                             <th>Deskripsi</th>
                             <th>Kategori</th>
@@ -93,6 +94,7 @@
                     <tbody>
                         @foreach ($transactions as $transaction)
                             <tr>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ formatDate($transaction->date) }}</td>
                                 <td>{{ $transaction->description ?? '-' }}</td>
                                 <td>{{ $transaction->Category ? $transaction->Category->name : '-' }}</td>

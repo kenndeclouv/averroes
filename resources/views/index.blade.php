@@ -986,8 +986,8 @@
                                     });
                                 </script>
 
-                                <a href="https://kenndeclouv.my.id" target="_blank" class="hover-underline">Crafted
-                                    by kenndeclouv</a>
+                                <a href="https://kenn.my.id" target="_blank" class="hover-underline">Crafted
+                                    by kenn</a>
                             </div>
                         </div>
                     </div>

@@ -58,7 +58,7 @@ class StudentRequest extends FormRequest
             'attachment_mother_identity_card' => 'nullable|file|mimes:pdf,jpg,png|max:5120',
             'uniform_size' => 'required|in:S,M,L,XL,2XL,3XL',
         ];
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
+        if ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             $rules['nis'] = 'sometimes|unique:students,nis,' . ($this->student?->id ?? 'NULL');
             $rules['name'] = 'sometimes|string|max:255';
             $rules['nisn'] = 'sometimes|unique:students,nisn,' . ($this->student?->id ?? 'NULL');

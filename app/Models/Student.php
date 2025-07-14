@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Container\Attributes\Storage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class Student extends Model
 {
     protected $guarded = [];
+
     protected static function boot()
     {
         parent::boot();
@@ -17,6 +18,23 @@ class Student extends Model
             $builder->where('id', '!=', 1);
         });
     }
+
+    /**
+     * Validation rules for Student model.
+     * Use this in your controller or form request for validation.
+     */
+    public static function rules($id = null)
+    {
+        return [
+            // other rules...
+            'nis' => [
+                'required',
+                'string',
+                Rule::unique('students', 'nis')->ignore($id),
+            ],
+        ];
+    }
+
     public function User()
     {
         return $this->belongsTo(User::class);

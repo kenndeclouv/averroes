@@ -20,6 +20,9 @@
             </div>
             <div class="card-body">
                 <dl class="row mt-4">
+                    <dt class="col-sm-3">Nomor Nota</dt>
+                    <dd class="col-sm-9">: {{ $transaction->nota_number ?? '-' }}</dd>
+
                     <dt class="col-sm-3">Kategori</dt>
                     <dd class="col-sm-9">: {{ $transaction->Category ? $transaction->Category->name : '-' }}</dd>
 

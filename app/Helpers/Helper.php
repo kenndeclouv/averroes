@@ -195,55 +195,115 @@ if (!function_exists('convertCase')) {
         }
     }
 
+    // if (!function_exists('generateNIS')) {
+    //     function generateNIS()
+    //     {
+    //         $settings = AppSetting::first();
+    //         $prefix = $settings->nis_prefix ?? ''; // default ''
+    //         $start = $settings->nis_start_number ?? 1; // default 1
+    //         $padding = $settings->nis_padding ?? 4; // default 4 (0001)
+    //         $suffix = $settings->nis_suffix ?? ''; // default ''
+
+    //         // cari semua NIS yang pernah ada, bukan cuma yang pakai format sekarang
+    //         $lastNIS = Student::where('nis', 'REGEXP', '[0-9]+') // cari yang ada angka
+    //             ->latest('id')
+    //             ->value('nis');
+
+    //         // ambil angka terakhir pakai regex
+    //         preg_match('/\d+/', $lastNIS, $matches);
+    //         $lastNumber = isset($matches[0]) ? (int) $matches[0] : null;
+
+    //         // jika tidak ada data, pakai start number
+    //         $newNumber = $lastNumber !== null ? $lastNumber + 1 : $start;
+
+    //         // format sesuai padding
+    //         $formattedNumber = str_pad($newNumber, $padding, '0', STR_PAD_LEFT);
+
+    //         return "{$prefix}{$formattedNumber}{$suffix}";
+    //     }
+    // }
+    // if (!function_exists('generateNIP')) {
+    //     function generateNIP()
+    //     {
+    //         $settings = AppSetting::first();
+    //         $prefix = $settings->nip_prefix ?? ''; // default ''
+    //         $start = $settings->nip_start_number ?? 1; // default 1
+    //         $padding = $settings->nip_padding ?? 4; // default 4 (0001)
+    //         $suffix = $settings->nip_suffix ?? ''; // default ''
+
+    //         // cari semua NIP yang pernah ada, bukan cuma yang pakai format sekarang
+    //         $lastNIP = Teacher::where('nip', 'REGEXP', '[0-9]+') // cari yang ada angka
+    //             ->latest('id')
+    //             ->value('nip');
+
+    //         // ambil angka terakhir pakai regex
+    //         preg_match('/\d+/', $lastNIP, $matches);
+    //         $lastNumber = isset($matches[0]) ? (int) $matches[0] : null;
+
+    //         // jika tidak ada data, pakai start number
+    //         $newNumber = $lastNumber !== null ? $lastNumber + 1 : $start;
+
+    //         // format sesuai padding
+    //         $formattedNumber = str_pad($newNumber, $padding, '0', STR_PAD_LEFT);
+
+    //         return "{$prefix}{$formattedNumber}{$suffix}";
+    //     }
+    // }
+
     if (!function_exists('generateNIS')) {
         function generateNIS()
         {
             $settings = AppSetting::first();
-            $prefix = $settings->nis_prefix ?? ''; // default ''
-            $start = $settings->nis_start_number ?? 1; // default 1
-            $padding = $settings->nis_padding ?? 4; // default 4 (0001)
-            $suffix = $settings->nis_suffix ?? ''; // default ''
+            $prefix = $settings->nis_prefix ?? '';
+            $start = $settings->nis_start_number ?? 1;
+            $padding = $settings->nis_padding ?? 4;
+            $suffix = $settings->nis_suffix ?? '';
 
-            // cari semua NIS yang pernah ada, bukan cuma yang pakai format sekarang
-            $lastNIS = Student::where('nis', 'REGEXP', '[0-9]+') // cari yang ada angka
-                ->latest('id')
-                ->value('nis');
+            // Ambil SEMUA NIS yang mengandung angka
+            $allNIS = Student::pluck('nis');
 
-            // ambil angka terakhir pakai regex
-            preg_match('/\d+/', $lastNIS, $matches);
-            $lastNumber = isset($matches[0]) ? (int) $matches[0] : null;
+            $maxNumber = $start - 1; // Inisialisasi dengan start-1
 
-            // jika tidak ada data, pakai start number
-            $newNumber = $lastNumber !== null ? $lastNumber + 1 : $start;
+            foreach ($allNIS as $nis) {
+                if (preg_match('/(\d+)/', $nis, $matches)) {
+                    $num = (int)$matches[1];
+                    if ($num > $maxNumber) {
+                        $maxNumber = $num;
+                    }
+                }
+            }
 
-            // format sesuai padding
+            $newNumber = $maxNumber + 1;
             $formattedNumber = str_pad($newNumber, $padding, '0', STR_PAD_LEFT);
 
             return "{$prefix}{$formattedNumber}{$suffix}";
         }
     }
+
     if (!function_exists('generateNIP')) {
         function generateNIP()
         {
             $settings = AppSetting::first();
-            $prefix = $settings->nip_prefix ?? ''; // default ''
-            $start = $settings->nip_start_number ?? 1; // default 1
-            $padding = $settings->nip_padding ?? 4; // default 4 (0001)
-            $suffix = $settings->nip_suffix ?? ''; // default ''
+            $prefix = $settings->nip_prefix ?? '';
+            $start = $settings->nip_start_number ?? 1;
+            $padding = $settings->nip_padding ?? 4;
+            $suffix = $settings->nip_suffix ?? '';
 
-            // cari semua NIP yang pernah ada, bukan cuma yang pakai format sekarang
-            $lastNIP = Teacher::where('nip', 'REGEXP', '[0-9]+') // cari yang ada angka
-                ->latest('id')
-                ->value('nip');
+            // Ambil SEMUA NIP yang mengandung angka
+            $allNIP = Teacher::pluck('nip');
 
-            // ambil angka terakhir pakai regex
-            preg_match('/\d+/', $lastNIP, $matches);
-            $lastNumber = isset($matches[0]) ? (int) $matches[0] : null;
+            $maxNumber = $start - 1; // Inisialisasi dengan start-1
 
-            // jika tidak ada data, pakai start number
-            $newNumber = $lastNumber !== null ? $lastNumber + 1 : $start;
+            foreach ($allNIP as $nip) {
+                if (preg_match('/(\d+)/', $nip, $matches)) {
+                    $num = (int)$matches[1];
+                    if ($num > $maxNumber) {
+                        $maxNumber = $num;
+                    }
+                }
+            }
 
-            // format sesuai padding
+            $newNumber = $maxNumber + 1;
             $formattedNumber = str_pad($newNumber, $padding, '0', STR_PAD_LEFT);
 
             return "{$prefix}{$formattedNumber}{$suffix}";

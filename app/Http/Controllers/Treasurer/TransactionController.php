@@ -56,6 +56,7 @@ class TransactionController extends Controller
         $validated = $request->validate([
             'date' => 'required|date',
             'transactions' => 'required|array',
+            'transactions.*.nota_number' => 'nullable|string',
             'transactions.*.category_id' => 'nullable|exists:transaction_categories,id',
             'transactions.*.description' => 'required|string',
             'transactions.*.debit' => 'nullable|integer|min:0',
@@ -71,6 +72,7 @@ class TransactionController extends Controller
             }
 
             Transaction::create([
+                'nota_number' => $trx['nota_number'],
                 'date' => $validated['date'],
                 'transaction_category_id' => $trx['category_id'] ?? null,
                 'description' => $trx['description'],
@@ -110,12 +112,13 @@ class TransactionController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
+            'nota_number' => 'nullable|string',
             'date' => 'required|date',
             'category_id' => 'nullable|exists:transaction_categories,id',
             'description' => 'nullable|string',
             'debit' => 'nullable|integer|min:0',
             'credit' => 'nullable|integer|min:0',
-            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048'
+            'attachment' => 'nullable|file|mimes:jpg,jpeg,png,pdf'
         ]);
 
         $transaction = Transaction::findOrFail($id);
@@ -126,6 +129,7 @@ class TransactionController extends Controller
         }
 
         $transaction->update([
+            'nota_number' => $validated['nota_number'],
             'date' => $validated['date'],
             'transaction_category_id' => $validated['category_id'] ?? null,
             'description' => $validated['description'],

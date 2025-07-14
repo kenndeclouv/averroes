@@ -55,6 +55,13 @@
                             </div>
 
                             <div class="mb-3">
+                                <label class="form-label">Nomor Nota</label>
+                                <input type="text" class="form-control @error('nota_number') is-invalid @enderror"
+                                    name="nota_number" value="{{ old('nota_number', $transaction->nota_number) }}">
+                                @errorFeedback('nota_number')
+                            </div>
+
+                            <div class="mb-3">
                                 <label class="form-label">Deskripsi</label>
                                 <input type="text" class="form-control @error('description') is-invalid @enderror"
                                     name="description" value="{{ old('description', $transaction->description) }}" required>

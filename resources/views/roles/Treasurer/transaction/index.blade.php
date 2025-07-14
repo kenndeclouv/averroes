@@ -64,7 +64,7 @@
         <div class="card">
             <div class="card-header border-bottom d-flex justify-content-between align-items-center">
                 <h5 class="card-title">Daftar Transaksi</h5>
-                <div>
+                {{-- <div>
                     <span class="fw-semibold">Saldo:</span>
                     @php
                         $saldoValue = isset($saldo) ? $saldo : 0;
@@ -79,7 +79,7 @@
                     <span class="badge {{ $badgeClass }} fs-5 align-middle">
                         {{ isset($saldo) ? indonesianCurrency($saldo) : 'Rp 0' }}
                     </span>
-                </div>
+                </div> --}}
             </div>
             <div class="card-body pb-0 pt-4">
                 <div class="d-flex justify-content-between align-items-center">
@@ -97,6 +97,7 @@
                 <table class="table table-bordered" id="transactionTable">
                     <thead>
                         <tr>
+                            <th>Nomor Nota</th>
                             <th>Tanggal</th>
                             <th>Deskripsi</th>
                             <th>Kategori</th>
@@ -108,6 +109,7 @@
                     <tbody>
                         @foreach ($transactions as $transaction)
                             <tr>
+                                <td>{{ $transaction->nota_number ?? '-' }}</td>
                                 <td>{{ formatDate($transaction->date) }}</td>
                                 <td>{{ $transaction->description ?? '-' }}</td>
                                 <td>{{ $transaction->Category ? $transaction->Category->name : '-' }}</td>

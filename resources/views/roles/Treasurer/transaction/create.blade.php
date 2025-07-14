@@ -26,6 +26,10 @@
                         </select>
                     </div>
                     <div class="mb-3">
+                        <label class="form-label">Nomor nota</label>
+                        <input type="text" class="form-control" name="transactions[${index}][nota_number]" value="" placeholder="KK01">
+                    </div>
+                    <div class="mb-3">
                         <label class="form-label">Deskripsi</label>
                         <input type="text" class="form-control" name="transactions[${index}][description]" value="" required>
                     </div>
@@ -122,6 +126,13 @@
                                                     @endforeach
                                                 </select>
                                                 @errorFeedback('transactions.' . $i . '.category_id')
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Nomor Nota</label>
+                                                <input type="text" class="form-control"
+                                                    name="transactions[{{ $i }}][nota_number]"
+                                                    value="{{ $trx['nota_number'] ?? '' }}" >
                                             </div>
 
                                             <div class="mb-3">
