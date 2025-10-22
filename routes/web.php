@@ -72,10 +72,12 @@ use App\Http\Controllers\AdministrationAdmin\TeacherController as Administration
 use App\Http\Controllers\AdministrationAdmin\StudentRegistrantController as AdministrationAdminStudentRegistrant;
 use App\Http\Controllers\AdministrationAdmin\AppSettingController as AdministrationAdminAppSetting;
 use App\Http\Controllers\AdministrationAdmin\TransactionController as AdministrationAdminTransaction;
+use App\Http\Controllers\AdministrationAdmin\TeachingJournalController as AdministrationAdminTeachingJournal;
 
 // TEACHER
 use App\Http\Controllers\Teacher\AnnouncementController as TeacherAnnouncement;
 use App\Http\Controllers\Teacher\StudentPermitController as TeacherStudentPermit;
+use App\Http\Controllers\Teacher\TeachingJournalController as TeacherTeachingJournal;
 // STUDENT
 use App\Http\Controllers\Student\StudentPermitController as StudentStudentPermit;
 // STUDENT REGISTRANT
@@ -325,6 +327,9 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
         Route::get('/', [AdministrationAdminTransaction::class, 'index'])->name('index');
         Route::get('show/{transaction}', [AdministrationAdminTransaction::class, 'show'])->name('show');
     });
+
+    // TEACHING JOURNAL
+    Route::resource('journals', AdministrationAdminTeachingJournal::class);
 });
 
 /**
@@ -354,6 +359,9 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'can:isTeacher']
         Route::put('update/{announcement}', [TeacherAnnouncement::class, 'update'])->name('update');
         Route::delete('destroy/{announcement}', [TeacherAnnouncement::class, 'destroy'])->name('destroy');
     });
+
+    // TEACHING JOURNAL
+    Route::resource('journals', TeacherTeachingJournal::class);
 });
 
 /**

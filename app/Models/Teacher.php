@@ -59,4 +59,9 @@ class Teacher extends Model
             })
             ->toArray() ?? "-";
     }
+
+    public function TeachingJournals()
+    {
+        return $this->hasMany(TeachingJournal::class);
+    }
 }

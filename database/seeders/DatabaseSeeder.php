@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             FeatureSeeder::class,
-            TeacherTypeSeeder::class
+            TeacherTypeSeeder::class,
         ]);
         // Super Admin
         $user = User::create([
