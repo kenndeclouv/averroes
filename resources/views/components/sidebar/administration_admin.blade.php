@@ -142,6 +142,20 @@
         </ul>
     </li>
 @endif
+<li class="menu-item {{ request()->routeIs('administrationadmin.journals.*') ? 'open active' : '' }}">
+    <a href="{{ route('administrationadmin.journals.index') }}" class="menu-link menu-toggle">
+        <i class="menu-icon fa-solid fa-calendar fs-6"></i>
+        <div class="text-truncate">
+            Jurnal Mengajar
+        </div>
+    </a>
+    <ul class="menu-sub">
+        <li
+            class="menu-item {{ request()->routeIs('administrationadmin.journals.index', 'administrationadmin.journals.show', 'administrationadmin.journals.edit') ? 'active' : '' }}">
+            <a href="{{ route('administrationadmin.journals.index') }}" class="menu-link">Daftar Jurnal</a>
+        </li>
+    </ul>
+</li>
 <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Tools</span>
 </li>

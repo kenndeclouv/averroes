@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Teacher;
 
 use App\Http\Controllers\Controller;
-use App\Models\TeachingJournal;
 use App\Models\Teacher;
+use App\Models\TeachingJournal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +18,7 @@ class TeachingJournalController extends Controller
         // Hanya ambil jurnal yang milik teacher ini saja
         $journals = TeachingJournal::with('teacher')
             ->where('teacher_id', $teacher->id)
+            ->orderBy('date', 'desc')
             ->get();
 
         return view('roles.Teacher.journals.index', compact('journals'));
@@ -57,11 +58,12 @@ class TeachingJournalController extends Controller
         ]);
 
         $validated['subjects'] = json_encode($validated['subjects']);
-        $validated['teacher_id'] = $teacher->id; // set otomatis teacher id
+        $validated['teacher_id'] = $teacher->id;  // set otomatis teacher id
 
         TeachingJournal::create($validated);
 
-        return redirect()->route('teacher.journals.index')
+        return redirect()
+            ->route('teacher.journals.index')
             ->with('success', 'Teaching journal created successfully.');
     }
 
@@ -101,7 +103,8 @@ class TeachingJournalController extends Controller
 
         $journal->update($validated);
 
-        return redirect()->route('teacher.journals.index')
+        return redirect()
+            ->route('teacher.journals.index')
             ->with('success', 'Teaching journal updated successfully.');
     }
 
@@ -115,7 +118,8 @@ class TeachingJournalController extends Controller
 
         $journal->delete();
 
-        return redirect()->route('teacher.journals.index')
+        return redirect()
+            ->route('teacher.journals.index')
             ->with('success', 'Teaching journal deleted successfully.');
     }
 }

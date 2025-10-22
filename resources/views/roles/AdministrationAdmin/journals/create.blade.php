@@ -2,16 +2,12 @@
 @section('title', 'Tambah Jurnal Mengajar')
 
 @section('content')
-    <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Buat Jurnal Mengajar</h1>
-            <a href="{{ route('administrationadmin.journals.index') }}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Kembali ke Daftar
-            </a>
-        </div>
-
+    <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card shadow">
-            <div class="card-body">
+            <div class="card-header border-bottom">
+                <h5 class="card-title">Jurnal Mengajar</h5>
+            </div>
+            <div class="card-body mt-4">
                 <form action="{{ route('administrationadmin.journals.store') }}" method="POST">
                     @csrf
 

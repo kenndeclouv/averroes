@@ -31,3 +31,17 @@
         </li>
     </ul>
 </li>
+<li class="menu-item {{ request()->routeIs('teacher.journals.*') ? 'open active' : '' }}">
+    <a href="{{ route('teacher.journals.index') }}" class="menu-link menu-toggle">
+        <i class="menu-icon fa-solid fa-calendar fs-6"></i>
+        <div class="text-truncate">
+            Jurnal Mengajar
+        </div>
+    </a>
+    <ul class="menu-sub">
+        <li
+            class="menu-item {{ request()->routeIs('teacher.journals.index', 'teacher.journals.show', 'teacher.journals.edit') ? 'active' : '' }}">
+            <a href="{{ route('teacher.journals.index') }}" class="menu-link">Daftar Jurnal</a>
+        </li>
+    </ul>
+</li>

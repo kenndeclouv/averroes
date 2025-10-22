@@ -11,8 +11,8 @@ class TeachingJournalController extends Controller
 {
     public function index()
     {
-        $journals = TeachingJournal::with('teacher')->get();
-            
+        $journals = TeachingJournal::with('teacher')->orderBy('date', 'desc')->get();
+
         return view('roles.AdministrationAdmin.journals.index', compact('journals'));
     }
 
