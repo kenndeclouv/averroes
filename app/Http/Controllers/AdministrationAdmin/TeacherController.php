@@ -44,13 +44,24 @@ class TeacherController extends Controller
             ?->nip;
         return view('roles.AdministrationAdmin.teacher.create', compact('classes', 'rooms', 'FNOtherTypeId', 'TMOtherTypeId', 'FNTypes', 'TMTypes', 'lastNip'));
     }
+
     public function store(UserRequest $requestUser, TeacherRequest $teacherRequest, TeacherHasTypeRequest $request)
     {
+        // The original logic looks correct: you create the User first, then set 'user_id' on the Teacher.
+        // If user_id is null in the database, possible reasons:
+        // 1. The 'user_id' field is not in the $fillable property of the Teacher model.
+        // 2. The 'user_id' field is nullable in the DB and not being saved correctly.
+        // 3. There may be an issue in the request validation excluding 'user_id'.
+        // 4. An event or observer may be modifying Teacher creation.
+        // To address the most common problem, ensure 'user_id' is in $fillable in the Teacher model.
+
         $validatedUser = $requestUser->validated();
         $validatedTeacher = $teacherRequest->validated();
+
         $validatedUser["role_id"] = $validatedTeacher['role_id'];
         $user = User::create($validatedUser);
 
+        // Make sure 'user_id' is fillable in Teacher model!
         $validatedTeacher['user_id'] = $user->id;
         $teacher = Teacher::create($validatedTeacher);
 
@@ -156,7 +167,9 @@ class TeacherController extends Controller
 
     public function destroy(Teacher $teacher)
     {
-        $teacher->User->delete();
+        if ($teacher->User) {
+            $teacher->User->delete();
+        }
         return redirect()->route('administrationadmin.teacher.index')->with('success', 'Data Pegawai berhasil dihapus');
     }
 
