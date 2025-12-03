@@ -64,19 +64,19 @@
                         <div class="mb-3">
                             <label for="name" class="form-label">Nama</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                                name="name" value="{{ old('name', Auth::user()->name) }}">
+                                name="name" value="{{ old('name', Auth::user()->name) }}" required>
                             @errorFeedback('name')
                         </div>
                         <div class="mb-3">
                             <label for="full_name" class="form-label">Nama Lengkap</label>
                             <input type="text" class="form-control @error('full_name') is-invalid @enderror"
-                                id="full_name" name="full_name" value="{{ old('full_name') }}">
+                                id="full_name" name="full_name" value="{{ old('full_name') }}" required>
                             @errorFeedback('full_name')
                         </div>
                         <div class="mb-3">
                             <label for="gender" class="form-label">Jenis Kelamin</label>
                             <select class="form-control select2 @error('gender') is-invalid @enderror" id="gender"
-                                name="gender">
+                                name="gender" required>
                                 <option value="male" {{ old('gender') == 'male' ? 'selected' : '' }}>Laki-laki
                                 </option>
                                 <option value="female" {{ old('gender') == 'female' ? 'selected' : '' }}>Perempuan
@@ -87,69 +87,69 @@
                         <div class="mb-3">
                             <label for="birth_date" class="form-label">Tanggal Lahir</label>
                             <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
-                                id="birth_date" name="birth_date" value="{{ old('birth_date') }}">
+                                id="birth_date" name="birth_date" value="{{ old('birth_date') }}" required>
                             @errorFeedback('birth_date')
                         </div>
                         <div class="mb-3">
                             <label for="birth_place" class="form-label">Tempat Lahir</label>
                             <input type="text" class="form-control @error('birth_place') is-invalid @enderror"
-                                id="birth_place" name="birth_place" value="{{ old('birth_place') }}">
+                                id="birth_place" name="birth_place" value="{{ old('birth_place') }}" required>
                             @errorFeedback('birth_place')
                         </div>
                         <div class="mb-3">
                             <label for="address" class="form-label">Alamat</label>
                             <input type="text" class="form-control @error('address') is-invalid @enderror" id="address"
-                                name="address" value="{{ old('address') }}">
+                                name="address" value="{{ old('address') }}" required>
                             @errorFeedback('address')
                         </div>
                         <div class="mb-3">
                             <label for="education_sd" class="form-label">Riwayat Pendidikan - Sekolah Dasar (SD/MI)</label>
                             <input type="text" class="form-control @error('education_sd') is-invalid @enderror"
-                                id="education_sd" name="education_sd" value="{{ old('education_sd') }}">
+                                id="education_sd" name="education_sd" value="{{ old('education_sd') }}" required>
                             @errorFeedback('education_sd')
                         </div>
                         <div class="mb-3">
                             <label for="education_smp" class="form-label">Riwayat Pendidikan - Sekolah Menengah Pertama
                                 (SMP/MTS)</label>
                             <input type="text" class="form-control @error('education_smp') is-invalid @enderror"
-                                id="education_smp" name="education_smp" value="{{ old('education_smp') }}">
+                                id="education_smp" name="education_smp" value="{{ old('education_smp') }}" required>
                             @errorFeedback('education_smp')
                         </div>
                         <div class="mb-3">
                             <label for="nisn" class="form-label">NISN (Nomor Induk Siswa Nasional)</label>
                             <input type="text" class="form-control @error('nisn') is-invalid @enderror" id="nisn"
-                                name="nisn" value="{{ old('nisn') }}">
+                                name="nisn" value="{{ old('nisn') }}" required>
                             @errorFeedback('nisn')
                         </div>
                         <div class="mb-3">
                             <label for="sibling_info" class="form-label">Keterangan Saudara (contoh: Anak ke 2 dari 3
                                 bersaudara)</label>
                             <input type="text" class="form-control @error('sibling_info') is-invalid @enderror"
-                                id="sibling_info" name="sibling_info" value="{{ old('sibling_info') }}">
+                                id="sibling_info" name="sibling_info" value="{{ old('sibling_info') }}" required>
                             @errorFeedback('sibling_info')
                         </div>
                         <div class="mb-3">
                             <label for="quran_memorization" class="form-label">Jumlah Hafalan Qur'an (Juz) </label>
                             <input type="number" class="form-control @error('quran_memorization') is-invalid @enderror"
-                                id="quran_memorization" name="quran_memorization" value="{{ old('quran_memorization') }}">
+                                id="quran_memorization" name="quran_memorization" value="{{ old('quran_memorization') }}" required>
                             @errorFeedback('quran_memorization')
                         </div>
                         <div class="mb-3">
                             <label for="achievements" class="form-label">Prestasi</label>
                             <input type="text" class="form-control @error('achievements') is-invalid @enderror"
-                                id="achievements" name="achievements" value="{{ old('achievements') }}">
+                                id="achievements" name="achievements" value="{{ old('achievements') }}" required>
                             @errorFeedback('achievements')
                         </div>
                         <div class="mb-3">
                             <label for="school_motivation" class="form-label">Motivasi Sekolah Di Averroes</label>
                             <input type="text" class="form-control @error('school_motivation') is-invalid @enderror"
-                                id="school_motivation" name="school_motivation" value="{{ old('school_motivation') }}">
+                                id="school_motivation" name="school_motivation" value="{{ old('school_motivation') }}" required>
                             @errorFeedback('school_motivation')
                         </div>
                         <div class="mb-3">
                             <label for="major" class="form-label">Jurusan yang diminati</label>
                             <select class="form-control select2 @error('major') is-invalid @enderror" id="major"
-                                name="major">
+                                name="major" required>
                                 <option value="RPL" {{ old('major') == 'RPL' ? 'selected' : '' }}>RPL</option>
                                 <option value="DKV" {{ old('major') == 'DKV' ? 'selected' : '' }}>DKV</option>
                             </select>
@@ -164,13 +164,13 @@
                         <div class="mb-3">
                             <label for="father_name" class="form-label">Nama Ayah</label>
                             <input type="text" class="form-control @error('father_name') is-invalid @enderror"
-                                id="father_name" name="father_name" value="{{ old('father_name') }}">
+                                id="father_name" name="father_name" value="{{ old('father_name') }}" required>
                             @errorFeedback('father_name')
                         </div>
                         <div class="mb-3">
                             <label for="father_occupation" class="form-label">Pekerjaan Ayah</label>
                             <input type="text" class="form-control @error('father_occupation') is-invalid @enderror"
-                                id="father_occupation" name="father_occupation" value="{{ old('father_occupation') }}">
+                                id="father_occupation" name="father_occupation" value="{{ old('father_occupation') }}" required>
                             @errorFeedback('father_occupation')
                         </div>
                         <div class="mb-3">
@@ -179,7 +179,7 @@
                                 <span class="input-group-text">Rp</span>
                                 <input type="text" class="form-control @error('father_income') is-invalid @enderror"
                                     placeholder="Penghasilan Ayah" value="{{ old('father_income') }}"
-                                    oninput="formatCurrency(this, 'father_income')">
+                                    oninput="formatCurrency(this, 'father_income')" required>
                                 @errorFeedback('father_income')
                             </div>
                         </div>
@@ -188,13 +188,13 @@
                         <div class="mb-3">
                             <label for="mother_name" class="form-label">Nama Ibu</label>
                             <input type="text" class="form-control @error('mother_name') is-invalid @enderror"
-                                id="mother_name" name="mother_name" value="{{ old('mother_name') }}">
+                                id="mother_name" name="mother_name" value="{{ old('mother_name') }}" required>
                             @errorFeedback('mother_name')
                         </div>
                         <div class="mb-3">
                             <label for="mother_occupation" class="form-label">Pekerjaan Ibu</label>
                             <input type="text" class="form-control @error('mother_occupation') is-invalid @enderror"
-                                id="mother_occupation" name="mother_occupation" value="{{ old('mother_occupation') }}">
+                                id="mother_occupation" name="mother_occupation" value="{{ old('mother_occupation') }}" required>
                             @errorFeedback('mother_occupation')
                         </div>
                         <div class="mb-3">
@@ -203,7 +203,7 @@
                                 <span class="input-group-text">Rp</span>
                                 <input type="text" class="form-control @error('mother_income') is-invalid @enderror"
                                     placeholder="Penghasilan Ibu" value="{{ old('mother_income') }}"
-                                    oninput="formatCurrency(this, 'mother_income')">
+                                    oninput="formatCurrency(this, 'mother_income')" required>
                                 @errorFeedback('mother_income')
                             </div>
                             <input type="hidden" name="mother_income" id="mother_income"
@@ -212,13 +212,13 @@
                         <div class="mb-3">
                             <label for="parent_whatsapp" class="form-label">WhatsApp Orang Tua</label>
                             <input type="text" class="form-control @error('parent_whatsapp') is-invalid @enderror"
-                                id="parent_whatsapp" name="parent_whatsapp" value="{{ old('parent_whatsapp') }}">
+                                id="parent_whatsapp" name="parent_whatsapp" value="{{ old('parent_whatsapp') }}" required>
                             @errorFeedback('parent_whatsapp')
                         </div>
                         <div class="mb-3">
                             <label for="student_status" class="form-label">Status Siswa</label>
                             <select class="form-control select2 @error('student_status') is-invalid @enderror"
-                                id="student_status" name="student_status">
+                                id="student_status" name="student_status" required>
                                 <option value="Non Yatim Piatu"
                                     {{ old('student_status') == 'Non Yatim Piatu' ? 'selected' : '' }}>Non Yatim Piatu
                                 </option>
@@ -237,7 +237,7 @@
                             <div class="row">
                                 <div class="col-12 col-md-8">
                                     <select class="form-select select2 @error('uniform_size') is-invalid @enderror"
-                                        id="uniform_size" name="uniform_size">
+                                        id="uniform_size" name="uniform_size" required>
                                         <option value="" disabled selected>Pilih Ukuran Seragam</option>
                                         <option value="S" {{ old('uniform_size') == 'S' ? 'selected' : '' }}>S
                                         </option>
@@ -274,34 +274,34 @@
                             <label for="attachment_family_register" class="form-label">Lampiran Kartu Keluarga</label>
                             <input type="file"
                                 class="form-control @error('attachment_family_register') is-invalid @enderror"
-                                id="attachment_family_register" name="attachment_family_register">
+                                id="attachment_family_register" name="attachment_family_register" required>
                             @errorFeedback('attachment_family_register')
                         </div>
                         <div class="mb-3">
                             <label for="attachment_birth_certificate" class="form-label">Lampiran Akta Kelahiran</label>
                             <input type="file"
                                 class="form-control @error('attachment_birth_certificate') is-invalid @enderror"
-                                id="attachment_birth_certificate" name="attachment_birth_certificate">
+                                id="attachment_birth_certificate" name="attachment_birth_certificate" required>
                             @errorFeedback('attachment_birth_certificate')
                         </div>
                         <div class="mb-3">
                             <label for="attachment_diploma" class="form-label">Lampiran Ijazah / SKL</label>
                             <input type="file" class="form-control @error('attachment_diploma') is-invalid @enderror"
-                                id="attachment_diploma" name="attachment_diploma">
+                                id="attachment_diploma" name="attachment_diploma" required>
                             @errorFeedback('attachment_diploma')
                         </div>
                         <div class="mb-3">
                             <label for="attachment_father_identity_card" class="form-label">Lampiran KTP Ayah</label>
                             <input type="file"
                                 class="form-control @error('attachment_father_identity_card') is-invalid @enderror"
-                                id="attachment_father_identity_card" name="attachment_father_identity_card">
+                                id="attachment_father_identity_card" name="attachment_father_identity_card" required>
                             @errorFeedback('attachment_father_identity_card')
                         </div>
                         <div class="mb-3">
                             <label for="attachment_mother_identity_card" class="form-label">Lampiran KTP Ibu</label>
                             <input type="file"
                                 class="form-control @error('attachment_mother_identity_card') is-invalid @enderror"
-                                id="attachment_mother_identity_card" name="attachment_mother_identity_card">
+                                id="attachment_mother_identity_card" name="attachment_mother_identity_card" required>
                             @errorFeedback('attachment_mother_identity_card')
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
