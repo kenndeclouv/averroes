@@ -30,4 +30,12 @@ class QuizAttempt extends Model
     {
         return $this->hasMany(QuizAnswer::class);
     }
+
+    public function getGradeAttribute()
+    {
+        $totalPoints = $this->Quiz->total_points;
+        if ($totalPoints == 0) return 0;
+
+        return round(($this->score / $totalPoints) * 100);
+    }
 }

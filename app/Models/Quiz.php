@@ -42,4 +42,9 @@ class Quiz extends Model
     {
         return $this->hasMany(QuizAttempt::class);
     }
+
+    public function getTotalPointsAttribute()
+    {
+        return $this->Questions()->sum('points') ?: 1; // Prevent division by zero defaults
+    }
 }

@@ -1,11 +1,11 @@
 @extends('layouts.app')
-@section('title', 'Buat Kuis Baru')
+@section('title', 'Buat Ujian Baru')
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
         <div class="card shadow">
             <div class="card-header border-bottom">
-                <h5 class="card-title">Buat Kuis Baru</h5>
+                <h5 class="card-title">Buat Ujian Baru</h5>
             </div>
             <div class="card-body mt-4">
                 <form action="{{ route('teacher.quizzes.store') }}" method="POST">
@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="title" class="form-label">Judul Kuis</label>
+                        <label for="title" class="form-label">Judul Ujian</label>
                         <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"
                             name="title" value="{{ old('title') }}" required
                             placeholder="Contoh: Ujian Harian Matematika">

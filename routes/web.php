@@ -385,12 +385,14 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'can:isTeacher']
 
         // Question Routes
         Route::post('{quiz}/questions', [TeacherQuiz::class, 'storeQuestion'])->name('questions.store');
+        Route::put('{quiz}/questions/{question}', [TeacherQuiz::class, 'updateQuestion'])->name('questions.update');
         Route::delete('questions/{question}', [TeacherQuiz::class, 'destroyQuestion'])->name('questions.destroy');
 
         // Results
         Route::get('{quiz}/results', [TeacherQuiz::class, 'results'])->name('results');
         Route::get('attempts/{attempt}', [TeacherQuiz::class, 'showAttempt'])->name('attempts.show');
         Route::put('attempts/{attempt}/grade', [TeacherQuiz::class, 'gradeAttempt'])->name('attempts.grade');
+        Route::delete('attempts/{attempt}/reset', [TeacherQuiz::class, 'resetAttempt'])->name('attempts.reset');
     });
 });
 
@@ -418,6 +420,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'can:isStudent']
         Route::post('submit/{quiz}', [StudentQuiz::class, 'store'])->name('submit');
         Route::post('autosave/{quiz}', [StudentQuiz::class, 'currentSave'])->name('autosave');
         Route::get('result/{quiz}', [StudentQuiz::class, 'result'])->name('result');
+        Route::get('review/{quiz}', [StudentQuiz::class, 'review'])->name('review');
     });
 });
 

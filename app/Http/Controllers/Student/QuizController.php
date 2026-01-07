@@ -144,9 +144,8 @@ class QuizController extends Controller
                             [
                                 'quiz_attempt_id' => $attempt->id,
                                 'question_id' => $question->id,
-                                'question_option_id' => $userAnswer, // Unique per slot? schema allows multiple answers?
-                                // This schema is tricky for updateOrCreate if we change options.
-                                // But for Single Choice, we can match on Attempt+Question.
+                                // For Single Choice, we match Attempt+Question.
+                                // We do NOT include option_id here, otherwise it creates new rows for new choices.
                             ],
                             [
                                 'question_option_id' => $userAnswer,
@@ -157,12 +156,6 @@ class QuizController extends Controller
                     }
                 } elseif ($question->type == 'complex_multiple_choice') {
                     // userAnswer is array of option_ids
-                    // Grading: All correct options must be selected, and NO incorrect options.
-                    // Or partial? Let's do strict for now/simplicity.
-
-                    // Actually, simple Complex Multiple Choice often gives points per correct tick or all-or-nothing.
-                    // Let's do: if matches exactly correct set -> full points.
-
                     if (is_array($userAnswer)) {
                         $correctOptions = $question->Options->where('is_correct', true)->pluck('id')->toArray();
                         $userSelected = array_map('intval', $userAnswer);
@@ -170,30 +163,141 @@ class QuizController extends Controller
                         sort($correctOptions);
                         sort($userSelected);
 
+                        // Strict grading: Exact match required for points
                         if ($correctOptions === $userSelected) {
                             $isCorrect = true;
                             $score = $question->points;
                         }
 
-                        // Save each selection? Or save as one row?
-                        // Schema has `question_option_id` (singular).
-                        // So multiple rows.
-                        // For Complex MC, we have multiple rows per question.
-                        // updateOrCreate is hard because we don't know which ID to update.
-                        // Strategy: Delete ONLY answers for this specific question, then re-create.
+                        // Delete existing for this question
                         QuizAnswer::where('quiz_attempt_id', $attempt->id)
                             ->where('question_id', $question->id)
                             ->delete();
 
+                        // Save new selections
                         foreach ($userSelected as $optId) {
+                            // Check if this specific option is correct (for detail view)
+                            $thisOptionCorrect = in_array($optId, $correctOptions);
+
                             QuizAnswer::create([
                                 'quiz_attempt_id' => $attempt->id,
                                 'question_id' => $question->id,
                                 'question_option_id' => $optId,
-                                'is_correct' => in_array($optId, $correctOptions),
-                                'score' => 0,
+                                'is_correct' => $thisOptionCorrect, // Save individual correctness
+                                'score' => 0, // Score is usually total per question, not per option in this schema?
+                                // Schema has 'score' column. If we split points, do it here.
+                                // But logic above calc total score for question.
+                                // Let's store 0 here and maybe store total score in first record?
+                                // Or just Attempt score is enough.
+                                // But Teacher view might look at Answer->score.
                             ]);
                         }
+                        // If strict grading, add score to total.
+                        // But we didn't save score in DB rows above.
+                        // Let's UPDATE the first row with the score if needed, or rely on Attempt Score.
+                        // Teacher View uses $answer->score.
+                        // So we should distribute or assign score.
+                        // Assigning to all? Or just first?
+                        // Let's assign to first.
+                        $firstAns = QuizAnswer::where('quiz_attempt_id', $attempt->id)
+                            ->where('question_id', $question->id)
+                            ->first();
+                        if ($firstAns && $isCorrect) {
+                            $firstAns->update(['score' => $score]);
+                        }
+                    }
+                } elseif ($question->type == 'true_false') {
+                    // Similar to multiple_choice
+                    if ($userAnswer) {
+                        $selectedOption = $question->Options->where('id', $userAnswer)->first();
+                        if ($selectedOption && $selectedOption->is_correct) {
+                            $isCorrect = true;
+                            $score = $question->points;
+                        }
+
+                        QuizAnswer::updateOrCreate(
+                            ['quiz_attempt_id' => $attempt->id, 'question_id' => $question->id],
+                            [
+                                'question_option_id' => $userAnswer,
+                                'is_correct' => $isCorrect,
+                                'score' => $score,
+                            ]
+                        );
+                    }
+                } elseif ($question->type == 'short_answer') {
+                    if ($userAnswer) {
+                        // Check against any option that is marked correct (or all provided options)
+                        // Case insensitive comparison
+                        $isCorrect = $question->Options->contains(function ($opt) use ($userAnswer) {
+                            return strcasecmp(trim($opt->option_text), trim($userAnswer)) === 0;
+                        });
+
+                        if ($isCorrect) {
+                            $score = $question->points;
+                        }
+
+                        QuizAnswer::updateOrCreate(
+                            ['quiz_attempt_id' => $attempt->id, 'question_id' => $question->id],
+                            [
+                                'answer_text' => $userAnswer,
+                                'is_correct' => $isCorrect,
+                                'score' => $score,
+                            ]
+                        );
+                    }
+                } elseif ($question->type == 'matching') {
+                    // userAnswer expected to be array [option_id => matched_value_string/id]
+                    if (is_array($userAnswer)) {
+                        $correctPairsCount = 0;
+                        $totalPairs = $question->Options->count();
+
+                        // Delete previous answers to handle re-submission strictly?
+                        // Or updateOrCreate per pair?
+                        // Schema limitation: QuizAnswer has ONE question_option_id per row?
+                        // Or we need multiple rows for matching?
+                        // Yes, one row per pair connection.
+
+                        // First clean up old answers for this question
+                        QuizAnswer::where('quiz_attempt_id', $attempt->id)
+                            ->where('question_id', $question->id)
+                            ->delete();
+
+                        $firstAnswerId = null;
+                        foreach ($userAnswer as $optId => $matchValue) {
+                            $option = $question->Options->where('id', $optId)->first();
+                            if ($option) {
+                                $pairCorrect = ($option->matched_pair == $matchValue);
+                                if ($pairCorrect) $correctPairsCount++;
+
+                                $ans = QuizAnswer::create([
+                                    'quiz_attempt_id' => $attempt->id,
+                                    'question_id' => $question->id,
+                                    'question_option_id' => $optId, // Left side
+                                    'answer_text' => $matchValue,   // Right side (selected)
+                                    'is_correct' => $pairCorrect,
+                                    'score' => 0
+                                ]);
+
+                                if (!$firstAnswerId) $firstAnswerId = $ans->id;
+                            }
+                        }
+
+                        // Calculate score: Proportional or All-or-Nothing?
+                        // Usually proportional for Matching.
+                        if ($totalPairs > 0) {
+                            $score = ($correctPairsCount / $totalPairs) * $question->points;
+                        }
+
+
+                        // Assign score to first answer row so sum() works
+                        if ($firstAnswerId && $score > 0) {
+                            QuizAnswer::where('id', $firstAnswerId)->update(['score' => $score]);
+                        }
+
+                        // Update score on the first answer row or handle it in total calc
+                        // Since we sum $totalScore += $score at loop end, this works for the Attempt total.
+                        // But individual Answer rows have 0 score.
+                        // Let's rely on Attempt score for now.
                     }
                 } elseif ($question->type == 'essay') {
                     if ($userAnswer) {
@@ -204,7 +308,7 @@ class QuizController extends Controller
                             ],
                             [
                                 'answer_text' => $userAnswer,
-                                'is_correct' => null,
+                                'is_correct' => null, // Needs manual grading
                                 'score' => 0,
                             ]
                         );
@@ -278,6 +382,7 @@ class QuizController extends Controller
                         ['quiz_attempt_id' => $attempt->id, 'question_id' => $question->id],
                         [
                             'question_option_id' => $userAnswer,
+                            // We don't calc score in auto-save, we trust store() or leave it 0
                             'score' => 0
                         ]
                     );
@@ -297,6 +402,39 @@ class QuizController extends Controller
                             ]);
                         }
                     }
+                } elseif ($question->type == 'true_false') {
+                    QuizAnswer::updateOrCreate(
+                        ['quiz_attempt_id' => $attempt->id, 'question_id' => $question->id],
+                        [
+                            'question_option_id' => $userAnswer,
+                            'score' => 0
+                        ]
+                    );
+                } elseif ($question->type == 'short_answer') {
+                    QuizAnswer::updateOrCreate(
+                        ['quiz_attempt_id' => $attempt->id, 'question_id' => $question->id],
+                        [
+                            'answer_text' => $userAnswer,
+                            'score' => 0
+                        ]
+                    );
+                } elseif ($question->type == 'matching') {
+                    if (is_array($userAnswer)) {
+                        QuizAnswer::where('quiz_attempt_id', $attempt->id)
+                            ->where('question_id', $question->id)
+                            ->delete();
+
+                        foreach ($userAnswer as $optId => $matchText) {
+                            if (empty($matchText)) continue;
+                            QuizAnswer::create([
+                                'quiz_attempt_id' => $attempt->id,
+                                'question_id' => $question->id,
+                                'question_option_id' => $optId,
+                                'answer_text' => $matchText,
+                                'score' => 0,
+                            ]);
+                        }
+                    }
                 } elseif ($question->type == 'essay') {
                     QuizAnswer::updateOrCreate(
                         ['quiz_attempt_id' => $attempt->id, 'question_id' => $question->id],
@@ -310,5 +448,25 @@ class QuizController extends Controller
         });
 
         return response()->json(['status' => 'success', 'message' => 'Saved']);
+    }
+
+    public function review(Quiz $quiz)
+    {
+        $user = Auth::user();
+        $student = Student::where('user_id', $user->id)->first();
+
+        $attempt = QuizAttempt::where('quiz_id', $quiz->id)
+            ->where('student_id', $student->id)
+            ->with(['Answers'])
+            ->firstOrFail();
+
+        // Only allow review if graded
+        if ($attempt->status !== 'graded') {
+            return redirect()->route('student.quizzes.result', $quiz->id)->with('error', 'Review not available yet.');
+        }
+
+        $quiz->load(['Questions.Options']);
+
+        return view('roles.Student.quizzes.review', compact('quiz', 'attempt'));
     }
 }

@@ -1,9 +1,9 @@
 @extends('layouts.app')
-@section('title', 'Kuis Tersedia')
+@section('title', 'Ujian Tersedia')
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="fw-bold py-3 mb-4">Daftar Kuis</h4>
+        <h4 class="fw-bold py-3 mb-4">Daftar Ujian</h4>
         <div class="row">
             @forelse ($quizzes as $quiz)
                 <div class="col-md-6 col-lg-4 mb-4">
@@ -46,7 +46,7 @@
 
                                     @if ($isActive)
                                         <a href="{{ route('student.quizzes.take', $quiz->id) }}" class="btn btn-primary">
-                                            {{ $quiz->attempt ? 'Lanjutkan' : 'Mulai Kuis' }}
+                                            {{ $quiz->attempt ? 'Lanjutkan' : 'Mulai Ujian' }}
                                         </a>
                                     @else
                                         <button class="btn btn-secondary" disabled>
@@ -61,7 +61,7 @@
             @empty
                 <div class="col-12">
                     <div class="alert alert-info" role="alert">
-                        <i class="fas fa-info-circle me-2"></i> Belum ada kuis yang tersedia untuk kelas kamu saat ini.
+                        <i class="fas fa-info-circle me-2"></i> Belum ada Ujian yang tersedia untuk kelas kamu saat ini.
                     </div>
                 </div>
             @endforelse
