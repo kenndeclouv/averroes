@@ -6,10 +6,41 @@
 
     <script>
         $(document).ready(function() {
+            const date = new URLSearchParams(window.location.search).get('month') ?
+                moment(new URLSearchParams(window.location.search).get('month')).format('MMMM YYYY') :
+                moment().locale('id').format('MMMM YYYY');
+
             $('#table').DataTable({
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.10.21/i18n/Indonesian.json'
-                }
+                },
+                dom: '<"card-header flex-column justify-content-start flex-md-row pb-0"<"head-label text-center"><"dt-action-buttons text-start pt-6 pt-md-0"B>>' +
+                    '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end mt-n6 mt-md-0"f>>t' +
+                    '<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+                buttons: [{
+                    extend: "collection",
+                    className: "btn btn-label-primary dropdown-toggle",
+                    text: '<i class="fas fa-file-export me-sm-2"></i> <span class="d-none d-sm-inline-block">Export</span>',
+                    buttons: [{
+                            extend: "print",
+                            text: '<i class="fas fa-print me-1"></i>Print',
+                            className: "dropdown-item",
+                            title: "Jurnal Mengajar Bulan " + date,
+                            exportOptions: {
+                                columns: ':not(:last-child)'
+                            }
+                        },
+                        {
+                            extend: "excelHtml5",
+                            text: '<i class="fas fa-file-excel me-1"></i>Excel',
+                            className: "dropdown-item",
+                            title: "Jurnal Mengajar Bulan " + date,
+                            exportOptions: {
+                                columns: ':not(:last-child)'
+                            }
+                        }
+                    ]
+                }]
             });
         });
     </script>
@@ -22,10 +53,16 @@
                 <h5 class="card-title">Jurnal Mengajar</h5>
             </div>
             <div class="card-body pb-0 pt-4">
-                <a href="{{ route('teacher.journals.create') }}" class="btn btn-primary mb-3">
-                    Tambah Jurnal
-                </a>
-
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ route('teacher.journals.create') }}" class="btn btn-primary mb-3">
+                        Tambah Jurnal
+                    </a>
+                    <form method="GET" class="d-flex align-items-center" action="{{ route('teacher.journals.index') }}">
+                        <label for="month" class="me-2 mb-0">Bulan:</label>
+                        <input type="month" id="month" name="month" class="form-control me-2"
+                            value="{{ $monthYear ?? now()->format('Y-m') }}" onchange="this.form.submit()">
+                    </form>
+                </div>
             </div>
             <div class="card-datatable table-responsive text-start text-nowrap">
                 <table class="table table-bordered" id="table">
@@ -43,24 +80,17 @@
                             <tr>
                                 <td>{{ formatDate($journal->date) }}</td>
                                 <td>
-                                    @php
-                                        $subjects = is_array(json_decode($journal->subjects))
-                                            ? json_decode($journal->subjects)
-                                            : [$journal->subjects];
-                                    @endphp
-                                    @foreach ($subjects as $subject)
-                                        <span class="badge bg-primary">{{ $subject }}</span>
+                                    @foreach ($journal->teachingSubjects as $subject)
+                                        <span class="badge bg-primary">{{ $subject->name }}</span>
                                     @endforeach
                                 </td>
                                 <td>{{ $journal->total_regular_hours }}</td>
                                 <td>{{ $journal->total_replacement_hours }}</td>
                                 <td>
-                                    <a href="{{ route('teacher.journals.show', $journal) }}"
-                                        class="btn btn-info">
+                                    <a href="{{ route('teacher.journals.show', $journal) }}" class="btn btn-info">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('teacher.journals.edit', $journal) }}"
-                                        class="btn btn-warning">
+                                    <a href="{{ route('teacher.journals.edit', $journal) }}" class="btn btn-warning">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <x-delete :route="route('teacher.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus data ini?'" :title="'Hapus Jurnal'" />

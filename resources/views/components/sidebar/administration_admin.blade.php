@@ -142,20 +142,39 @@
         </ul>
     </li>
 @endif
-<li class="menu-item {{ request()->routeIs('administrationadmin.journals.*') ? 'open active' : '' }}">
-    <a href="{{ route('administrationadmin.journals.index') }}" class="menu-link menu-toggle">
-        <i class="menu-icon fa-solid fa-calendar fs-6"></i>
-        <div class="text-truncate">
-            Jurnal Mengajar
-        </div>
-    </a>
-    <ul class="menu-sub">
-        <li
-            class="menu-item {{ request()->routeIs('administrationadmin.journals.index', 'administrationadmin.journals.show', 'administrationadmin.journals.edit') ? 'active' : '' }}">
-            <a href="{{ route('administrationadmin.journals.index') }}" class="menu-link">Daftar Jurnal</a>
-        </li>
-    </ul>
-</li>
+@if ($permissions->contains('show_journal'))
+    <li class="menu-item {{ request()->routeIs('administrationadmin.journals.*') ? 'open active' : '' }}">
+        <a href="{{ route('administrationadmin.journals.index') }}" class="menu-link menu-toggle">
+            <i class="menu-icon fa-solid fa-calendar fs-6"></i>
+            <div class="text-truncate">
+                Jurnal Mengajar
+            </div>
+        </a>
+        <ul class="menu-sub">
+            <li
+                class="menu-item {{ request()->routeIs('administrationadmin.journals.index', 'administrationadmin.journals.show', 'administrationadmin.journals.edit') ? 'active' : '' }}">
+                <a href="{{ route('administrationadmin.journals.index') }}" class="menu-link">Daftar Jurnal</a>
+            </li>
+        </ul>
+    </li>
+@endif
+@if ($permissions->contains('show_teaching_subject'))
+    <li class="menu-item {{ request()->routeIs('administrationadmin.teaching-subjects.*') ? 'open active' : '' }}">
+        <a href="{{ route('administrationadmin.teaching-subjects.index') }}" class="menu-link menu-toggle">
+            <i class="menu-icon fa-solid fa-book fs-6"></i>
+            <div class="text-truncate">
+                Mata Pelajaran
+            </div>
+        </a>
+        <ul class="menu-sub">
+            <li
+                class="menu-item {{ request()->routeIs('administrationadmin.teaching-subjects.index', 'administrationadmin.teaching-subjects.show', 'administrationadmin.teaching-subjects.edit') ? 'active' : '' }}">
+                <a href="{{ route('administrationadmin.teaching-subjects.index') }}" class="menu-link">Daftar Mata
+                    Pelajaran</a>
+            </li>
+        </ul>
+    </li>
+@endif
 <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Tools</span>
 </li>

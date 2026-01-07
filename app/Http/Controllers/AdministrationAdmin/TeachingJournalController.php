@@ -4,28 +4,42 @@ namespace App\Http\Controllers\AdministrationAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\TeachingJournal;
+use App\Models\TeachingJournalSubject;
+use App\Models\TeachingSubject;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
 
 class TeachingJournalController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $journals = TeachingJournal::with('teacher')->orderBy('date', 'desc')->get();
+        $monthYear = $request->input('month');
+        if (!$monthYear || !preg_match('/^\d{4}-\d{2}$/', $monthYear)) {
+            $monthYear = \Carbon\Carbon::now()->format('Y-m');
+        }
 
-        return view('roles.AdministrationAdmin.journals.index', compact('journals'));
+        [$year, $month] = explode('-', $monthYear);
+
+        $journals = TeachingJournal::with(['teacher', 'teachingSubjects'])
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->orderBy('date', 'desc')
+            ->get();
+
+        return view('roles.AdministrationAdmin.journals.index', compact('journals', 'monthYear'));
     }
 
     public function show(TeachingJournal $journal)
     {
-        $journal->load('teacher');
+        $journal->load(['teacher', 'teachingSubjects']);
         return view('roles.AdministrationAdmin.journals.show', compact('journal'));
     }
 
     public function create()
     {
         $teachers = Teacher::all();
-        return view('roles.AdministrationAdmin.journals.create', compact('teachers'));
+        $subjects = TeachingSubject::all();
+        return view('roles.AdministrationAdmin.journals.create', compact('teachers', 'subjects'));
     }
 
     public function store(Request $request)
@@ -34,7 +48,7 @@ class TeachingJournalController extends Controller
             'teacher_id' => 'required|exists:teachers,id',
             'date' => 'required|date',
             'subjects' => 'required|array|min:1',
-            'subjects.*' => 'string|max:255',
+            'subjects.*' => 'exists:teaching_subjects,id',
             'total_regular_hours' => 'required|integer|min:0',
             'total_replacement_hours' => 'required|integer|min:0',
             'regular_hour_description' => 'required|string',
@@ -42,9 +56,22 @@ class TeachingJournalController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $validated['subjects'] = json_encode($validated['subjects']);
+        $journal = TeachingJournal::create([
+            'teacher_id' => $validated['teacher_id'],
+            'date' => $validated['date'],
+            'total_regular_hours' => $validated['total_regular_hours'],
+            'total_replacement_hours' => $validated['total_replacement_hours'],
+            'regular_hour_description' => $validated['regular_hour_description'],
+            'replacement_hour_description' => $validated['replacement_hour_description'],
+            'notes' => $validated['notes'],
+        ]);
 
-        TeachingJournal::create($validated);
+        foreach ($validated['subjects'] as $subjectId) {
+            TeachingJournalSubject::create([
+                'teaching_journal_id' => $journal->id,
+                'teaching_subject_id' => $subjectId,
+            ]);
+        }
 
         return redirect()->route('administrationadmin.journals.index')
             ->with('success', 'Teaching journal created successfully.');
@@ -53,7 +80,9 @@ class TeachingJournalController extends Controller
     public function edit(TeachingJournal $journal)
     {
         $teachers = Teacher::all();
-        return view('roles.AdministrationAdmin.journals.edit', compact('journal', 'teachers'));
+        $subjects = TeachingSubject::all();
+        $selectedSubjects = $journal->teachingSubjects->pluck('id')->toArray();
+        return view('roles.AdministrationAdmin.journals.edit', compact('journal', 'teachers', 'subjects', 'selectedSubjects'));
     }
 
     public function update(Request $request, TeachingJournal $journal)
@@ -62,7 +91,7 @@ class TeachingJournalController extends Controller
             'teacher_id' => 'required|exists:teachers,id',
             'date' => 'required|date',
             'subjects' => 'required|array|min:1',
-            'subjects.*' => 'string|max:255',
+            'subjects.*' => 'exists:teaching_subjects,id',
             'total_regular_hours' => 'required|integer|min:0',
             'total_replacement_hours' => 'required|integer|min:0',
             'regular_hour_description' => 'required|string',
@@ -70,9 +99,26 @@ class TeachingJournalController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        $validated['subjects'] = json_encode($validated['subjects']);
+        $journal->update([
+            'teacher_id' => $validated['teacher_id'],
+            'date' => $validated['date'],
+            'total_regular_hours' => $validated['total_regular_hours'],
+            'total_replacement_hours' => $validated['total_replacement_hours'],
+            'regular_hour_description' => $validated['regular_hour_description'],
+            'replacement_hour_description' => $validated['replacement_hour_description'],
+            'notes' => $validated['notes'],
+        ]);
 
-        $journal->update($validated);
+        // Delete existing subjects
+        TeachingJournalSubject::where('teaching_journal_id', $journal->id)->delete();
+
+        // Create new subjects
+        foreach ($validated['subjects'] as $subjectId) {
+            TeachingJournalSubject::create([
+                'teaching_journal_id' => $journal->id,
+                'teaching_subject_id' => $subjectId,
+            ]);
+        }
 
         return redirect()->route('administrationadmin.journals.index')
             ->with('success', 'Teaching journal updated successfully.');

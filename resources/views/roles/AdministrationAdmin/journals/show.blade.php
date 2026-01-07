@@ -21,11 +21,8 @@
                 </div>
                 <div class="mb-2">
                     <strong>Mata Pelajaran:</strong>
-                    @php
-                        $subjects = is_array(json_decode($journal->subjects)) ? json_decode($journal->subjects) : [$journal->subjects];
-                    @endphp
-                    @foreach ($subjects as $subject)
-                        <span class="badge bg-primary">{{ $subject }}</span>
+                    @foreach ($journal->teachingSubjects as $subject)
+                        <span class="badge bg-primary">{{ $subject->name }}</span>
                     @endforeach
                 </div>
                 <div class="mb-2">

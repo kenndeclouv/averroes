@@ -56,7 +56,19 @@ class FeatureSeeder extends Seeder
             'edit_app_setting' => 'Edit Pengaturan',
 
             'show_transaction' => 'Edit Pengaturan',
+
+            'show_journal' => 'Tampilkan Jurnal Pengajaran',
+            'create_journal' => 'Tambahkan Jurnal Pengajaran',
+            'edit_journal' => 'Edit Jurnal Pengajaran',
+            'delete_journal' => 'Hapus Jurnal Pengajaran',
+
+            'show_teaching_subject' => 'Tampilkan Mata Pelajaran',
+            'create_teaching_subject' => 'Tambahkan Mata Pelajaran',
+            'edit_teaching_subject' => 'Edit Mata Pelajaran',
+            'delete_teaching_subject' => 'Hapus Mata Pelajaran',
+
         ];
+
         foreach ($features as $code => $name) {
             Feature::firstOrCreate([
                 'code' => $code,

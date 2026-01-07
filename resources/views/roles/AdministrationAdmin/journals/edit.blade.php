@@ -40,62 +40,21 @@
                         <label class="form-label">Mata Pelajaran</label>
                         @php
                             // Handle old input for validation error
-                            $selectedSubjects = old('subjects');
-                            if (is_null($selectedSubjects)) {
-                                // If there's no old input, decode the stored JSON string/array from DB
-                                $selectedSubjects = is_string($journal->subjects)
-                                    ? json_decode($journal->subjects, true)
-                                    : (is_array($journal->subjects) ? $journal->subjects : []);
+                            $checkedSubjects = old('subjects');
+                            if (is_null($checkedSubjects)) {
+                                $checkedSubjects = $selectedSubjects ?? [];
                             }
                         @endphp
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="subjects[]" value="AL-QUR'AN / DINIYAH"
-                                id="subject_alqurandiniyah"
-                                {{ is_array($selectedSubjects) && in_array("AL-QUR'AN / DINIYAH", $selectedSubjects) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="subject_alqurandiniyah">
-                                AL-QUR'AN / DINIYAH
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="subjects[]" value="B. ARAB"
-                                id="subject_barab"
-                                {{ is_array($selectedSubjects) && in_array("B. ARAB", $selectedSubjects) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="subject_barab">
-                                B. ARAB
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="subjects[]" value="B. INGGRIS"
-                                id="subject_binggris"
-                                {{ is_array($selectedSubjects) && in_array("B. INGGRIS", $selectedSubjects) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="subject_binggris">
-                                B. INGGRIS
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="subjects[]" value="PRAKTIKUM DKV"
-                                id="subject_prakdkv"
-                                {{ is_array($selectedSubjects) && in_array("PRAKTIKUM DKV", $selectedSubjects) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="subject_prakdkv">
-                                PRAKTIKUM DKV
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="subjects[]" value="PRAKTIKUM RPL"
-                                id="subject_prakrpl"
-                                {{ is_array($selectedSubjects) && in_array("PRAKTIKUM RPL", $selectedSubjects) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="subject_prakrpl">
-                                PRAKTIKUM RPL
-                            </label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="subjects[]" value="MAPEL TAMBAHAN"
-                                id="subject_mapeltambahan"
-                                {{ is_array($selectedSubjects) && in_array("MAPEL TAMBAHAN", $selectedSubjects) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="subject_mapeltambahan">
-                                MAPEL TAMBAHAN (B.INDO, PKN, SEJARAH, KWU, SENI BUDAYA)
-                            </label>
-                        </div>
+                        @foreach ($subjects as $subject)
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="subjects[]"
+                                    value="{{ $subject->id }}" id="subject_{{ $subject->id }}"
+                                    {{ is_array($checkedSubjects) && in_array($subject->id, $checkedSubjects) ? 'checked' : '' }}>
+                                <label class="form-check-label" for="subject_{{ $subject->id }}">
+                                    {{ $subject->name }}
+                                </label>
+                            </div>
+                        @endforeach
                         @errorFeedback('subjects')
                     </div>
 
@@ -130,7 +89,7 @@
                     <div class="mb-3">
                         <label for="replacement_hour_description" class="form-label">Deskripsi Sebaran JP Badal</label>
                         <textarea class="form-control @error('replacement_hour_description') is-invalid @enderror"
-                        id="replacement_hour_description" name="replacement_hour_description" rows="3" required>{{ old('replacement_hour_description', $journal->replacement_hour_description) }}</textarea>
+                            id="replacement_hour_description" name="replacement_hour_description" rows="3" required>{{ old('replacement_hour_description', $journal->replacement_hour_description) }}</textarea>
                         <small>(ex: BADAL UST RUJIAN 1JP - MAPEL TAMBAHAN)</small>
                         @errorFeedback('replacement_hour_description')
                     </div>
@@ -138,7 +97,9 @@
                     <div class="mb-3">
                         <label for="notes" class="form-label">Catatan Tambahan</label>
                         <textarea class="form-control @error('notes') is-invalid @enderror" id="notes" name="notes" rows="2">{{ old('notes', $journal->notes) }}</textarea>
-                        <small>(ex: Karena saya sakit perut maka untuk mapel tambahan saya selesaikan lebih awal 5 menit / karena anak-anak senang dan tugas belum selesai saya akhirkan 10 menit atau catatan lainnya)</small>
+                        <small>(ex: Karena saya sakit perut maka untuk mapel tambahan saya selesaikan lebih awal 5 menit /
+                            karena anak-anak senang dan tugas belum selesai saya akhirkan 10 menit atau catatan
+                            lainnya)</small>
                         @errorFeedback('notes')
                     </div>
 

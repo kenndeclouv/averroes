@@ -32,7 +32,7 @@
  *      Route::get('/', [PascalCase::class, 'camelCase'])->name('kebab-case');
  *      Route::put('lowercase/{camelCase}', [PascalCase::class, 'camelCase'])->name('kebab-case');
  *  });
- * 
+ *
  *  © 2025 by kenndeclouv
  *  https://kenn.my.id
  */
@@ -73,6 +73,7 @@ use App\Http\Controllers\AdministrationAdmin\StudentRegistrantController as Admi
 use App\Http\Controllers\AdministrationAdmin\AppSettingController as AdministrationAdminAppSetting;
 use App\Http\Controllers\AdministrationAdmin\TransactionController as AdministrationAdminTransaction;
 use App\Http\Controllers\AdministrationAdmin\TeachingJournalController as AdministrationAdminTeachingJournal;
+use App\Http\Controllers\AdministrationAdmin\TeachingSubjectController as AdministrationAdminTeachingSubject;
 
 // TEACHER
 use App\Http\Controllers\Teacher\AnnouncementController as TeacherAnnouncement;
@@ -330,6 +331,9 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
 
     // TEACHING JOURNAL
     Route::resource('journals', AdministrationAdminTeachingJournal::class);
+
+    // TEACHING SUBJECTS
+    Route::resource('teaching-subjects', AdministrationAdminTeachingSubject::class);
 });
 
 /**
@@ -360,7 +364,7 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'can:isTeacher']
         Route::delete('destroy/{announcement}', [TeacherAnnouncement::class, 'destroy'])->name('destroy');
     });
 
-    // TEACHING JOURNAL
+    // TEACHING JOURNAL 
     Route::resource('journals', TeacherTeachingJournal::class);
 });
 

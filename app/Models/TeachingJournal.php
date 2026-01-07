@@ -12,4 +12,14 @@ class TeachingJournal extends Model
     {
         return $this->belongsTo(Teacher::class);
     }
+
+    public function teachingJournalSubjects()
+    {
+        return $this->hasMany(TeachingJournalSubject::class);
+    }
+
+    public function teachingSubjects()
+    {
+        return $this->belongsToMany(TeachingSubject::class, 'teaching_journal_subjects');
+    }
 }
