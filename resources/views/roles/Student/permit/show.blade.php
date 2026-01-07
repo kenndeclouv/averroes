@@ -16,7 +16,7 @@
                         <strong>Nama Kamu</strong>
                     </div>
                     <div class="col-md-8">
-                        : {{ $studentPermit->Student->name }}
+                        : {{ $studentPermit->Student->name ?? '-' }}
                     </div>
                 </div>
                 <div class="row mb-3">

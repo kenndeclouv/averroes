@@ -52,7 +52,7 @@
                     <tbody>
                         @foreach ($studentPermits as $studentPermit)
                             <tr>
-                                <td>{{ $studentPermit->Student->name ?? '-' }}</td>
+                                <td>{{ $studentPermit->Student->name ?? ('-' ?? '-') }}</td>
                                 <td>{{ formatDate($studentPermit->from, 'd F Y H:i') }}</td>
                                 <td>{{ formatDate($studentPermit->to, 'd F Y H:i') }}</td>
                                 <td>{{ $studentPermit->Student->Class->name ?? '-' }}</td>

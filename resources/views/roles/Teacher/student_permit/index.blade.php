@@ -44,7 +44,7 @@
                     <tbody>
                         @foreach ($studentPermits as $studentPermit)
                             <tr>
-                                <td>{{ $studentPermit->Student->name }}</td>
+                                <td>{{ $studentPermit->Student->name ?? '-' }}</td>
                                 <td>{{ formatDate($studentPermit->from, 'd F Y H:i') }}</td>
                                 <td>{{ formatDate($studentPermit->to, 'd F Y H:i') }}</td>
                                 <td>{{ $studentPermit->Student->Class->name ?? '-' }}</td>
@@ -66,10 +66,12 @@
                                             method="POST" style="display:inline;">
                                             @csrf
                                             @method('PUT')
-                                            <div class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top" title="Ijinkan Ijin Santri">
+                                            <div class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Ijinkan Ijin Santri">
                                                 <button type="button" data-bs-toggle="modal"
                                                     data-bs-target="#approveModal{{ $studentPermit->id }}"
-                                                    data-bs-placement="top" title="Setujui Ijin Santri" class="btn btn-success">
+                                                    data-bs-placement="top" title="Setujui Ijin Santri"
+                                                    class="btn btn-success">
                                                     <i class="fa-solid fa-check"></i>
                                                 </button>
                                             </div>
@@ -108,7 +110,8 @@
                                             method="POST" style="display:inline;">
                                             @csrf
                                             @method('PUT')
-                                            <div class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top" title="Tidak Setujui Ijin Santri">
+                                            <div class="d-inline" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                title="Tidak Setujui Ijin Santri">
                                                 <button type="button" data-bs-toggle="modal"
                                                     data-bs-target="#rejectModal{{ $studentPermit->id }}"
                                                     class="btn btn-danger">

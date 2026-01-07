@@ -79,8 +79,12 @@ use App\Http\Controllers\AdministrationAdmin\TeachingSubjectController as Admini
 use App\Http\Controllers\Teacher\AnnouncementController as TeacherAnnouncement;
 use App\Http\Controllers\Teacher\StudentPermitController as TeacherStudentPermit;
 use App\Http\Controllers\Teacher\TeachingJournalController as TeacherTeachingJournal;
+use App\Http\Controllers\Teacher\QuizController as TeacherQuiz;
+
 // STUDENT
 use App\Http\Controllers\Student\StudentPermitController as StudentStudentPermit;
+use App\Http\Controllers\Student\QuizController as StudentQuiz;
+
 // STUDENT REGISTRANT
 use App\Http\Controllers\StudentRegistrant\HomeController as StudentRegistrantHome;
 // TREASURER
@@ -364,8 +368,25 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'can:isTeacher']
         Route::delete('destroy/{announcement}', [TeacherAnnouncement::class, 'destroy'])->name('destroy');
     });
 
-    // TEACHING JOURNAL 
+    // TEACHING JOURNAL
     Route::resource('journals', TeacherTeachingJournal::class);
+
+    // QUIZZES
+    Route::prefix('quizzes')->name('quizzes.')->group(function () {
+        Route::get('/', [TeacherQuiz::class, 'index'])->name('index');
+        Route::get('create', [TeacherQuiz::class, 'create'])->name('create');
+        Route::post('store', [TeacherQuiz::class, 'store'])->name('store');
+        Route::get('edit/{quiz}', [TeacherQuiz::class, 'edit'])->name('edit');
+        Route::put('update/{quiz}', [TeacherQuiz::class, 'update'])->name('update');
+        Route::delete('destroy/{quiz}', [TeacherQuiz::class, 'destroy'])->name('destroy');
+
+        // Question Routes
+        Route::post('{quiz}/questions', [TeacherQuiz::class, 'storeQuestion'])->name('questions.store');
+        Route::delete('questions/{question}', [TeacherQuiz::class, 'destroyQuestion'])->name('questions.destroy');
+
+        // Results
+        Route::get('{quiz}/results', [TeacherQuiz::class, 'results'])->name('results');
+    });
 });
 
 /**
@@ -384,7 +405,16 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'can:isStudent']
         Route::put('update/{studentPermit}', [StudentStudentPermit::class, 'update'])->name('update');
         Route::delete('destroy/{studentPermit}', [StudentStudentPermit::class, 'destroy'])->name('destroy');
     });
+
+    // QUIZZES
+    Route::prefix('quizzes')->name('quizzes.')->group(function () {
+        Route::get('/', [StudentQuiz::class, 'index'])->name('index');
+        Route::get('take/{quiz}', [StudentQuiz::class, 'show'])->name('take');
+        Route::post('submit/{quiz}', [StudentQuiz::class, 'store'])->name('submit');
+        Route::get('result/{quiz}', [StudentQuiz::class, 'result'])->name('result');
+    });
 });
+
 
 /**
  * **Student Registrant Routes**
