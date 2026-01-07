@@ -26,6 +26,18 @@
             <div class="card-header border-bottom">
                 <h5 class="card-title">Daftar Ujian</h5>
                 <div class="d-flex justify-content-between align-items-center mt-3">
+                    <form action="{{ route('teacher.quizzes.index') }}" method="GET" class="d-flex align-items-center">
+                        <select name="semester_id" class="form-select me-2" onchange="this.form.submit()">
+                            <option value="">Semua Semester</option>
+                            @foreach ($semesters as $semester)
+                                <option value="{{ $semester->id }}"
+                                    {{ request('semester_id') == $semester->id ? 'selected' : '' }}>
+                                    {{ $semester->academic_year }} - {{ ucfirst($semester->type) }}
+                                    {{ $semester->is_active ? '(Aktif)' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </form>
                     <a href="{{ route('teacher.quizzes.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus me-1"></i> Buat Ujian Baru
                     </a>

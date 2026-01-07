@@ -23,6 +23,11 @@ class Quiz extends Model
         return $this->belongsTo(Teacher::class);
     }
 
+    public function Semester()
+    {
+        return $this->belongsTo(Semester::class);
+    }
+
     public function Classes()
     {
         return $this->belongsTo(Classes::class);

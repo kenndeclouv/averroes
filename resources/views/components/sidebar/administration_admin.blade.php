@@ -89,9 +89,10 @@
     $permissions->contains('show_room') ||
         $permissions->contains('show_class') ||
         $permissions->contains('show_student') ||
-        $permissions->contains('show_teacher'))
+        $permissions->contains('show_teacher') ||
+        $permissions->contains('show_semester'))
     <li
-        class="menu-item {{ request()->routeIs($rolePrefix . '.class.*', $rolePrefix . '.room.*', $rolePrefix . '.student.nis.*', $rolePrefix . '.teacher.nip.*') ? 'open active' : '' }}">
+        class="menu-item {{ request()->routeIs($rolePrefix . '.class.*', $rolePrefix . '.room.*', $rolePrefix . '.student.nis.*', $rolePrefix . '.teacher.nip.*', $rolePrefix . '.semesters.*') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.class.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-folders fs-6"></i>
             <div class="text-truncate">
@@ -123,6 +124,10 @@
                     <a href="{{ route($rolePrefix . '.teacher.nip.index') }}" class="menu-link">Master NIP</a>
                 </li>
             @endif
+            {{-- Permission check for semesters? For now using show_class/room context or we need new permission --}}
+            <li class="menu-item {{ request()->routeIs('administrationadmin.semesters.*') ? 'active' : '' }}">
+                <a href="{{ route('administrationadmin.semesters.index') }}" class="menu-link">Master Semester</a>
+            </li>
         </ul>
     </li>
 @endif

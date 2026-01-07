@@ -72,7 +72,9 @@
                                 <th>NIS</th>
                                 <th>Waktu Mulai</th>
                                 <th>Waktu Selesai</th>
+                                <th>Status</th>
                                 <th>Nilai</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -83,8 +85,23 @@
                                     <td>{{ $attempt->Student->nis }}</td>
                                     <td>{{ $attempt->started_at->format('d M H:i') }}</td>
                                     <td>{{ $attempt->finished_at ? $attempt->finished_at->format('d M H:i') : '-' }}</td>
+                                    <td>
+                                        @if ($attempt->status == 'needs_grading')
+                                            <span class="badge bg-warning">Perlu Dinilai</span>
+                                        @elseif($attempt->status == 'graded')
+                                            <span class="badge bg-success">Selesai</span>
+                                        @else
+                                            <span class="badge bg-secondary">Berjalan</span>
+                                        @endif
+                                    </td>
                                     <td class="fw-bold {{ $attempt->score >= 70 ? 'text-success' : 'text-danger' }}">
-                                        {{ $attempt->score ?? 'Belum Selesai' }}
+                                        {{ $attempt->score ?? '-' }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('teacher.quizzes.attempts.show', $attempt->id) }}"
+                                            class="btn btn-sm btn-info">
+                                            <i class="fas fa-eye me-1"></i> Detail / Nilai
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach

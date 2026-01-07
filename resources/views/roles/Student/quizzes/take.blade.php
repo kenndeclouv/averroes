@@ -11,8 +11,11 @@
                 <div class="card-body d-flex justify-content-between align-items-center py-3">
                     <div>
                         <h5 class="mb-0 text-truncate" style="max-width: 300px;">{{ $quiz->title }}</h5>
-                        <small class="text-muted">Sisa Waktu: <span id="timer"
-                                class="fw-bold text-danger">--:--</span></small>
+                        <div class="d-flex align-items-center gap-2">
+                            <small class="text-muted">Sisa Waktu: <span id="timer"
+                                    class="fw-bold text-danger">--:--</span></small>
+                            <small id="saveStatus" class="badge bg-label-secondary" style="display:none;">Tersimpan</small>
+                        </div>
                     </div>
                     <div>
                         <button type="submit" class="btn btn-primary"
@@ -22,6 +25,12 @@
                     </div>
                 </div>
             </div>
+
+            @php
+                // Group answers by question_id for easy lookup
+                // Pre-load answers into a keyed collection
+                $savedAnswers = $attempt->Answers->groupBy('question_id');
+            @endphp
 
             <!-- Questions -->
             <div class="row">
@@ -37,30 +46,46 @@
                                 <p class="card-text mb-4 fs-5" style="white-space: pre-wrap;">{{ $question->content }}</p>
 
                                 @if ($question->type == 'multiple_choice')
+                                    @php
+                                        $myAns = $savedAnswers->get($question->id)?->first();
+                                        $selectedOptionId = $myAns ? $myAns->question_option_id : null;
+                                    @endphp
                                     <div class="list-group">
                                         @foreach ($question->Options as $option)
                                             <label
                                                 class="list-group-item list-group-item-action d-flex align-items-center cursor-pointer p-3">
                                                 <input class="form-check-input me-3" type="radio"
-                                                    name="answers[{{ $question->id }}]" value="{{ $option->id }}">
+                                                    name="answers[{{ $question->id }}]" value="{{ $option->id }}"
+                                                    {{ $selectedOptionId == $option->id ? 'checked' : '' }}>
                                                 <span class="fs-6">{{ $option->option_text }}</span>
                                             </label>
                                         @endforeach
                                     </div>
                                 @elseif ($question->type == 'complex_multiple_choice')
+                                    @php
+                                        $myAnsList = $savedAnswers->get($question->id);
+                                        $selectedOptionIds = $myAnsList
+                                            ? $myAnsList->pluck('question_option_id')->toArray()
+                                            : [];
+                                    @endphp
                                     <div class="list-group">
                                         @foreach ($question->Options as $option)
                                             <label
                                                 class="list-group-item list-group-item-action d-flex align-items-center cursor-pointer p-3">
                                                 <input class="form-check-input me-3" type="checkbox"
-                                                    name="answers[{{ $question->id }}][]" value="{{ $option->id }}">
+                                                    name="answers[{{ $question->id }}][]" value="{{ $option->id }}"
+                                                    {{ in_array($option->id, $selectedOptionIds) ? 'checked' : '' }}>
                                                 <span class="fs-6">{{ $option->option_text }}</span>
                                             </label>
                                         @endforeach
                                     </div>
                                 @elseif ($question->type == 'essay')
+                                    @php
+                                        $myAns = $savedAnswers->get($question->id)?->first();
+                                        $essayContent = $myAns ? $myAns->answer_text : '';
+                                    @endphp
                                     <textarea class="form-control" name="answers[{{ $question->id }}]" rows="5"
-                                        placeholder="Tulis jawabanmu di sini..."></textarea>
+                                        placeholder="Tulis jawabanmu di sini...">{{ $essayContent }}</textarea>
                                 @endif
                             </div>
                         </div>
@@ -131,5 +156,42 @@
         document.getElementById('quizForm').onsubmit = function() {
             window.onbeforeunload = null;
         };
+
+        // Auto Save Logic
+        const autoSaveUrl = "{{ route('student.quizzes.autosave', $quiz->id) }}";
+        const saveStatus = $('#saveStatus');
+        let autoSaveTimeout;
+
+        function triggerAutoSave() {
+            clearTimeout(autoSaveTimeout);
+            saveStatus.show().removeClass('bg-label-success').addClass('bg-label-warning').text('Menyimpan...');
+
+            autoSaveTimeout = setTimeout(function() {
+                const formData = $('#quizForm').serialize();
+                $.ajax({
+                    url: autoSaveUrl,
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        saveStatus.removeClass('bg-label-warning').addClass('bg-label-success').text(
+                            'Tersimpan');
+                        setTimeout(() => saveStatus.fadeOut(), 2000);
+                    },
+                    error: function(xhr) {
+                        saveStatus.removeClass('bg-label-success').addClass('bg-label-danger').text(
+                            'Gagal Menyimpan');
+                    }
+                });
+            }, 1000); // Debounce 1 sec
+        }
+
+        // Listen to changes
+        $('input[type=radio], input[type=checkbox]').on('change', function() {
+            triggerAutoSave();
+        });
+
+        $('textarea').on('input', function() {
+            triggerAutoSave();
+        });
     </script>
 @endsection

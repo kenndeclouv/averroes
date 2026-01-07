@@ -338,6 +338,9 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
 
     // TEACHING SUBJECTS
     Route::resource('teaching-subjects', AdministrationAdminTeachingSubject::class);
+
+    // SEMESTERS
+    Route::resource('semesters', \App\Http\Controllers\Admin\SemesterController::class);
 });
 
 /**
@@ -386,6 +389,8 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'can:isTeacher']
 
         // Results
         Route::get('{quiz}/results', [TeacherQuiz::class, 'results'])->name('results');
+        Route::get('attempts/{attempt}', [TeacherQuiz::class, 'showAttempt'])->name('attempts.show');
+        Route::put('attempts/{attempt}/grade', [TeacherQuiz::class, 'gradeAttempt'])->name('attempts.grade');
     });
 });
 
@@ -411,6 +416,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'can:isStudent']
         Route::get('/', [StudentQuiz::class, 'index'])->name('index');
         Route::get('take/{quiz}', [StudentQuiz::class, 'show'])->name('take');
         Route::post('submit/{quiz}', [StudentQuiz::class, 'store'])->name('submit');
+        Route::post('autosave/{quiz}', [StudentQuiz::class, 'currentSave'])->name('autosave');
         Route::get('result/{quiz}', [StudentQuiz::class, 'result'])->name('result');
     });
 });

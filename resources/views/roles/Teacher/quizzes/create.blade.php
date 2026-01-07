@@ -11,6 +11,22 @@
                 <form action="{{ route('teacher.quizzes.store') }}" method="POST">
                     @csrf
 
+
+                    <div class="mb-3">
+                        <label for="semester_id" class="form-label">Semester</label>
+                        <select class="form-select select2 @error('semester_id') is-invalid @enderror" id="semester_id"
+                            name="semester_id" required>
+                            @foreach ($semesters as $semester)
+                                <option value="{{ $semester->id }}"
+                                    {{ ($activeSemester && $activeSemester->id == $semester->id) || old('semester_id') == $semester->id ? 'selected' : '' }}>
+                                    {{ $semester->academic_year }} - {{ ucfirst($semester->type) }}
+                                    {{ $semester->is_active ? '(Aktif)' : '' }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @errorFeedback('semester_id')
+                    </div>
+
                     <div class="mb-3">
                         <label for="title" class="form-label">Judul Kuis</label>
                         <input type="text" class="form-control @error('title') is-invalid @enderror" id="title"

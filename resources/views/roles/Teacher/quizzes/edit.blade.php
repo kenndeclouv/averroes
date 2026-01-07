@@ -22,6 +22,18 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="semester_id" class="form-label">Semester</label>
+                                <select class="form-select select2" id="semester_id" name="semester_id" required>
+                                    @foreach ($semesters as $semester)
+                                        <option value="{{ $semester->id }}"
+                                            {{ $quiz->semester_id == $semester->id ? 'selected' : '' }}>
+                                            {{ $semester->academic_year }} - {{ ucfirst($semester->type) }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="classes_id" class="form-label">Kelas</label>
                                 <select class="form-select select2" id="classes_id" name="classes_id" required>
                                     @foreach ($classes as $class)
@@ -49,9 +61,10 @@
 
                             <div class="mb-3">
                                 <label for="status" class="form-label">Status</label>
-                                <select class="form-select" name="status">
+                                <select class="form-select select2" name="status">
                                     <option value="draft" {{ $quiz->status == 'draft' ? 'selected' : '' }}>Draft</option>
-                                    <option value="published" {{ $quiz->status == 'published' ? 'selected' : '' }}>Published
+                                    <option value="published" {{ $quiz->status == 'published' ? 'selected' : '' }}>
+                                        Published
                                     </option>
                                 </select>
                             </div>
@@ -274,6 +287,9 @@
 
             // Initial call
             updateOptionInputs();
+        });
+        $(document).ready(function() {
+            $('.select2').select2();
         });
     </script>
 @endsection
