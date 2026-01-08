@@ -23,7 +23,8 @@
         </div>
     </a>
     <ul class="menu-sub">
-        <li class="menu-item {{ request()->routeIs('teacher.announcement.index', 'teacher.announcement.show', 'teacher.announcement.edit') ? 'active' : '' }}">
+        <li
+            class="menu-item {{ request()->routeIs('teacher.announcement.index', 'teacher.announcement.show', 'teacher.announcement.edit') ? 'active' : '' }}">
             <a href="{{ route('teacher.announcement.index') }}" class="menu-link">Daftar Pengumuman</a>
         </li>
         <li class="menu-item {{ request()->routeIs('teacher.announcement.create') ? 'active' : '' }}">
@@ -42,6 +43,20 @@
         <li
             class="menu-item {{ request()->routeIs('teacher.journals.index', 'teacher.journals.show', 'teacher.journals.edit') ? 'active' : '' }}">
             <a href="{{ route('teacher.journals.index') }}" class="menu-link">Daftar Jurnal</a>
+        </li>
+    </ul>
+</li>
+<li class="menu-item {{ request()->routeIs('teacher.materials.*') ? 'open active' : '' }}">
+    <a href="{{ route('teacher.materials.index') }}" class="menu-link menu-toggle">
+        <i class="menu-icon fa-solid fa-book-open fs-6"></i>
+        <div class="text-truncate">
+            Materi Pelajaran
+        </div>
+    </a>
+    <ul class="menu-sub">
+        <li
+            class="menu-item {{ request()->routeIs('teacher.materials.index', 'teacher.materials.create', 'teacher.materials.edit') ? 'active' : '' }}">
+            <a href="{{ route('teacher.materials.index') }}" class="menu-link">Daftar Materi</a>
         </li>
     </ul>
 </li>

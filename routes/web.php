@@ -80,10 +80,13 @@ use App\Http\Controllers\Teacher\AnnouncementController as TeacherAnnouncement;
 use App\Http\Controllers\Teacher\StudentPermitController as TeacherStudentPermit;
 use App\Http\Controllers\Teacher\TeachingJournalController as TeacherTeachingJournal;
 use App\Http\Controllers\Teacher\QuizController as TeacherQuiz;
+use App\Http\Controllers\Teacher\MaterialController as TeacherMaterial;
 
 // STUDENT
 use App\Http\Controllers\Student\StudentPermitController as StudentStudentPermit;
 use App\Http\Controllers\Student\QuizController as StudentQuiz;
+use App\Http\Controllers\Student\MaterialController as StudentMaterial;
+use App\Http\Controllers\AdministrationAdmin\MaterialController as AdminMaterial;
 
 // STUDENT REGISTRANT
 use App\Http\Controllers\StudentRegistrant\HomeController as StudentRegistrantHome;
@@ -327,6 +330,7 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
         Route::put('/update', [AdministrationAdminAppSetting::class, 'update'])->name('update');
     });
 
+
     // TRANSACTION
     Route::prefix('transaction')->name('transaction.')->middleware(['permission:show_transaction'])->group(function () {
         Route::get('/', [AdministrationAdminTransaction::class, 'index'])->name('index');
@@ -341,6 +345,12 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
 
     // SEMESTERS
     Route::resource('semesters', \App\Http\Controllers\Admin\SemesterController::class);
+
+    // MATERIALS
+    Route::resource('materials', AdminMaterial::class)->only(['index', 'destroy', 'show']);
+
+    // QUIZZES
+    Route::resource('quizzes', \App\Http\Controllers\AdministrationAdmin\QuizController::class)->only(['index', 'show', 'destroy']);
 });
 
 /**
@@ -394,6 +404,9 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'can:isTeacher']
         Route::put('attempts/{attempt}/grade', [TeacherQuiz::class, 'gradeAttempt'])->name('attempts.grade');
         Route::delete('attempts/{attempt}/reset', [TeacherQuiz::class, 'resetAttempt'])->name('attempts.reset');
     });
+
+    // MATERIALS
+    Route::resource('materials', TeacherMaterial::class);
 });
 
 /**
@@ -422,6 +435,10 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'can:isStudent']
         Route::get('result/{quiz}', [StudentQuiz::class, 'result'])->name('result');
         Route::get('review/{quiz}', [StudentQuiz::class, 'review'])->name('review');
     });
+
+    // MATERIALS
+    Route::get('materials', [StudentMaterial::class, 'index'])->name('materials.index');
+    Route::get('materials/{material}', [StudentMaterial::class, 'show'])->name('materials.show');
 });
 
 

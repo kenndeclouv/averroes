@@ -142,6 +142,12 @@ class QuizController extends Controller
 
     public function storeQuestion(Request $request, Quiz $quiz)
     {
+        $user = Auth::user();
+        $teacher = Teacher::where('user_id', $user->id)->first();
+        if ($quiz->teacher_id !== $teacher->id) {
+            abort(403);
+        }
+
         // Validation logic for creating a question
         $request->validate([
             'type' => 'required|in:multiple_choice,complex_multiple_choice,essay,true_false,short_answer,matching',
@@ -251,7 +257,14 @@ class QuizController extends Controller
 
     public function destroyQuestion(Question $question)
     {
-        // Add auth check
+        $user = Auth::user();
+        $teacher = Teacher::where('user_id', $user->id)->first();
+        // Check via quiz relationship
+        $quiz = $question->Quiz; // Assuming relation exists
+        if (!$quiz || $quiz->teacher_id !== $teacher->id) {
+            abort(403);
+        }
+
         $question->delete();
         return redirect()->back()->with('success', 'Question deleted.');
     }

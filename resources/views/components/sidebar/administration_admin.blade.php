@@ -179,6 +179,34 @@
             </li>
         </ul>
     </li>
+    {{-- Materials Menu (Admin View) --}}
+    <li class="menu-item {{ request()->routeIs('administrationadmin.materials.*') ? 'open active' : '' }}">
+        <a href="{{ route('administrationadmin.materials.index') }}" class="menu-link menu-toggle">
+            <i class="menu-icon fa-solid fa-book-open fs-6"></i>
+            <div class="text-truncate">
+                Materi Belajar
+            </div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item {{ request()->routeIs('administrationadmin.materials.index') ? 'active' : '' }}">
+                <a href="{{ route('administrationadmin.materials.index') }}" class="menu-link">Semua Materi</a>
+            </li>
+        </ul>
+    </li>
+    {{-- Quizzes Menu (Admin View) --}}
+    <li class="menu-item {{ request()->routeIs('administrationadmin.quizzes.*') ? 'open active' : '' }}">
+        <a href="{{ route('administrationadmin.quizzes.index') }}" class="menu-link menu-toggle">
+            <i class="menu-icon fa-solid fa-file-signature fs-6"></i>
+            <div class="text-truncate">
+                Ujian (Quiz)
+            </div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item {{ request()->routeIs('administrationadmin.quizzes.index') ? 'active' : '' }}">
+                <a href="{{ route('administrationadmin.quizzes.index') }}" class="menu-link">Semua Ujian</a>
+            </li>
+        </ul>
+    </li>
 @endif
 <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Tools</span>

@@ -18,6 +18,16 @@
         </li>
     </ul>
 </li>
+
+<li class="menu-item {{ request()->routeIs($rolePrefix . '.materials.*') ? 'open active' : '' }}">
+    <a href="{{ route($rolePrefix . '.materials.index') }}" class="menu-link">
+        <i class="menu-icon fa-solid fa-book-open fs-6"></i>
+        <div class="text-truncate">
+            Materi Pelajaran
+        </div>
+    </a>
+</li>
+
 <li class="menu-item {{ request()->routeIs($rolePrefix . '.quizzes.*') ? 'open active' : '' }}">
     <a href="{{ route($rolePrefix . '.quizzes.index') }}" class="menu-link menu-toggle">
         <i class="menu-icon fa-solid fa-file fs-6"></i>
