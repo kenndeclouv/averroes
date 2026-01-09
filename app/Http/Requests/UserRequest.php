@@ -21,12 +21,23 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('user')?->id ?? $this->user()?->id ?? 'NULL';
+        $userId = null;
+        if ($this->route('user')) {
+            $userId = $this->route('user') instanceof \App\Models\User ? $this->route('user')->id : $this->route('user');
+        } elseif ($this->route('teacher')) {
+            $userId = $this->route('teacher')->user_id;
+        } elseif ($this->route('student')) {
+            $userId = $this->route('student')->user_id;
+        } elseif ($this->route('parent')) {
+            $userId = $this->route('parent')->user_id;
+        }
+
+        $ignore = $userId ?? 'NULL';
 
         $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $userId,
-            'username' => 'required|unique:users,username,' . $userId,
+            'email' => 'required|email|unique:users,email,' . $ignore,
+            'username' => 'required|unique:users,username,' . $ignore,
             'password' => 'nullable|min:8|confirmed|regex:/^(?=.*[A-Z]).+$/',
         ];
 

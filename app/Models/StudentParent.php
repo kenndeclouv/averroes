@@ -12,12 +12,14 @@ class StudentParent extends Model
     {
         parent::boot();
 
-        static::addGlobalScope('excludeSuperAdmin', function (Builder $builder) {
-            $builder->where('id', '!=', 1);
-        });
     }
     public function User()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'student_has_parents', 'student_parent_id', 'student_id');
     }
 }

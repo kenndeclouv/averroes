@@ -91,11 +91,11 @@
                                 <td>{{ $journal->total_replacement_hours }}</td>
                                 <td>
                                     <a href="{{ route('administrationadmin.journals.show', $journal) }}"
-                                        class="btn btn-info">
+                                        class="btn btn-info" data-bs-toggle="tooltip" title="Lihat Jurnal">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     <a href="{{ route('administrationadmin.journals.edit', $journal) }}"
-                                        class="btn btn-warning">
+                                        class="btn btn-warning" data-bs-toggle="tooltip" title="Ubah Jurnal">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <x-delete :route="route('administrationadmin.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus data ini?'" :title="'Hapus Jurnal'" />

@@ -15,7 +15,7 @@ class Student extends Model
         parent::boot();
 
         static::addGlobalScope('excludeSuperAdmin', function (Builder $builder) {
-            $builder->where('id', '!=', 1);
+            $builder->where('students.id', '!=', 1);
         });
     }
 
@@ -80,5 +80,10 @@ class Student extends Model
         if (!empty($value) && !is_null($value)) {
             return asset("storage/uploads/mother_identity_cards/" . $value);  // Menggunakan helper asset() untuk path file
         }
+    }
+
+    public function parents()
+    {
+        return $this->belongsToMany(StudentParent::class, 'student_has_parents', 'student_id', 'student_parent_id');
     }
 }

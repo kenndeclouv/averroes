@@ -74,6 +74,7 @@ use App\Http\Controllers\AdministrationAdmin\AppSettingController as Administrat
 use App\Http\Controllers\AdministrationAdmin\TransactionController as AdministrationAdminTransaction;
 use App\Http\Controllers\AdministrationAdmin\TeachingJournalController as AdministrationAdminTeachingJournal;
 use App\Http\Controllers\AdministrationAdmin\TeachingSubjectController as AdministrationAdminTeachingSubject;
+use App\Http\Controllers\AdministrationAdmin\StudentParentController as AdministrationAdminParent;
 
 // TEACHER
 use App\Http\Controllers\Teacher\AnnouncementController as TeacherAnnouncement;
@@ -254,6 +255,15 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
             Route::delete('destroy/{student}', [AdministrationAdminStudent::class, 'nisDestroy'])->middleware('permission:delete_student')->name('destroy');
             Route::put('auto-generate/{student}', [AdministrationAdminStudent::class, 'nisAutoGenerate'])->middleware('permission:edit_student')->name('auto-generate');
         });
+    });
+    Route::prefix('parent')->name('parent.')->middleware(['permission:show_parent'])->group(function () {
+        Route::get('/', [AdministrationAdminParent::class, 'index'])->name('index');
+        Route::get('create', [AdministrationAdminParent::class, 'create'])->middleware('permission:create_parent')->name('create');
+        Route::post('store', [AdministrationAdminParent::class, 'store'])->middleware('permission:create_parent')->name('store');
+        Route::get('show/{parent}', [AdministrationAdminParent::class, 'show'])->middleware('permission:show_parent')->name('show');
+        Route::get('edit/{parent}', [AdministrationAdminParent::class, 'edit'])->middleware('permission:edit_parent')->name('edit');
+        Route::put('update/{parent}', [AdministrationAdminParent::class, 'update'])->middleware('permission:edit_parent')->name('update');
+        Route::delete('destroy/{parent}', [AdministrationAdminParent::class, 'destroy'])->middleware('permission:delete_parent')->name('destroy');
     });
     Route::prefix('teacher')->name('teacher.')->middleware(['permission:show_teacher'])->group(function () {
         Route::get('/', [AdministrationAdminTeacher::class, 'index'])->name('index');
@@ -484,6 +494,14 @@ Route::prefix('treasurer')->name('treasurer.')->middleware(['auth', 'can:isTreas
         Route::put('update/{category}', [TreasurerTransaction::class, 'categoryUpdate'])->name('update');
         Route::delete('destroy/{category}', [TreasurerTransaction::class, 'categoryDestroy'])->name('destroy');
     });
+});
+
+/**
+ * **Parent Routes**
+ */
+Route::prefix('parent')->name('parent.')->middleware(['auth', 'can:isParent'])->group(function () {
+    Route::redirect('/', '/parent/home', 301);
+    Route::get('home', [\App\Http\Controllers\Parent\HomeController::class, 'index'])->name('home');
 });
 
 /**

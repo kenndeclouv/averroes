@@ -39,6 +39,25 @@
         </ul>
     </li>
 @endif
+@if ($permissions->contains('show_parent'))
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.parent.*') ? 'open active' : '' }}">
+        <a href="{{ route($rolePrefix . '.parent.index') }}" class="menu-link menu-toggle">
+            <i class="menu-icon fa-solid fa-user-group fs-6"></i>
+            <div class="text-truncate">
+                Kewalisantrian
+            </div>
+        </a>
+        <ul class="menu-sub">
+            <li
+                class="menu-item {{ request()->routeIs($rolePrefix . '.parent.index', $rolePrefix . '.parent.show', $rolePrefix . '.parent.edit') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.parent.index') }}" class="menu-link">Data Walisantri</a>
+            </li>
+            <li class="menu-item {{ request()->routeIs($rolePrefix . '.parent.create') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.parent.create') }}" class="menu-link">Tambah Walisantri</a>
+            </li>
+        </ul>
+    </li>
+@endif
 @if ($permissions->contains('show_student_permit'))
     <li class="menu-item {{ request()->routeIs($rolePrefix . '.studentpermit.index') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.room.index') }}" class="menu-link menu-toggle">
@@ -221,7 +240,8 @@
                 <a href="{{ route($rolePrefix . '.class-schedules.index') }}" class="menu-link">Semua Jadwal</a>
             </li>
             <li class="menu-item {{ request()->routeIs($rolePrefix . '.class-schedules.create') ? 'active' : '' }}">
-                <a href="{{ route($rolePrefix . '.class-schedules.create') }}" class="menu-link">Tambah Jadwal</a>
+                <a href="{{ route($rolePrefix . '.class-schedules.create') }}" class="menu-link">Tambah
+                    Jadwal</a>
             </li>
         </ul>
     </li>
@@ -240,7 +260,8 @@
         <ul class="menu-sub">
             <li
                 class="menu-item {{ request()->routeIs($rolePrefix . '.announcement.index', $rolePrefix . '.announcement.show', $rolePrefix . '.announcement.edit') ? 'active' : '' }}">
-                <a href="{{ route($rolePrefix . '.announcement.index') }}" class="menu-link">Daftar Pengumuman</a>
+                <a href="{{ route($rolePrefix . '.announcement.index') }}" class="menu-link">Daftar
+                    Pengumuman</a>
             </li>
             @if ($permissions->contains('create_announcement'))
                 <li class="menu-item {{ request()->routeIs($rolePrefix . '.announcement.create') ? 'active' : '' }}">

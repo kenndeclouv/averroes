@@ -118,6 +118,17 @@ class UserController extends Controller
             }
         }
 
+        // Check and create StudentParent record if needed
+        if (in_array(6, $request->roles)) { // 6 is Parent role
+            if (!$user->StudentParent) {
+                \App\Models\StudentParent::create([
+                    'user_id' => $user->id,
+                    'name' => $user->name ?? $user->username,
+                    // Add other available fields
+                ]);
+            }
+        }
+
         return redirect()->route('superadmin.user.index')->with('success', 'User updated successfully');
     }
 }

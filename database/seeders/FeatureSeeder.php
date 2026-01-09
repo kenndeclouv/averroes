@@ -67,6 +67,10 @@ class FeatureSeeder extends Seeder
             'edit_teaching_subject' => 'Edit Mata Pelajaran',
             'delete_teaching_subject' => 'Hapus Mata Pelajaran',
 
+            'show_parent' => 'Tampilkan Orang Tua',
+            'create_parent' => 'Tambahkan Orang Tua',
+            'edit_parent' => 'Edit Orang Tua',
+            'delete_parent' => 'Hapus Orang Tua',
         ];
 
         foreach ($features as $code => $name) {
