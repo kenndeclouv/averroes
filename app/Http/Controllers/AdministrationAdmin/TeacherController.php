@@ -7,6 +7,7 @@ use App\Http\Requests\TeacherHasTypeRequest;
 use App\Http\Requests\TeacherRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\Classes;
+use App\Models\Role;
 use App\Models\Room;
 use App\Models\Teacher;
 use App\Models\TeacherHasType;
@@ -42,7 +43,10 @@ class TeacherController extends Controller
             ->orderByDesc('nip_number')
             ->first()
             ?->nip;
-        return view('roles.AdministrationAdmin.teacher.create', compact('classes', 'rooms', 'FNOtherTypeId', 'TMOtherTypeId', 'FNTypes', 'TMTypes', 'lastNip'));
+
+        $roles = Role::whereIn('id', [3, 7, 8])->get();
+
+        return view('roles.AdministrationAdmin.teacher.create', compact('classes', 'rooms', 'FNOtherTypeId', 'TMOtherTypeId', 'FNTypes', 'TMTypes', 'lastNip', 'roles'));
     }
 
     public function store(UserRequest $requestUser, TeacherRequest $teacherRequest, TeacherHasTypeRequest $request)
@@ -58,8 +62,8 @@ class TeacherController extends Controller
         $validatedUser = $requestUser->validated();
         $validatedTeacher = $teacherRequest->validated();
 
-        $validatedUser["role_id"] = $validatedTeacher['role_id'];
         $user = User::create($validatedUser);
+        $user->roles()->attach($validatedTeacher['roles']);
 
         // Make sure 'user_id' is fillable in Teacher model!
         $validatedTeacher['user_id'] = $user->id;
@@ -125,14 +129,17 @@ class TeacherController extends Controller
         $selectedFNDescription = $teacher->teacherTypes->where('id', $FNOtherTypeId)->first()->pivot->description ?? '';
         $selectedTMDescription = $teacher->teacherTypes->where('id', $TMOtherTypeId)->first()->pivot->description ?? '';
         $nipFormat = generateNIP();
-        return view('roles.AdministrationAdmin.teacher.edit', compact('teacher', 'classes', 'rooms', 'FNTypes', 'TMTypes', 'FNOtherTypeId', 'TMOtherTypeId', 'selectedFNs', 'selectedTMs', 'selectedFNDescription', 'selectedTMDescription', 'nipFormat'));
+
+        $roles = Role::whereIn('id', [3, 7, 8])->get();
+
+        return view('roles.AdministrationAdmin.teacher.edit', compact('teacher', 'classes', 'rooms', 'FNTypes', 'TMTypes', 'FNOtherTypeId', 'TMOtherTypeId', 'selectedFNs', 'selectedTMs', 'selectedFNDescription', 'selectedTMDescription', 'nipFormat', 'roles'));
     }
 
     public function update(UserRequest $userRequest, TeacherRequest $teacherRequest, TeacherHasTypeRequest $teacherHasTypeRequest, Teacher $teacher)
     {
         $validatedUser = $userRequest->validated();
         $validatedTeacher = $teacherRequest->validated();
-        $validatedUser["role_id"] = $validatedTeacher['role_id'] ;
+
         $validatedTeacherHasType = $teacherHasTypeRequest->validated();
         // Validasi input fn_type & tm_type
         $validatedTeacherHasType = $teacherHasTypeRequest->validated();
@@ -161,6 +168,7 @@ class TeacherController extends Controller
         }
         $teacher->update($validatedTeacher);
         $teacher->User->update($validatedUser);
+        $teacher->User->roles()->sync($validatedTeacher['roles']);
 
         return redirect()->route('administrationadmin.teacher.index')->with('success', 'Data Pegawai berhasil diubah');
     }

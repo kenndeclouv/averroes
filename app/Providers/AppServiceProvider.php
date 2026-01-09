@@ -94,19 +94,19 @@ class AppServiceProvider extends ServiceProvider
          *
          * Penggunaan gate ini memungkinkan pengembang untuk dengan mudah mengelola izin akses
          * di seluruh aplikasi dengan cara yang terstruktur dan terorganisir.
-         * 
+         *
          * Gate hanya akan dijalankan jika aplikasi berjalan dalam mode web.
-         * 
+         *
          * Pengecualian untuk role super_admin, super_admin akan memiliki semua akses.
          */
         if (!App::runningInConsole() && Schema::hasTable('roles')) {
             foreach (Role::all() as $role) {
                 $gateName = 'is' . str_replace(' ', '', ucwords(str_replace('_', ' ', $role->code)));
                 Gate::define($gateName, function ($user) use ($role) {
-                    if ($user->role->code === 'super_admin') {
+                    if ($user->hasRole('super_admin')) {
                         return true;
                     }
-                    return $user->role->code === $role->code;
+                    return $user->hasRole($role->code);
                 });
             }
         }

@@ -19,12 +19,14 @@ class ChatController extends Controller
         // $messages = Message::all();
         $user = Auth::user()->id;
         $students = Student::whereHas('User', function ($q) use ($user) {
-            $q->where('id', '!=', $user);
+            $q->where('users.id', '!=', $user);
         })->get();
         $parents = StudentParent::whereHas('User', function ($q) use ($user) {
-            $q->where('id', '!=', $user);
+            $q->where('users.id', '!=', $user);
         })->get();
-        $admins = User::where('role_id', '2')->where('id', '!=', $user)->get();
+        $admins = User::whereHas('roles', function ($q) {
+            $q->where('roles.id', '2');
+        })->where('id', '!=', $user)->get();
         return view('common.chat.index', compact('students', 'parents', 'admins'));
     }
 
@@ -118,7 +120,7 @@ class ChatController extends Controller
                     $q->where('name', 'like', "%{$query}%")
                         ->orWhere('username', 'like', "%{$query}%");
                 })
-                ->with(['Role', 'Student'])
+                ->with(['roles', 'Student'])
                 ->limit(20) // Limit results for performance
                 ->get()
                 ->map(function ($contact) use ($userId) {
@@ -136,9 +138,9 @@ class ChatController extends Controller
                         'lastSeen' => isset($contact->updated_at) && $contact->updated_at == $contact->created_at
                             ? 'never'
                             : ($contact->updated_at->diffForHumans() ?? 'unknown'),
-                        'role' => ($contact->Role->code === 'student' && $contact->Student)
+                        'role' => ($contact->role->code === 'student' && $contact->Student)
                             ? 'Santri ' . ($contact->Student->major ?? 'unknown')
-                            : ($contact->Role->name ?? 'unknown'),
+                            : ($contact->role->name ?? 'unknown'),
                         'notifCount' => $notifCount,
                     ];
                 });
@@ -148,13 +150,13 @@ class ChatController extends Controller
 
         // Existing logic for default view (No search query)
         // If role not admin/super_admin
-        if (!in_array($user->Role->code, ['administration_admin', 'super_admin'])) {
+        if (!$user->hasAnyRole(['administration_admin', 'super_admin'])) {
             // Get contacts from messages (recent chats)
             $messageContacts = Message::where(function ($q) use ($userId) {
                 $q->where('user_id', $userId)
                     ->orWhere('recipient_id', $userId);
             })
-                ->with(['Recipient.Role', 'User.Role', 'Recipient.Student', 'User.Student'])
+                ->with(['Recipient.roles', 'User.roles', 'Recipient.Student', 'User.Student'])
                 ->orderBy('created_at', 'desc') // Order by most recent
                 ->get()
                 ->map(function ($message) use ($userId) {
@@ -174,9 +176,9 @@ class ChatController extends Controller
                             'lastSeen' => isset($contact->updated_at) && $contact->updated_at == $contact->created_at
                                 ? 'never'
                                 : ($contact->updated_at->diffForHumans() ?? 'unknown'),
-                            'role' => ($contact->Role->code === 'student' && $contact->Student)
+                            'role' => ($contact->role->code === 'student' && $contact->Student)
                                 ? 'Santri ' . ($contact->Student->major ?? 'unknown')
-                                : ($contact->Role->name ?? 'unknown'),
+                                : ($contact->role->name ?? 'unknown'),
                             'notifCount' => $notifCount,
                         ];
                     }
@@ -188,10 +190,11 @@ class ChatController extends Controller
 
             // Get contacts with same role
             $sameRoleContacts = User::where('id', '!=', $userId)
-                ->whereHas('Role', function ($q) use ($user) {
-                    $q->where('code', $user->Role->code);
+                ->whereHas('roles', function ($q) use ($user) {
+                    // Check if they share ANY common role
+                    $q->whereIn('code', $user->roles->pluck('code'));
                 })
-                ->with(['Role', 'Student'])
+                ->with(['roles', 'Student'])
                 ->limit(50) // Limit to avoid loading thousands of students
                 ->get()
                 ->map(function ($contact) use ($userId) {
@@ -208,9 +211,9 @@ class ChatController extends Controller
                         'lastSeen' => isset($contact->updated_at) && $contact->updated_at == $contact->created_at
                             ? 'never'
                             : ($contact->updated_at->diffForHumans() ?? 'unknown'),
-                        'role' => ($contact->Role->code === 'student' && $contact->Student)
+                        'role' => ($contact->role->code === 'student' && $contact->Student)
                             ? 'Santri ' . ($contact->Student->major ?? 'unknown')
-                            : ($contact->Role->name ?? 'unknown'),
+                            : ($contact->role->name ?? 'unknown'),
                         'notifCount' => $notifCount,
                     ];
                 });
@@ -224,7 +227,7 @@ class ChatController extends Controller
             // Existing logic showed ALL, which might be heavy. Let's keep it but maybe limit or rely on search?
             // For now, keeping existing behavior but maybe optimized.
             $contacts = User::where('id', '!=', $userId)
-                ->with(['Role', 'Student'])
+                ->with(['roles', 'Student'])
                 ->limit(100) // Safety limit
                 ->get()
                 ->map(function ($contact) use ($userId) {
@@ -241,9 +244,9 @@ class ChatController extends Controller
                         'lastSeen' => isset($contact->updated_at) && $contact->updated_at == $contact->created_at
                             ? 'never'
                             : ($contact->updated_at->diffForHumans() ?? 'unknown'),
-                        'role' => ($contact->Role->code === 'student' && $contact->Student)
+                        'role' => ($contact->role->code === 'student' && $contact->Student)
                             ? 'Santri ' . ($contact->Student->major ?? 'unknown')
-                            : ($contact->Role->name ?? 'unknown'),
+                            : ($contact->role->name ?? 'unknown'),
                         'notifCount' => $notifCount,
                     ];
                 });

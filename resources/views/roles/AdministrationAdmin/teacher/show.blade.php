@@ -27,7 +27,7 @@
                         <strong>Role</strong>
                     </div>
                     <div class="col-md-8">
-                        : {{ $teacher->User->role->name ?? '-' }}
+                        : {{ $teacher->User->roles->pluck('name')->implode(', ') ?? '-' }}
                     </div>
                 </div>
                 <div class="row mb-3">

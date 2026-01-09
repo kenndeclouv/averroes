@@ -3,7 +3,7 @@
 @endphp
 <nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
     id="layout-navbar">
-    @if ($user->Role->code != 'student_registrant')
+    @if (!$user->hasRole('student_registrant'))
         <div class="layout-menu-toggle navbar-nav align-items-xl-center me-4 me-xl-0 d-xl-none">
             <a class="nav-item nav-link px-0 me-xl-6" href="javascript:void(0)">
                 <i class="fa-solid fa-grid-2"></i>
@@ -24,7 +24,7 @@
         </div>
         {{-- <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div> --}}
         <ul class="navbar-nav flex-row align-items-center ms-auto gap-2">
-            {{-- @if ($user->Role->code != 'student_registrant')
+            {{-- @if (!$user->hasRole('student_registrant'))
                 <a href="{{ route('chat.index') }}" class="nav-item nav-link cursor-pointer">
                     <i
                         class="fa-solid fa-message-lines fa-xl {{ request()->routeIs('chat.index') ? 'text-primary' : '' }}"></i>
@@ -74,7 +74,8 @@
                                 </div>
                                 <div class="flex-grow-1">
                                     <h6 class="mb-0">{{ strtoupper($user->name ?? '-') }}</h6>
-                                    <small class="text-muted">{{ $user->Role->name ?? '-' }}</small>
+                                    <small
+                                        class="text-muted">{{ $user->roles->pluck('name')->implode(', ') ?? '-' }}</small>
                                 </div>
                             </div>
                         </a>

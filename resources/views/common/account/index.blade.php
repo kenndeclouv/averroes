@@ -204,7 +204,8 @@
                                     <ul
                                         class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4 mt-4">
                                         <li class="list-inline-item">
-                                            <span class="fw-medium">{{ ucfirst($user->Role->name ?? '-') }}</span>
+                                            <span
+                                                class="fw-medium">{{ ucfirst($user->roles->pluck('name')->implode(', ') ?? '-') }}</span>
                                         </li>
                                         <li class="list-inline-item">
                                             <span class="fw-medium">{{ $user->email }}</span>
@@ -239,19 +240,24 @@
                     <div class="card-body">
                         <small class="card-text text-uppercase text-muted small">About</small>
                         <div class="mt-3">
-                            <i class="text-primary fa fa-user me-2"></i> <span style="opacity: 0.5">Nama</span> <br> <span style="margin-left: 25px"> {{ $user->name ?? '-' }} </span>
+                            <i class="text-primary fa fa-user me-2"></i> <span style="opacity: 0.5">Nama</span> <br> <span
+                                style="margin-left: 25px"> {{ $user->name ?? '-' }} </span>
                         </div>
                         <div class="mt-3">
-                            <i class="text-success fa fa-user me-2"></i> <span style="opacity: 0.5">Username</span> <br> <span style="margin-left: 25px"> {{ $user->username }} </span>
+                            <i class="text-success fa fa-user me-2"></i> <span style="opacity: 0.5">Username</span> <br>
+                            <span style="margin-left: 25px"> {{ $user->username }} </span>
                         </div>
                         <div class="mt-3">
-                            <i class="text-info fa fa-crown me-2"></i> <span style="opacity: 0.5">Role</span> <br> <span style="margin-left: 25px"> {{ $user->Role->name ?? '-' }} </span>
+                            <i class="text-info fa fa-crown me-2"></i> <span style="opacity: 0.5">Role</span> <br> <span
+                                style="margin-left: 25px"> {{ $user->roles->pluck('name')->implode(', ') ?? '-' }} </span>
                         </div>
                         <div class="mt-3">
-                            <i class="text-secondary fa fa-envelope me-2"></i> <span style="opacity: 0.5">Email</span> <br> <span style="margin-left: 25px"> {{ $user->email }} </span>
+                            <i class="text-secondary fa fa-envelope me-2"></i> <span style="opacity: 0.5">Email</span> <br>
+                            <span style="margin-left: 25px"> {{ $user->email }} </span>
                         </div>
                         <div class="mt-3">
-                            <i class="text-warning fa fa-calendar-alt me-2"></i> <span style="opacity: 0.5">Terdaftar</span> <br> <span style="margin-left: 25px"> {{ formatDate($user->created_at) }} </span>
+                            <i class="text-warning fa fa-calendar-alt me-2"></i> <span style="opacity: 0.5">Terdaftar</span>
+                            <br> <span style="margin-left: 25px"> {{ formatDate($user->created_at) }} </span>
                         </div>
                     </div>
                 </div>
@@ -285,20 +291,20 @@
                             <div class="row g-6">
                                 <div class="col-md-6 fv-plugins-icon-container">
                                     <label for="name" class="form-label">Nama</label>
-                                    <input class="form-control @error('name') is-invalid @enderror" type="text" id="name" name="name"
-                                        value="{{ $user->name }}">
+                                    <input class="form-control @error('name') is-invalid @enderror" type="text"
+                                        id="name" name="name" value="{{ $user->name }}">
                                     @errorFeedback('name')
                                 </div>
                                 <div class="col-md-6 fv-plugins-icon-container">
                                     <label for="username" class="form-label">Username</label>
-                                    <input class="form-control @error('username') is-invalid @enderror" type="text" name="username" id="username"
-                                        value="{{ $user->username }}">
+                                    <input class="form-control @error('username') is-invalid @enderror" type="text"
+                                        name="username" id="username" value="{{ $user->username }}">
                                     @errorFeedback('username')
                                 </div>
                                 <div class="col-md-6 fv-plugins-icon-container">
                                     <label for="email" class="form-label">Email</label>
-                                    <input class="form-control @error('email') is-invalid @enderror" type="text" name="email" id="email"
-                                        value="{{ $user->email }}">
+                                    <input class="form-control @error('email') is-invalid @enderror" type="text"
+                                        name="email" id="email" value="{{ $user->email }}">
                                     @errorFeedback('email')
                                 </div>
                             </div>
@@ -326,7 +332,8 @@
                                     <div class="mb-4 col-12 col-sm-6 form-password-toggle fv-plugins-icon-container">
                                         <label class="form-label" for="newPassword">New Password</label>
                                         <div class="input-group input-group-merge has-validation">
-                                            <input class="form-control @error('password') is-invalid @enderror" type="password" id="newPassword" name="password"
+                                            <input class="form-control @error('password') is-invalid @enderror"
+                                                type="password" id="newPassword" name="password"
                                                 placeholder="············">
                                             <span class="input-group-text cursor-pointer"><i
                                                     class="fa fa-eye-slash"></i></span>
@@ -338,8 +345,10 @@
                                         <label class="form-label" for="confirmPassword">Confirm New
                                             Password</label>
                                         <div class="input-group input-group-merge has-validation">
-                                            <input class="form-control @error('password_confirmation') is-invalid @enderror" type="password" name="password_confirmation"
-                                                id="confirmPassword" placeholder="············">
+                                            <input
+                                                class="form-control @error('password_confirmation') is-invalid @enderror"
+                                                type="password" name="password_confirmation" id="confirmPassword"
+                                                placeholder="············">
                                             <span class="input-group-text cursor-pointer"><i
                                                     class="fa fa-eye-slash"></i></span>
                                         </div>
@@ -355,328 +364,388 @@
                         </div>
                     </div>
                 </form>
-                @switch($user->Role->code)
-                    @case('teacher')
-                        <form action="{{ route('account.update-teacher', $user->Teacher->id) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <div class="card mb-6">
-                                <!-- Account -->
-                                <h5 class="card-header border-bottom mb-4">Informasi Tambahan</h5>
-                                <div class="card-body pt-4">
-                                    <div class="row g-6">
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="name" class="form-label">Nama</label>
-                                            <input class="form-control @error('name') is-invalid @enderror" type="text" id="name" placeholder="-"
-                                                name="name" value="{{ $user->Teacher->name ?? '' }}">
-                                            @errorFeedback('name')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="gender" class="form-label">Jenis Kelamin</label>
-                                            <select class="form-control select2 @error('gender') is-invalid @enderror" id="gender" name="gender">
-                                                <option value="">Pilih Jenis Kelamin</option>
-                                                <option value="male" {{ ($user->Teacher->gender ?? '') == 'male' ? 'selected' : '' }}>Laki-laki</option>
-                                                <option value="female" {{ ($user->Teacher->gender ?? '') == 'female' ? 'selected' : '' }}>Perempuan</option>
-                                            </select>
-                                            @errorFeedback('gender')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="birth_date" class="form-label">Tanggal Lahir</label>
-                                            <input class="form-control @error('birth_date') is-invalid @enderror" type="date" id="birth_date" placeholder="-"
-                                                name="birth_date" value="{{ $user->Teacher->birth_date ?? '' }}">
-                                            @errorFeedback('birth_date')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="birth_place" class="form-label">Tempat Lahir</label>
-                                            <input class="form-control @error('birth_place') is-invalid @enderror" type="text" id="birth_place" placeholder="-"
-                                                name="birth_place" value="{{ $user->Teacher->birth_place ?? '' }}">
-                                            @errorFeedback('birth_place')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="last_degree" class="form-label">Pendidikan Terakhir</label>
-                                            <input class="form-control @error('last_degree') is-invalid @enderror" type="text" id="last_degree" placeholder="-"
-                                                name="last_degree" value="{{ $user->Teacher->last_degree ?? '' }}">
-                                            @errorFeedback('last_degree')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="phone" class="form-label">No. Telp</label>
-                                            <input class="form-control @error('phone') is-invalid @enderror" type="text" id="phone" placeholder="-"
-                                                name="phone" value="{{ $user->Teacher->phone ?? '' }}">
-                                            @errorFeedback('phone')
-                                        </div>
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="address" class="form-label">Alamat</label>
-                                            <textarea class="form-control @error('address') is-invalid @enderror" id="address" placeholder="-" name="address">{{ $user->Teacher->address ?? '' }}</textarea>
-                                            @errorFeedback('address')
-                                        </div>
+                @if ($user->hasRole('teacher') && $user->Teacher)
+                    <form action="{{ route('account.update-teacher', $user->Teacher->id) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="card mb-6">
+                            <!-- Account -->
+                            <h5 class="card-header border-bottom mb-4">Informasi Tambahan (Pegawai)</h5>
+                            <div class="card-body pt-4">
+                                <div class="row g-6">
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="name" class="form-label">Nama</label>
+                                        <input class="form-control @error('name') is-invalid @enderror" type="text"
+                                            id="name" placeholder="-" name="name"
+                                            value="{{ $user->Teacher->name ?? '' }}">
+                                        @errorFeedback('name')
                                     </div>
-                                    <div class="mt-6">
-                                        <button type="submit" class="btn btn-primary me-3">Simpan Perubahan</button>
-                                        <button type="reset" class="btn btn-label-secondary">Batalkan</button>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="gender" class="form-label">Jenis Kelamin</label>
+                                        <select class="form-control select2 @error('gender') is-invalid @enderror"
+                                            id="gender" name="gender">
+                                            <option value="">Pilih Jenis Kelamin</option>
+                                            <option value="male"
+                                                {{ ($user->Teacher->gender ?? '') == 'male' ? 'selected' : '' }}>Laki-laki
+                                            </option>
+                                            <option value="female"
+                                                {{ ($user->Teacher->gender ?? '') == 'female' ? 'selected' : '' }}>
+                                                Perempuan</option>
+                                        </select>
+                                        @errorFeedback('gender')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="birth_date" class="form-label">Tanggal Lahir</label>
+                                        <input class="form-control @error('birth_date') is-invalid @enderror"
+                                            type="date" id="birth_date" placeholder="-" name="birth_date"
+                                            value="{{ $user->Teacher->birth_date ?? '' }}">
+                                        @errorFeedback('birth_date')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="birth_place" class="form-label">Tempat Lahir</label>
+                                        <input class="form-control @error('birth_place') is-invalid @enderror"
+                                            type="text" id="birth_place" placeholder="-" name="birth_place"
+                                            value="{{ $user->Teacher->birth_place ?? '' }}">
+                                        @errorFeedback('birth_place')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="last_degree" class="form-label">Pendidikan Terakhir</label>
+                                        <input class="form-control @error('last_degree') is-invalid @enderror"
+                                            type="text" id="last_degree" placeholder="-" name="last_degree"
+                                            value="{{ $user->Teacher->last_degree ?? '' }}">
+                                        @errorFeedback('last_degree')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="phone" class="form-label">No. Telp</label>
+                                        <input class="form-control @error('phone') is-invalid @enderror" type="text"
+                                            id="phone" placeholder="-" name="phone"
+                                            value="{{ $user->Teacher->phone ?? '' }}">
+                                        @errorFeedback('phone')
+                                    </div>
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="address" class="form-label">Alamat</label>
+                                        <textarea class="form-control @error('address') is-invalid @enderror" id="address" placeholder="-"
+                                            name="address">{{ $user->Teacher->address ?? '' }}</textarea>
+                                        @errorFeedback('address')
                                     </div>
                                 </div>
-                                <!-- /Account -->
+                                <div class="mt-6">
+                                    <button type="submit" class="btn btn-primary me-3">Simpan Perubahan</button>
+                                    <button type="reset" class="btn btn-label-secondary">Batalkan</button>
+                                </div>
                             </div>
-                        </form>
-                    @break
+                            <!-- /Account -->
+                        </div>
+                    </form>
+                @endif
 
-                    @case('student')
-                        <form action="{{ route('account.update-student', $user->Student->id) }}" method="POST"
-                            enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <div class="card mb-6">
-                                <!-- Account -->
-                                <h5 class="card-header border-bottom mb-4">Informasi {{ $user->Role->name }}</h5>
-                                <div class="card-body pt-4">
-                                    <div class="row g-6">
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="full_name" class="form-label">Nama Lengkap</label>
-                                            <input class="form-control @error('full_name') is-invalid @enderror" type="text" id="full_name" placeholder="-"
-                                                name="full_name" value="{{ $user->Student->full_name ?? '' }}">
-                                            @errorFeedback('full_name')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="gender" class="form-label">Jenis Kelamin</label>
-                                            <select class="form-control select2" id="gender" name="gender">
-                                                <option value="">Pilih Jenis Kelamin</option>
-                                                <option value="male" {{ ($user->Student->gender ?? '') == 'male' ? 'selected' : '' }}>Laki-laki</option>
-                                                <option value="female" {{ ($user->Student->gender ?? '') == 'female' ? 'selected' : '' }}>Perempuan</option>
-                                            </select>
-                                            @errorFeedback('gender')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="birth_date" class="form-label">Tanggal Lahir</label>
-                                            <input class="form-control @error('birth_date') is-invalid @enderror" type="date" id="birth_date" placeholder="-"
-                                                name="birth_date" value="{{ $user->Student->birth_date ?? '' }}">
-                                            @errorFeedback('birth_date')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="birth_place" class="form-label">Tempat Lahir</label>
-                                            <input class="form-control @error('birth_place') is-invalid @enderror" type="text" id="birth_place" placeholder="-"
-                                                name="birth_place" value="{{ $user->Student->birth_place ?? '' }}">
-                                            @errorFeedback('birth_place')
-                                        </div>
+                @if ($user->hasRole('student') && $user->Student)
+                    <form action="{{ route('account.update-student', $user->Student->id) }}" method="POST"
+                        enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+                        <div class="card mb-6">
+                            <!-- Account -->
+                            <h5 class="card-header border-bottom mb-4">Informasi Santri</h5>
+                            <div class="card-body pt-4">
+                                <div class="row g-6">
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="full_name" class="form-label">Nama Lengkap</label>
+                                        <input class="form-control @error('full_name') is-invalid @enderror"
+                                            type="text" id="full_name" placeholder="-" name="full_name"
+                                            value="{{ $user->Student->full_name ?? '' }}">
+                                        @errorFeedback('full_name')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="gender" class="form-label">Jenis Kelamin</label>
+                                        <select class="form-control select2" id="gender" name="gender">
+                                            <option value="">Pilih Jenis Kelamin</option>
+                                            <option value="male"
+                                                {{ ($user->Student->gender ?? '') == 'male' ? 'selected' : '' }}>Laki-laki
+                                            </option>
+                                            <option value="female"
+                                                {{ ($user->Student->gender ?? '') == 'female' ? 'selected' : '' }}>
+                                                Perempuan</option>
+                                        </select>
+                                        @errorFeedback('gender')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="birth_date" class="form-label">Tanggal Lahir</label>
+                                        <input class="form-control @error('birth_date') is-invalid @enderror"
+                                            type="date" id="birth_date" placeholder="-" name="birth_date"
+                                            value="{{ $user->Student->birth_date ?? '' }}">
+                                        @errorFeedback('birth_date')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="birth_place" class="form-label">Tempat Lahir</label>
+                                        <input class="form-control @error('birth_place') is-invalid @enderror"
+                                            type="text" id="birth_place" placeholder="-" name="birth_place"
+                                            value="{{ $user->Student->birth_place ?? '' }}">
+                                        @errorFeedback('birth_place')
+                                    </div>
 
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="education_sd" class="form-label">Pendidikan SD</label>
-                                            <input class="form-control @error('education_sd') is-invalid @enderror" type="text" id="education_sd" placeholder="-"
-                                                name="education_sd" value="{{ $user->Student->education_sd ?? '' }}">
-                                            @errorFeedback('education_sd')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="education_smp" class="form-label">Pendidikan SMP</label>
-                                            <input class="form-control @error('education_smp') is-invalid @enderror" type="text" id="education_smp" placeholder="-"
-                                                name="education_smp" value="{{ $user->Student->education_smp ?? '' }}">
-                                            @errorFeedback('education_smp')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="nisn" class="form-label">NISN</label>
-                                            <input class="form-control @error('nisn') is-invalid @enderror" type="text" id="nisn" placeholder="-"
-                                                name="nisn" value="{{ $user->Student->nisn ?? '' }}">
-                                            @errorFeedback('nisn')
-                                        </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="education_sd" class="form-label">Pendidikan SD</label>
+                                        <input class="form-control @error('education_sd') is-invalid @enderror"
+                                            type="text" id="education_sd" placeholder="-" name="education_sd"
+                                            value="{{ $user->Student->education_sd ?? '' }}">
+                                        @errorFeedback('education_sd')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="education_smp" class="form-label">Pendidikan SMP</label>
+                                        <input class="form-control @error('education_smp') is-invalid @enderror"
+                                            type="text" id="education_smp" placeholder="-" name="education_smp"
+                                            value="{{ $user->Student->education_smp ?? '' }}">
+                                        @errorFeedback('education_smp')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="nisn" class="form-label">NISN</label>
+                                        <input class="form-control @error('nisn') is-invalid @enderror" type="text"
+                                            id="nisn" placeholder="-" name="nisn"
+                                            value="{{ $user->Student->nisn ?? '' }}">
+                                        @errorFeedback('nisn')
+                                    </div>
 
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="quran_memorization" class="form-label">Hafalan Al-Quran</label>
-                                            <input class="form-control @error('quran_memorization') is-invalid @enderror" type="text" id="quran_memorization" placeholder="-"
-                                                name="quran_memorization" value="{{ $user->Student->quran_memorization ?? '' }}">
-                                            @errorFeedback('quran_memorization')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="major" class="form-label">Jurusan</label>
-                                            <select class="form-control select2" id="major" name="major">
-                                                <option value="">Pilih Jurusan</option>
-                                                <option value="DKV"
-                                                    {{ ($user->Student->major ?? '') == 'DKV' ? 'selected' : '' }}>DKV</option>
-                                                <option value="RPL"
-                                                    {{ ($user->Student->major ?? '') == 'RPL' ? 'selected' : '' }}>RPL</option>
-                                            </select>
-                                            @errorFeedback('major')
-                                        </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="quran_memorization" class="form-label">Hafalan Al-Quran</label>
+                                        <input class="form-control @error('quran_memorization') is-invalid @enderror"
+                                            type="text" id="quran_memorization" placeholder="-"
+                                            name="quran_memorization"
+                                            value="{{ $user->Student->quran_memorization ?? '' }}">
+                                        @errorFeedback('quran_memorization')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="major" class="form-label">Jurusan</label>
+                                        <select class="form-control select2" id="major" name="major">
+                                            <option value="">Pilih Jurusan</option>
+                                            <option value="DKV"
+                                                {{ ($user->Student->major ?? '') == 'DKV' ? 'selected' : '' }}>DKV</option>
+                                            <option value="RPL"
+                                                {{ ($user->Student->major ?? '') == 'RPL' ? 'selected' : '' }}>RPL</option>
+                                        </select>
+                                        @errorFeedback('major')
+                                    </div>
 
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="father_name" class="form-label">Nama Ayah</label>
-                                            <input class="form-control @error('father_name') is-invalid @enderror" type="text" id="father_name" placeholder="-"
-                                                name="father_name" value="{{ $user->Student->father_name ?? '' }}">
-                                            @errorFeedback('father_name')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="father_occupation" class="form-label">Pekerjaan Ayah</label>
-                                            <input class="form-control @error('father_occupation') is-invalid @enderror" type="text" id="father_occupation" placeholder="-"
-                                                name="father_occupation" value="{{ $user->Student->father_occupation ?? '' }}">
-                                            @errorFeedback('father_occupation')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="father_income" class="form-label">Penghasilan Ayah</label>
-                                            <input class="form-control @error('father_income') is-invalid @enderror" type="number" id="father_income" placeholder="-"
-                                                name="father_income" value="{{ $user->Student->father_income ?? '' }}">
-                                            @errorFeedback('father_income')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="mother_name" class="form-label">Nama Ibu</label>
-                                            <input class="form-control @error('mother_name') is-invalid @enderror" type="text" id="mother_name" placeholder="-"
-                                                name="mother_name" value="{{ $user->Student->mother_name ?? '' }}">
-                                            @errorFeedback('mother_name')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="mother_occupation" class="form-label">Pekerjaan Ibu</label>
-                                            <input class="form-control @error('mother_occupation') is-invalid @enderror" type="text" id="mother_occupation" placeholder="-"
-                                                name="mother_occupation" value="{{ $user->Student->mother_occupation ?? '' }}">
-                                            @errorFeedback('mother_occupation')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="mother_income" class="form-label">Penghasilan Ibu</label>
-                                            <input class="form-control @error('mother_income') is-invalid @enderror" type="number" id="mother_income" placeholder="-"
-                                                name="mother_income" value="{{ $user->Student->mother_income ?? '' }}">
-                                            @errorFeedback('mother_income')
-                                        </div>
-                                        <div class="col-md-6 fv-plugins-icon-container">
-                                            <label for="parent_whatsapp" class="form-label">WhatsApp Orang Tua</label>
-                                            <input class="form-control @error('parent_whatsapp') is-invalid @enderror" type="text" id="parent_whatsapp" placeholder="-"
-                                                name="parent_whatsapp" value="{{ $user->Student->parent_whatsapp ?? '' }}">
-                                            @errorFeedback('parent_whatsapp')
-                                        </div>
-                                        <div class="col-12 fv-plugins-icon-container">
-                                            <label for="student_status" class="form-label">Status Siswa</label>
-                                            <select class="form-control select2" id="student_status" name="student_status">
-                                                <option value="">Pilih Status</option>
-                                                <option value="Non Yatim Piatu"
-                                                    {{ ($user->Student->student_status ?? '') == 'Non Yatim Piatu' ? 'selected' : '' }}>
-                                                    Non Yatim Piatu</option>
-                                                <option value="Yatim"
-                                                    {{ ($user->Student->student_status ?? '') == 'Yatim' ? 'selected' : '' }}>Yatim
-                                                </option>
-                                                <option value="Piatu"
-                                                    {{ ($user->Student->student_status ?? '') == 'Piatu' ? 'selected' : '' }}>Piatu
-                                                </option>
-                                                <option value="Yatim Piatu"
-                                                    {{ ($user->Student->student_status ?? '') == 'Yatim Piatu' ? 'selected' : '' }}>
-                                                    Yatim Piatu</option>
-                                            </select>
-                                            @errorFeedback('student_status')
-                                        </div>
-                                        <div class="col-12 fv-plugins-icon-container">
-                                            <label for="uniform_size">Ukuran Seragam</label>
-                                            <div class="row">
-                                                <div class="col-12 col-md-8">
-                                                    <select class="form-select select2 @error('uniform_size') is-invalid @enderror"
-                                                        id="uniform_size" name="uniform_size">
-                                                        <option value="" disabled selected>Pilih Ukuran Seragam</option>
-                                                        <option value="S" {{ ($user->Student->uniform_size ?? '') == 'S' ? 'selected' : '' }}>S</option>
-                                                        <option value="M" {{ ($user->Student->uniform_size ?? '') == 'M' ? 'selected' : '' }}>M</option>
-                                                        <option value="L" {{ ($user->Student->uniform_size ?? '') == 'L' ? 'selected' : '' }}>L</option>
-                                                        <option value="XL" {{ ($user->Student->uniform_size ?? '') == 'XL' ? 'selected' : '' }}>XL</option>
-                                                        <option value="2XL" {{ ($user->Student->uniform_size ?? '') == '2XL' ? 'selected' : '' }}>2XL</option>
-                                                        <option value="3XL" {{ ($user->Student->uniform_size ?? '') == '3XL' ? 'selected' : '' }}>3XL</option>
-                                                    </select>
-                                                    @errorFeedback('uniform_size')
-                                                </div>
-                                                <div class="col-12 col-md-4">
-                                                    <button type="button" class="btn btn-info w-100" data-bs-toggle="modal"
-                                                        data-bs-target="#uniformSizeModal">
-                                                        <i class="fa-solid fa-info-circle me-2"></i> Ukuran Seragam
-                                                    </button>
-                                                </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="father_name" class="form-label">Nama Ayah</label>
+                                        <input class="form-control @error('father_name') is-invalid @enderror"
+                                            type="text" id="father_name" placeholder="-" name="father_name"
+                                            value="{{ $user->Student->father_name ?? '' }}">
+                                        @errorFeedback('father_name')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="father_occupation" class="form-label">Pekerjaan Ayah</label>
+                                        <input class="form-control @error('father_occupation') is-invalid @enderror"
+                                            type="text" id="father_occupation" placeholder="-"
+                                            name="father_occupation"
+                                            value="{{ $user->Student->father_occupation ?? '' }}">
+                                        @errorFeedback('father_occupation')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="father_income" class="form-label">Penghasilan Ayah</label>
+                                        <input class="form-control @error('father_income') is-invalid @enderror"
+                                            type="number" id="father_income" placeholder="-" name="father_income"
+                                            value="{{ $user->Student->father_income ?? '' }}">
+                                        @errorFeedback('father_income')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="mother_name" class="form-label">Nama Ibu</label>
+                                        <input class="form-control @error('mother_name') is-invalid @enderror"
+                                            type="text" id="mother_name" placeholder="-" name="mother_name"
+                                            value="{{ $user->Student->mother_name ?? '' }}">
+                                        @errorFeedback('mother_name')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="mother_occupation" class="form-label">Pekerjaan Ibu</label>
+                                        <input class="form-control @error('mother_occupation') is-invalid @enderror"
+                                            type="text" id="mother_occupation" placeholder="-"
+                                            name="mother_occupation"
+                                            value="{{ $user->Student->mother_occupation ?? '' }}">
+                                        @errorFeedback('mother_occupation')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="mother_income" class="form-label">Penghasilan Ibu</label>
+                                        <input class="form-control @error('mother_income') is-invalid @enderror"
+                                            type="number" id="mother_income" placeholder="-" name="mother_income"
+                                            value="{{ $user->Student->mother_income ?? '' }}">
+                                        @errorFeedback('mother_income')
+                                    </div>
+                                    <div class="col-md-6 fv-plugins-icon-container">
+                                        <label for="parent_whatsapp" class="form-label">WhatsApp Orang Tua</label>
+                                        <input class="form-control @error('parent_whatsapp') is-invalid @enderror"
+                                            type="text" id="parent_whatsapp" placeholder="-" name="parent_whatsapp"
+                                            value="{{ $user->Student->parent_whatsapp ?? '' }}">
+                                        @errorFeedback('parent_whatsapp')
+                                    </div>
+                                    <div class="col-12 fv-plugins-icon-container">
+                                        <label for="student_status" class="form-label">Status Siswa</label>
+                                        <select class="form-control select2" id="student_status" name="student_status">
+                                            <option value="">Pilih Status</option>
+                                            <option value="Non Yatim Piatu"
+                                                {{ ($user->Student->student_status ?? '') == 'Non Yatim Piatu' ? 'selected' : '' }}>
+                                                Non Yatim Piatu</option>
+                                            <option value="Yatim"
+                                                {{ ($user->Student->student_status ?? '') == 'Yatim' ? 'selected' : '' }}>
+                                                Yatim
+                                            </option>
+                                            <option value="Piatu"
+                                                {{ ($user->Student->student_status ?? '') == 'Piatu' ? 'selected' : '' }}>
+                                                Piatu
+                                            </option>
+                                            <option value="Yatim Piatu"
+                                                {{ ($user->Student->student_status ?? '') == 'Yatim Piatu' ? 'selected' : '' }}>
+                                                Yatim Piatu</option>
+                                        </select>
+                                        @errorFeedback('student_status')
+                                    </div>
+                                    <div class="col-12 fv-plugins-icon-container">
+                                        <label for="uniform_size">Ukuran Seragam</label>
+                                        <div class="row">
+                                            <div class="col-12 col-md-8">
+                                                <select
+                                                    class="form-select select2 @error('uniform_size') is-invalid @enderror"
+                                                    id="uniform_size" name="uniform_size">
+                                                    <option value="" disabled selected>Pilih Ukuran Seragam</option>
+                                                    <option value="S"
+                                                        {{ ($user->Student->uniform_size ?? '') == 'S' ? 'selected' : '' }}>
+                                                        S
+                                                    </option>
+                                                    <option value="M"
+                                                        {{ ($user->Student->uniform_size ?? '') == 'M' ? 'selected' : '' }}>
+                                                        M
+                                                    </option>
+                                                    <option value="L"
+                                                        {{ ($user->Student->uniform_size ?? '') == 'L' ? 'selected' : '' }}>
+                                                        L
+                                                    </option>
+                                                    <option value="XL"
+                                                        {{ ($user->Student->uniform_size ?? '') == 'XL' ? 'selected' : '' }}>
+                                                        XL
+                                                    </option>
+                                                    <option value="2XL"
+                                                        {{ ($user->Student->uniform_size ?? '') == '2XL' ? 'selected' : '' }}>
+                                                        2XL</option>
+                                                    <option value="3XL"
+                                                        {{ ($user->Student->uniform_size ?? '') == '3XL' ? 'selected' : '' }}>
+                                                        3XL</option>
+                                                </select>
+                                                @errorFeedback('uniform_size')
+                                            </div>
+                                            <div class="col-12 col-md-4">
+                                                <button type="button" class="btn btn-info w-100" data-bs-toggle="modal"
+                                                    data-bs-target="#uniformSizeModal">
+                                                    <i class="fa-solid fa-info-circle me-2"></i> Ukuran Seragam
+                                                </button>
                                             </div>
                                         </div>
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="attachment_family_register" class="form-label">Kartu Keluarga</label>
-                                            <input class="form-control @error('attachment_family_register') is-invalid @enderror" type="file" id="attachment_family_register"
-                                                name="attachment_family_register">
-                                            @errorFeedback('attachment_family_register')
-                                            @if ($user->Student->attachment_family_register)
-                                                <a href="{{ $user->Student->attachment_family_register }}" target="_blank">Lihat
-                                                    Lampiran</a>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="attachment_birth_certificate" class="form-label">Akta Kelahiran</label>
-                                            <input class="form-control @error('attachment_birth_certificate') is-invalid @enderror" type="file" id="attachment_birth_certificate"
-                                                name="attachment_birth_certificate">
-                                            @errorFeedback('attachment_birth_certificate')
-                                            @if ($user->Student->attachment_birth_certificate)
-                                                <a href="{{ $user->Student->attachment_birth_certificate }}"
-                                                    target="_blank">Lihat
-                                                    Lampiran</a>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="attachment_diploma" class="form-label">Ijazah</label>
-                                            <input class="form-control @error('attachment_diploma') is-invalid @enderror" type="file" id="attachment_diploma"
-                                                name="attachment_diploma">
-                                            @errorFeedback('attachment_diploma')
-                                            @if ($user->Student->attachment_diploma)
-                                                <a href="{{ $user->Student->attachment_diploma }}" target="_blank">Lihat
-                                                    Lampiran</a>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="attachment_father_identity_card" class="form-label">KTP Ayah</label>
-                                            <input class="form-control @error('attachment_father_identity_card') is-invalid @enderror" type="file" id="attachment_father_identity_card"
-                                                name="attachment_father_identity_card">
-                                            @errorFeedback('attachment_father_identity_card')
-                                            @if ($user->Student->attachment_father_identity_card)
-                                                <a href="{{ $user->Student->attachment_father_identity_card }}"
-                                                    target="_blank">Lihat
-                                                    Lampiran</a>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="attachment_mother_identity_card" class="form-label">KTP Ibu</label>
-                                            <input class="form-control @error('attachment_mother_identity_card') is-invalid @enderror" type="file" id="attachment_mother_identity_card"
-                                                name="attachment_mother_identity_card">
-                                            @errorFeedback('attachment_mother_identity_card')
-                                            @if ($user->Student->attachment_mother_identity_card)
-                                                <a href="{{ $user->Student->attachment_mother_identity_card }}"
-                                                    target="_blank">Lihat
-                                                    Lampiran</a>
-                                            @endif
-                                        </div>
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="school_motivation" class="form-label">Motivasi Sekolah</label>
-                                            <textarea class="form-control @error('school_motivation') is-invalid @enderror" id="school_motivation" placeholder="-" name="school_motivation">{{ $user->Student->school_motivation ?? '' }}</textarea>
-                                            @errorFeedback('school_motivation')
-                                        </div>
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="address" class="form-label">Alamat</label>
-                                            <textarea class="form-control @error('address') is-invalid @enderror" id="address" placeholder="-" name="address">{{ $user->Student->address ?? '' }}</textarea>
-                                            @errorFeedback('address')
-                                        </div>
-
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="sibling_info" class="form-label">Informasi Saudara</label>
-                                            <textarea class="form-control @error('sibling_info') is-invalid @enderror" id="sibling_info" placeholder="-" name="sibling_info">{{ $user->Student->sibling_info ?? '' }}</textarea>
-                                            @errorFeedback('sibling_info')
-                                        </div>
-
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="achievements" class="form-label">Prestasi</label>
-                                            <textarea class="form-control @error('achievements') is-invalid @enderror" id="achievements" placeholder="-" name="achievements">{{ $user->Student->achievements ?? '' }}</textarea>
-                                            @errorFeedback('achievements')
-                                        </div>
-
-                                        <div class="col-md-12 fv-plugins-icon-container">
-                                            <label for="medical_history" class="form-label">Riwayat Kesehatan</label>
-                                            <textarea class="form-control @error('medical_history') is-invalid @enderror" id="medical_history" placeholder="-" name="medical_history">{{ $user->Student->medical_history ?? '' }}</textarea>
-                                            @errorFeedback('medical_history')
-                                        </div>
                                     </div>
-                                    <div class="mt-6">
-                                        <button type="submit" class="btn btn-primary me-3">Simpan Perubahan</button>
-                                        <button type="reset" class="btn btn-label-secondary">Batalkan</button>
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="attachment_family_register" class="form-label">Kartu Keluarga</label>
+                                        <input
+                                            class="form-control @error('attachment_family_register') is-invalid @enderror"
+                                            type="file" id="attachment_family_register"
+                                            name="attachment_family_register">
+                                        @errorFeedback('attachment_family_register')
+                                        @if ($user->Student->attachment_family_register)
+                                            <a href="{{ $user->Student->attachment_family_register }}"
+                                                target="_blank">Lihat
+                                                Lampiran</a>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="attachment_birth_certificate" class="form-label">Akta
+                                            Kelahiran</label>
+                                        <input
+                                            class="form-control @error('attachment_birth_certificate') is-invalid @enderror"
+                                            type="file" id="attachment_birth_certificate"
+                                            name="attachment_birth_certificate">
+                                        @errorFeedback('attachment_birth_certificate')
+                                        @if ($user->Student->attachment_birth_certificate)
+                                            <a href="{{ $user->Student->attachment_birth_certificate }}"
+                                                target="_blank">Lihat
+                                                Lampiran</a>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="attachment_diploma" class="form-label">Ijazah</label>
+                                        <input class="form-control @error('attachment_diploma') is-invalid @enderror"
+                                            type="file" id="attachment_diploma" name="attachment_diploma">
+                                        @errorFeedback('attachment_diploma')
+                                        @if ($user->Student->attachment_diploma)
+                                            <a href="{{ $user->Student->attachment_diploma }}" target="_blank">Lihat
+                                                Lampiran</a>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="attachment_father_identity_card" class="form-label">KTP Ayah</label>
+                                        <input
+                                            class="form-control @error('attachment_father_identity_card') is-invalid @enderror"
+                                            type="file" id="attachment_father_identity_card"
+                                            name="attachment_father_identity_card">
+                                        @errorFeedback('attachment_father_identity_card')
+                                        @if ($user->Student->attachment_father_identity_card)
+                                            <a href="{{ $user->Student->attachment_father_identity_card }}"
+                                                target="_blank">Lihat
+                                                Lampiran</a>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="attachment_mother_identity_card" class="form-label">KTP Ibu</label>
+                                        <input
+                                            class="form-control @error('attachment_mother_identity_card') is-invalid @enderror"
+                                            type="file" id="attachment_mother_identity_card"
+                                            name="attachment_mother_identity_card">
+                                        @errorFeedback('attachment_mother_identity_card')
+                                        @if ($user->Student->attachment_mother_identity_card)
+                                            <a href="{{ $user->Student->attachment_mother_identity_card }}"
+                                                target="_blank">Lihat
+                                                Lampiran</a>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="school_motivation" class="form-label">Motivasi Sekolah</label>
+                                        <textarea class="form-control @error('school_motivation') is-invalid @enderror" id="school_motivation"
+                                            placeholder="-" name="school_motivation">{{ $user->Student->school_motivation ?? '' }}</textarea>
+                                        @errorFeedback('school_motivation')
+                                    </div>
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="address" class="form-label">Alamat</label>
+                                        <textarea class="form-control @error('address') is-invalid @enderror" id="address" placeholder="-"
+                                            name="address">{{ $user->Student->address ?? '' }}</textarea>
+                                        @errorFeedback('address')
+                                    </div>
+
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="sibling_info" class="form-label">Informasi Saudara</label>
+                                        <textarea class="form-control @error('sibling_info') is-invalid @enderror" id="sibling_info" placeholder="-"
+                                            name="sibling_info">{{ $user->Student->sibling_info ?? '' }}</textarea>
+                                        @errorFeedback('sibling_info')
+                                    </div>
+
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="achievements" class="form-label">Prestasi</label>
+                                        <textarea class="form-control @error('achievements') is-invalid @enderror" id="achievements" placeholder="-"
+                                            name="achievements">{{ $user->Student->achievements ?? '' }}</textarea>
+                                        @errorFeedback('achievements')
+                                    </div>
+
+                                    <div class="col-md-12 fv-plugins-icon-container">
+                                        <label for="medical_history" class="form-label">Riwayat Kesehatan</label>
+                                        <textarea class="form-control @error('medical_history') is-invalid @enderror" id="medical_history" placeholder="-"
+                                            name="medical_history">{{ $user->Student->medical_history ?? '' }}</textarea>
+                                        @errorFeedback('medical_history')
                                     </div>
                                 </div>
-                                <!-- /Account -->
+                                <div class="mt-6">
+                                    <button type="submit" class="btn btn-primary me-3">Simpan Perubahan</button>
+                                    <button type="reset" class="btn btn-label-secondary">Batalkan</button>
+                                </div>
                             </div>
-                        </form>
-                    @break
-
-                    @default
-                    @break
-
-                @endswitch
+                            <!-- /Account -->
+                        </div>
+                    </form>
+                @endif
             </div>
         </div>
         <!--/ User Profile Content -->

@@ -25,17 +25,17 @@
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label class="form-label" for="role_id">Role</label>
-                                <select class="form-select select2 @error('role_id') is-invalid @enderror" id="role_id"
-                                    name="role_id" required>
-                                    <option value="">Pilih Role</option>
+                                <label class="form-label" for="roles">Role</label>
+                                <select class="form-select select2 @error('roles') is-invalid @enderror" id="roles"
+                                    name="roles[]" multiple required>
                                     @foreach ($adminRoles as $role)
                                         <option value="{{ $role->id }}"
-                                            {{ old('role_id') == $role->id ? 'selected' : '' }}>{{ $role->name }}
+                                            {{ in_array($role->id, old('roles', [])) ? 'selected' : '' }}>
+                                            {{ $role->name }}
                                         </option>
                                     @endforeach
                                 </select>
-                                @errorFeedback('role_id')
+                                @errorFeedback('roles')
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="name">Nama</label>
@@ -63,7 +63,8 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="password_confirmation">Konfirmasi Kata Sandi</label>
-                                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror"
+                                <input type="password"
+                                    class="form-control @error('password_confirmation') is-invalid @enderror"
                                     id="password_confirmation" name="password_confirmation" required>
                                 @errorFeedback('password_confirmation')
                             </div>

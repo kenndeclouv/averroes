@@ -63,17 +63,17 @@
                                 @errorFeedback('username')
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="role">Role</label>
-                                <select class="form-control select2 @error('role_id') is-invalid @enderror" id="role"
-                                    name="role_id">
-                                    <option value="" disabled>Pilih Role</option>
-                                    <option value="3" {{ old('role_id') == '3' ? 'selected' : '' }}>Pengajar</option>
-                                    <option value="7" {{ old('role_id') == '7' ? 'selected' : '' }}>Bendahara
-                                    </option>
-                                    <option value="8" {{ old('role_id') == '8' ? 'selected' : '' }}>Sarana Prasarana
-                                    </option>
+                                <label class="form-label" for="roles">Role</label>
+                                <select class="form-control select2 @error('roles') is-invalid @enderror" id="roles"
+                                    name="roles[]" multiple required>
+                                    @foreach ($roles as $role)
+                                        <option value="{{ $role->id }}"
+                                            {{ in_array($role->id, old('roles', [])) ? 'selected' : '' }}>
+                                            {{ $role->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
-                                @errorFeedback('role_id')
+                                @errorFeedback('roles')
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="email">Email</label>

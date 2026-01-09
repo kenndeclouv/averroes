@@ -15,6 +15,14 @@
         </li>
     </ul>
 </li>
+<li class="menu-item {{ request()->routeIs('superadmin.user.*') ? 'open active' : '' }}">
+    <a href="{{ route('superadmin.user.index') }}" class="menu-link ">
+        <i class="menu-icon fa-solid fa-users fs-6"></i>
+        <div class="text-truncate">
+            Manajemen User
+        </div>
+    </a>
+</li>
 <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Tools</span>
 </li>

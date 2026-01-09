@@ -31,7 +31,7 @@ class StudentController extends Controller
         $lastNis = Student::selectRaw("nis, CAST(REGEXP_SUBSTR(nis, '[0-9]+') AS UNSIGNED) as nis_number")
             ->orderByDesc('nis_number')
             ->first()
-                ?->nis;
+            ?->nis;
 
         return view('roles.AdministrationAdmin.student.create', compact('classes', 'rooms', 'lastNis'));
     }
@@ -44,9 +44,9 @@ class StudentController extends Controller
 
         // Buat user baru
         $user = User::create(array_merge($validatedUser, [
-            'role_id' => 4,
             'is_active' => true,
         ]));
+        $user->roles()->attach(4);
 
         if (empty($validatedStudent['nis'])) {
             $validatedStudent['nis'] = generateNIS();
@@ -201,7 +201,7 @@ class StudentController extends Controller
     {
         $students = Student::all();
         $lastNis = Student::selectRaw("nis, CAST(REGEXP_SUBSTR(nis, '[0-9]+') AS UNSIGNED) as nis_number")
-        ->orderByDesc('nis_number')
+            ->orderByDesc('nis_number')
             ->first()
             ?->nis;
         return view('roles.AdministrationAdmin.student.nis', compact('students', 'lastNis'));

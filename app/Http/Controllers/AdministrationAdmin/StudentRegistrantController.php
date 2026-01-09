@@ -12,7 +12,9 @@ class StudentRegistrantController extends Controller
 {
     public function indexUser()
     {
-        $studentRegistrants = User::where('role_id', '=', 5)->get();
+        $studentRegistrants = User::whereHas('roles', function ($q) {
+            $q->where('roles.id', 5);
+        })->get();
         return view('roles.AdministrationAdmin.student_registrant.indexuser', compact('studentRegistrants'));
     }
     public function createUser()
@@ -23,9 +25,10 @@ class StudentRegistrantController extends Controller
     {
         $validated = $request->validated();
 
-        $validated['role_id'] = 5;
         $validated['is_active'] = true;
-        User::create($validated);
+        $user = User::create($validated);
+        $user->roles()->attach(5);
+
         return redirect()->route('administrationadmin.studentregistrant.index-user')->with('success', 'User calon santri berhasil dibuat.');
     }
     public function editUser(User $user)
@@ -61,9 +64,7 @@ class StudentRegistrantController extends Controller
         }
 
         // Update user role
-        $studentRegistrant->User()->update([
-            "role_id" => 4
-        ]);
+        $studentRegistrant->User->roles()->sync([4]);
         $studentRegistrant->update([
             'status' => "approved"
         ]);

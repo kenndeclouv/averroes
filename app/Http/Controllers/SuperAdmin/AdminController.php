@@ -15,7 +15,9 @@ class AdminController extends Controller
 
     public function index()
     {
-        $admins = User::whereIn('role_id', $this->adminRoleIds)->get();
+        $admins = User::whereHas('roles', function ($q) {
+            $q->whereIn('roles.id', $this->adminRoleIds);
+        })->get();
         return view('roles.SuperAdmin.admin.index', compact('admins'));
     }
 
@@ -32,10 +34,18 @@ class AdminController extends Controller
             'username' => 'required|unique:users,username',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'role_id' => 'required|integer|exists:roles,id'
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,id'
         ]);
 
-        User::create($validated);
+        $user = User::create([
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'password' => $validated['password'],
+        ]);
+
+        $user->roles()->attach($validated['roles']);
 
         return redirect()->route('superadmin.admin.index')->with('success', 'Admin berhasil ditambahkan.');
     }
@@ -57,9 +67,17 @@ class AdminController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|unique:users,username,' . $admin->username,
             'email' => 'required|string|email|max:255|unique:users,email,' . $admin->id,
+            'roles' => 'required|array',
+            'roles.*' => 'exists:roles,id'
         ]);
 
-        $admin->update($validated);
+        $admin->update([
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+        ]);
+
+        $admin->roles()->sync($validated['roles']);
 
         return redirect()->route('superadmin.admin.index')->with('success', 'Admin berhasil diupdate.');
     }

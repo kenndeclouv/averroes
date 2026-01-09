@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Format penulisan fungsi
  *
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Feature;
+
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -51,10 +53,40 @@ class User extends Authenticatable
     {
         $this->attributes['password'] = bcrypt($value);
     }
-    public function Role()
+
+    public function roles()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsToMany(Role::class);
     }
+
+    /**
+     * Legacy accessor for backward compatibility.
+     * Returns the first role found.
+     */
+    public function getRoleAttribute()
+    {
+        return $this->roles->first();
+    }
+
+    public function hasRole($roleCode)
+    {
+        return $this->roles->contains('code', $roleCode);
+    }
+
+    public function hasAnyRole($roleCodes)
+    {
+        if (is_array($roleCodes)) {
+            foreach ($roleCodes as $code) {
+                if ($this->hasRole($code)) {
+                    return true;
+                }
+            }
+        } else {
+            return $this->hasRole($roleCodes);
+        }
+        return false;
+    }
+
     private function getConsistentColor()
     {
         $hash = md5($this->name ?? 'Averroes');
@@ -80,7 +112,7 @@ class User extends Authenticatable
 
     public function getPermissionCodes()
     {
-        if ($this->Role->code == 'super_admin') {
+        if ($this->hasRole('super_admin')) {
             return Feature::pluck('code');
         }
         if ($this->is_active == true) {

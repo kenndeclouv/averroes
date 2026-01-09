@@ -218,6 +218,12 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'can:isSup
         Route::get('/', [SuperAdminEnv::class, 'index'])->name('index');
         Route::put('update', [SuperAdminEnv::class, 'update'])->name('update');
     });
+
+    Route::prefix('user')->name('user.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\SuperAdmin\UserController::class, 'index'])->name('index');
+        Route::get('edit/{user}', [\App\Http\Controllers\SuperAdmin\UserController::class, 'edit'])->name('edit');
+        Route::put('update/{user}', [\App\Http\Controllers\SuperAdmin\UserController::class, 'update'])->name('update');
+    });
 });
 
 /**

@@ -65,85 +65,80 @@
                                 @errorFeedback('username')
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="role">Role</label>
-                                <select class="form-control select2 @error('role_id') is-invalid @enderror" id="role"
-                                    name="role_id">
-                                    <option value="" disabled>Pilih Role</option>
-                                    <option value="3"
-                                        {{ old('role_id', $teacher->user->role_id) == '3' ? 'selected' : '' }}>
-                                        Pengajar</option>
-                                    <option value="7"
-                                        {{ old('role_id', $teacher->user->role_id) == '7' ? 'selected' : '' }}>
-                                        Bendahara
-                                    </option>
-                                    <option value="8"
-                                        {{ old('role_id', $teacher->user->role_id) == '8' ? 'selected' : '' }}>Sarana
-                                        Prasarana
-                                    </option>
-                                </select>
-                                @errorFeedback('role_id')
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="email">Email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                    id="email" name="email" value="{{ old('email', $teacher->user->email) }}"
-                                    placeholder="Email Pegawai">
-                                @errorFeedback('email')
+                                <div class="mb-3">
+                                    <label class="form-label" for="roles">Role</label>
+                                    <select class="form-control select2 @error('roles') is-invalid @enderror" id="roles"
+                                        name="roles[]" multiple required>
+                                        @foreach ($roles as $role)
+                                            <option value="{{ $role->id }}"
+                                                {{ in_array($role->id, old('roles', $teacher->user->roles->pluck('id')->toArray())) ? 'selected' : '' }}>
+                                                {{ $role->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @errorFeedback('roles')
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="email">Email</label>
+                                    <input type="email" class="form-control @error('email') is-invalid @enderror"
+                                        id="email" name="email" value="{{ old('email', $teacher->user->email) }}"
+                                        placeholder="Email Pegawai">
+                                    @errorFeedback('email')
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-xxl">
-                    <div class="card mb-4">
-                        <div class="card-header d-flex align-items-center justify-content-between">
-                            <h5 class="mb-0">Data Pegawai</h5>
-                        </div>
-                        <div class="card-body">
-                            @if (!$teacher->nip && isset($nipFormat))
-                                <div class="alert alert-info alert-dismissible mb-3" role="alert">
-                                    Format NIP adalah: {{ $nipFormat }}
-                                </div>
-                            @endif
-                            <div class="mb-3">
-                                <label class="form-label" for="full_name">Nama Lengkap</label>
-                                <input type="text" class="form-control @error('full_name') is-invalid @enderror"
-                                    id="full_name" name="full_name" value="{{ old('full_name', $teacher->name) }}"
-                                    placeholder="Nama Lengkap Pegawai">
-                                @errorFeedback('full_name')
+                <div class="row">
+                    <div class="col-xxl">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <h5 class="mb-0">Data Pegawai</h5>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="nip">NIP</label>
-                                <div class="row">
-                                    <div class="col-12 col-lg-8">
-                                        <input type="text" class="form-control @error('nip') is-invalid @enderror"
-                                            id="nip" name="nip" value="{{ old('nip', $teacher->nip) }}"
-                                            placeholder="NIP Pegawai">
-                                        @errorFeedback('nip')
+                            <div class="card-body">
+                                @if (!$teacher->nip && isset($nipFormat))
+                                    <div class="alert alert-info alert-dismissible mb-3" role="alert">
+                                        Format NIP adalah: {{ $nipFormat }}
                                     </div>
-                                    <div class="col-12 col-lg-4">
-                                        <div class="alert alert-info py-2 m-0" role="alert">
-                                            <i class="fa-solid fa-info-circle me-2"></i> Kosongkan NIP jika ingin
-                                            otomatis
+                                @endif
+                                <div class="mb-3">
+                                    <label class="form-label" for="full_name">Nama Lengkap</label>
+                                    <input type="text" class="form-control @error('full_name') is-invalid @enderror"
+                                        id="full_name" name="full_name" value="{{ old('full_name', $teacher->name) }}"
+                                        placeholder="Nama Lengkap Pegawai">
+                                    @errorFeedback('full_name')
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="nip">NIP</label>
+                                    <div class="row">
+                                        <div class="col-12 col-lg-8">
+                                            <input type="text" class="form-control @error('nip') is-invalid @enderror"
+                                                id="nip" name="nip" value="{{ old('nip', $teacher->nip) }}"
+                                                placeholder="NIP Pegawai">
+                                            @errorFeedback('nip')
+                                        </div>
+                                        <div class="col-12 col-lg-4">
+                                            <div class="alert alert-info py-2 m-0" role="alert">
+                                                <i class="fa-solid fa-info-circle me-2"></i> Kosongkan NIP jika ingin
+                                                otomatis
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="gender">Jenis Kelamin</label>
-                                <select class="form-control select2" id="gender" name="gender">
-                                    <option value="" disabled>Pilih Jenis Kelamin</option>
-                                    <option value="male"
-                                        {{ old('gender', $teacher->gender) == 'male' ? 'selected' : '' }}>
-                                        Laki-laki</option>
-                                    <option value="female"
-                                        {{ old('gender', $teacher->gender) == 'female' ? 'selected' : '' }}>
-                                        Perempuan</option>
-                                </select>
-                                @errorFeedback('gender')
-                            </div>
-                            {{-- <div class="mb-3">
+                                <div class="mb-3">
+                                    <label class="form-label" for="gender">Jenis Kelamin</label>
+                                    <select class="form-control select2" id="gender" name="gender">
+                                        <option value="" disabled>Pilih Jenis Kelamin</option>
+                                        <option value="male"
+                                            {{ old('gender', $teacher->gender) == 'male' ? 'selected' : '' }}>
+                                            Laki-laki</option>
+                                        <option value="female"
+                                            {{ old('gender', $teacher->gender) == 'female' ? 'selected' : '' }}>
+                                            Perempuan</option>
+                                    </select>
+                                    @errorFeedback('gender')
+                                </div>
+                                {{-- <div class="mb-3">
                                 <label class="form-label" for="room">Kamar</label>
                                 <select class="form-control select2 @error('room_id') is-invalid @enderror" id="room"
                                     name="room_id">
@@ -157,89 +152,91 @@
                                 </select>
                                 @errorFeedback('room_id')
                             </div> --}}
-                            <div class="mb-3">
-                                <label class="form-label" for="phone">Nomor Telepon</label>
-                                <input type="text" class="form-control @error('phone') is-invalid @enderror"
-                                    id="phone" name="phone" value="{{ old('phone', $teacher->phone) }}"
-                                    placeholder="Nomor Telepon Pegawai">
-                                @errorFeedback('phone')
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="birth_date">Tanggal Lahir</label>
-                                <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
-                                    id="birth_date" name="birth_date"
-                                    value="{{ old('birth_date', $teacher->birth_date) }}">
-                                @errorFeedback('birth_date')
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="birth_place">Tempat Lahir</label>
-                                <input type="text" class="form-control @error('birth_place') is-invalid @enderror"
-                                    id="birth_place" name="birth_place"
-                                    value="{{ old('birth_place', $teacher->birth_place) }}"
-                                    placeholder="Tempat Lahir Pegawai">
-                                @errorFeedback('birth_place')
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="last_degree">Pendidikan Terakhir</label>
-                                <input type="text" class="form-control @error('last_degree') is-invalid @enderror"
-                                    id="last_degree" name="last_degree" placeholder="Pendidikan Terakhir"
-                                    value="{{ old('last_degree', $teacher->last_degree) }}">
-                                @errorFeedback('last_degree')
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="fn_type">Jabatan Fungsional</label>
-                                <select class="form-control select2 @error('fn_type') is-invalid @enderror"
-                                    id="fn_type" name="fn_type[]" multiple>
-                                    @foreach ($FNTypes as $type)
-                                        <option value="{{ $type->id }}" data-slug="{{ $type->slug }}"
-                                            {{ in_array($type->id, old('fn_type', $selectedFNs ?? [])) ? 'selected' : '' }}>
-                                            {{ $type->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @errorFeedback('fn_type')
-
-                                <div id="fn_type_lainnya_div" class="mt-3"
-                                    style="{{ in_array($FNOtherTypeId, old('fn_type', $selectedFNs ?? [])) ? '' : 'display: none;' }}">
-                                    <label class="form-label" for="fn_type_lainnya_des">Jabatan Fungsional Lainnya</label>
-                                    <input type="text" class="form-control" id="fn_type_lainnya_des"
-                                        placeholder="Isi Jabatan Fungsional Lainnya" name="fn_type_lainnya_des"
-                                        value="{{ old('fn_type_lainnya_des', $selectedFNDescription ?? '') }}">
+                                <div class="mb-3">
+                                    <label class="form-label" for="phone">Nomor Telepon</label>
+                                    <input type="text" class="form-control @error('phone') is-invalid @enderror"
+                                        id="phone" name="phone" value="{{ old('phone', $teacher->phone) }}"
+                                        placeholder="Nomor Telepon Pegawai">
+                                    @errorFeedback('phone')
                                 </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label" for="tm_type">Amanah Mengajar</label>
-                                <select class="form-control select2 @error('tm_type') is-invalid @enderror"
-                                    id="tm_type" name="tm_type[]" multiple>
-                                    @foreach ($TMTypes as $type)
-                                        <option value="{{ $type->id }}" data-slug="{{ $type->slug }}"
-                                            {{ in_array($type->id, old('tm_type', $selectedTMs ?? [])) ? 'selected' : '' }}>
-                                            {{ $type->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @errorFeedback('tm_type')
-
-                                <div id="tm_type_lainnya_div" class="mt-3"
-                                    style="{{ in_array($TMOtherTypeId, old('tm_type', $selectedTMs ?? [])) ? '' : 'display: none;' }}">
-                                    <label class="form-label" for="tm_type_lainnya_des">Amanah Mengajar Lainnya</label>
-                                    <input type="text" class="form-control" id="tm_type_lainnya_des"
-                                        placeholder="Isi Amanah Mengajar Lainnya" name="tm_type_lainnya_des"
-                                        value="{{ old('tm_type_lainnya_des', $selectedTMDescription ?? '') }}">
+                                <div class="mb-3">
+                                    <label class="form-label" for="birth_date">Tanggal Lahir</label>
+                                    <input type="date" class="form-control @error('birth_date') is-invalid @enderror"
+                                        id="birth_date" name="birth_date"
+                                        value="{{ old('birth_date', $teacher->birth_date) }}">
+                                    @errorFeedback('birth_date')
                                 </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="birth_place">Tempat Lahir</label>
+                                    <input type="text" class="form-control @error('birth_place') is-invalid @enderror"
+                                        id="birth_place" name="birth_place"
+                                        value="{{ old('birth_place', $teacher->birth_place) }}"
+                                        placeholder="Tempat Lahir Pegawai">
+                                    @errorFeedback('birth_place')
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="last_degree">Pendidikan Terakhir</label>
+                                    <input type="text" class="form-control @error('last_degree') is-invalid @enderror"
+                                        id="last_degree" name="last_degree" placeholder="Pendidikan Terakhir"
+                                        value="{{ old('last_degree', $teacher->last_degree) }}">
+                                    @errorFeedback('last_degree')
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="fn_type">Jabatan Fungsional</label>
+                                    <select class="form-control select2 @error('fn_type') is-invalid @enderror"
+                                        id="fn_type" name="fn_type[]" multiple>
+                                        @foreach ($FNTypes as $type)
+                                            <option value="{{ $type->id }}" data-slug="{{ $type->slug }}"
+                                                {{ in_array($type->id, old('fn_type', $selectedFNs ?? [])) ? 'selected' : '' }}>
+                                                {{ $type->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @errorFeedback('fn_type')
+
+                                    <div id="fn_type_lainnya_div" class="mt-3"
+                                        style="{{ in_array($FNOtherTypeId, old('fn_type', $selectedFNs ?? [])) ? '' : 'display: none;' }}">
+                                        <label class="form-label" for="fn_type_lainnya_des">Jabatan Fungsional
+                                            Lainnya</label>
+                                        <input type="text" class="form-control" id="fn_type_lainnya_des"
+                                            placeholder="Isi Jabatan Fungsional Lainnya" name="fn_type_lainnya_des"
+                                            value="{{ old('fn_type_lainnya_des', $selectedFNDescription ?? '') }}">
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="tm_type">Amanah Mengajar</label>
+                                    <select class="form-control select2 @error('tm_type') is-invalid @enderror"
+                                        id="tm_type" name="tm_type[]" multiple>
+                                        @foreach ($TMTypes as $type)
+                                            <option value="{{ $type->id }}" data-slug="{{ $type->slug }}"
+                                                {{ in_array($type->id, old('tm_type', $selectedTMs ?? [])) ? 'selected' : '' }}>
+                                                {{ $type->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @errorFeedback('tm_type')
+
+                                    <div id="tm_type_lainnya_div" class="mt-3"
+                                        style="{{ in_array($TMOtherTypeId, old('tm_type', $selectedTMs ?? [])) ? '' : 'display: none;' }}">
+                                        <label class="form-label" for="tm_type_lainnya_des">Amanah Mengajar
+                                            Lainnya</label>
+                                        <input type="text" class="form-control" id="tm_type_lainnya_des"
+                                            placeholder="Isi Amanah Mengajar Lainnya" name="tm_type_lainnya_des"
+                                            value="{{ old('tm_type_lainnya_des', $selectedTMDescription ?? '') }}">
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="address">Alamat</label>
+                                    <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" rows="3"
+                                        placeholder="Alamat Pegawai">{{ old('address', $teacher->address) }}</textarea>
+                                    @errorFeedback('address')
+                                </div>
+                                <button type="submit" class="btn btn-primary">Simpan</button>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="address">Alamat</label>
-                                <textarea class="form-control @error('address') is-invalid @enderror" id="address" name="address" rows="3"
-                                    placeholder="Alamat Pegawai">{{ old('address', $teacher->address) }}</textarea>
-                                @errorFeedback('address')
-                            </div>
-                            <button type="submit" class="btn btn-primary">Simpan</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </form>
 @endsection
