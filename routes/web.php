@@ -351,6 +351,9 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
 
     // QUIZZES
     Route::resource('quizzes', \App\Http\Controllers\AdministrationAdmin\QuizController::class)->only(['index', 'show', 'destroy']);
+
+    // CLASS SCHEDULES
+    Route::resource('class-schedules', \App\Http\Controllers\AdministrationAdmin\ClassScheduleController::class);
 });
 
 /**
@@ -475,4 +478,16 @@ Route::prefix('treasurer')->name('treasurer.')->middleware(['auth', 'can:isTreas
         Route::put('update/{category}', [TreasurerTransaction::class, 'categoryUpdate'])->name('update');
         Route::delete('destroy/{category}', [TreasurerTransaction::class, 'categoryDestroy'])->name('destroy');
     });
+});
+
+/**
+ * **Facilities Admin Routes**
+ */
+Route::prefix('facilitiesadmin')->name('facilitiesadmin.')->middleware(['auth', 'can:isFacilitiesAdmin'])->group(function () {
+    Route::redirect('/', '/facilitiesadmin/home', 301);
+    Route::get('home', [\App\Http\Controllers\FacilitiesAdmin\HomeController::class, 'index'])->name('home');
+
+    Route::get('inventories/print', [\App\Http\Controllers\FacilitiesAdmin\InventoryController::class, 'print'])->name('inventories.print');
+    Route::resource('inventories', \App\Http\Controllers\FacilitiesAdmin\InventoryController::class);
+    Route::resource('rooms', \App\Http\Controllers\FacilitiesAdmin\RoomController::class);
 });

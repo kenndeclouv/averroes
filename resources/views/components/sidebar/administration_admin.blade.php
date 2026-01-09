@@ -207,6 +207,24 @@
             </li>
         </ul>
     </li>
+
+    {{-- Class Schedules Menu --}}
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.class-schedules.*') ? 'open active' : '' }}">
+        <a href="{{ route($rolePrefix . '.class-schedules.index') }}" class="menu-link menu-toggle">
+            <i class="menu-icon fa-solid fa-clock fs-6"></i>
+            <div class="text-truncate">
+                Jadwal Pelajaran
+            </div>
+        </a>
+        <ul class="menu-sub">
+            <li class="menu-item {{ request()->routeIs($rolePrefix . '.class-schedules.index') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.class-schedules.index') }}" class="menu-link">Semua Jadwal</a>
+            </li>
+            <li class="menu-item {{ request()->routeIs($rolePrefix . '.class-schedules.create') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.class-schedules.create') }}" class="menu-link">Tambah Jadwal</a>
+            </li>
+        </ul>
+    </li>
 @endif
 <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Tools</span>

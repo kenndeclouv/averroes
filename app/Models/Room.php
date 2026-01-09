@@ -15,4 +15,9 @@ class Room extends Model
     {
         return $this->hasMany(Student::class);
     }
+
+    public function Inventories()
+    {
+        return $this->hasMany(Inventory::class);
+    }
 }

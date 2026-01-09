@@ -28,7 +28,7 @@ class TeacherRequest extends FormRequest
             'birth_date' => 'required',
             'birth_place' => 'required',
             'address' => 'nullable',
-            'role_id' => 'required|in:3,7',
+            'role_id' => 'required|in:3,7,8',
             'room_id' => 'nullable',
             'classes_id' => 'nullable',
             'gender' => 'required|in:male,female',

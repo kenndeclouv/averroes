@@ -69,10 +69,16 @@
                                 <select class="form-control select2 @error('role_id') is-invalid @enderror" id="role"
                                     name="role_id">
                                     <option value="" disabled>Pilih Role</option>
-                                    <option value="3" {{ old('role', $teacher->user->role_id) == '3' ? 'selected' : '' }}>
+                                    <option value="3"
+                                        {{ old('role_id', $teacher->user->role_id) == '3' ? 'selected' : '' }}>
                                         Pengajar</option>
-                                    <option value="7" {{ old('role', $teacher->user->role_id) == '7' ? 'selected' : '' }}>
+                                    <option value="7"
+                                        {{ old('role_id', $teacher->user->role_id) == '7' ? 'selected' : '' }}>
                                         Bendahara
+                                    </option>
+                                    <option value="8"
+                                        {{ old('role_id', $teacher->user->role_id) == '8' ? 'selected' : '' }}>Sarana
+                                        Prasarana
                                     </option>
                                 </select>
                                 @errorFeedback('role_id')

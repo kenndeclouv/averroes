@@ -70,6 +70,8 @@
                                     <option value="3" {{ old('role_id') == '3' ? 'selected' : '' }}>Pengajar</option>
                                     <option value="7" {{ old('role_id') == '7' ? 'selected' : '' }}>Bendahara
                                     </option>
+                                    <option value="8" {{ old('role_id') == '8' ? 'selected' : '' }}>Sarana Prasarana
+                                    </option>
                                 </select>
                                 @errorFeedback('role_id')
                             </div>
