@@ -31,14 +31,38 @@ class ChatController extends Controller
     public function send(Request $request)
     {
         $validated = $request->validate([
-            'message' => 'required|string|max:500',
+            'message' => 'nullable|string|max:500', // Nullable if file is present
             'recipient_id' => 'required|exists:users,id',
+            'attachment' => 'nullable|file|max:10240', // Max 10MB
         ]);
+
+        if (empty($validated['message']) && !$request->hasFile('attachment')) {
+            return response()->json(['success' => false, 'error' => 'Message or attachment required'], 422);
+        }
+
+        $attachmentData = [
+            'attachment_path' => null,
+            'attachment_original_name' => null,
+            'attachment_mime' => null,
+            'attachment_size' => null,
+        ];
+
+        if ($request->hasFile('attachment')) {
+            $file = $request->file('attachment');
+            $path = $file->store('chat_attachments', 'public');
+            $attachmentData = [
+                'attachment_path' => $path,
+                'attachment_original_name' => $file->getClientOriginalName(),
+                'attachment_mime' => $file->getClientMimeType(),
+                'attachment_size' => $file->getSize(),
+            ];
+        }
 
         $message = Message::create([
             'user_id' => Auth::user()->id,
             'recipient_id' => $validated['recipient_id'],
-            'message' => $validated['message'],
+            'message' => $validated['message'] ?? '',
+            ...$attachmentData
         ]);
 
         broadcast(new MessageSent($message))->toOthers();
@@ -70,67 +94,35 @@ class ChatController extends Controller
                     'recipientId' => $chat->recipient_id,
                     'read' => $chat->read,
                     'createdAt' => formatDate($chat->created_at),
+                    'attachment_url' => $chat->attachment_url,
+                    'attachment_mime' => $chat->attachment_mime,
+                    'attachment_original_name' => $chat->attachment_original_name,
+                    'attachment_size' => $chat->attachment_size,
                 ];
             });
         return response()->json($chats);
     }
-    public function contacts()
+    public function contacts(Request $request)
     {
         $user = Auth::user();
         $userId = $user->id;
+        $query = $request->input('q');
 
-        // inisialisasi collection kosong
+        // Initialize collection
         $contacts = collect();
 
-        // jika role bukan administration_admin atau super_admin
-        if (!in_array($user->Role->code, ['administration_admin', 'super_admin'])) {
-            // ambil kontak berdasarkan message
-            $messageContacts = Message::where(function ($query) use ($userId) {
-                $query->where('user_id', $userId)
-                    ->orWhere('recipient_id', $userId);
-            })
-                ->with(['Recipient.Role', 'User.Role', 'Recipient.Student', 'User.Student']) // eager loading untuk relasi
-                ->get()
-                ->map(function ($message) use ($userId) {
-                    $contact = $message->user_id === $userId ? $message->Recipient : $message->User;
-
-                    if ($contact) {
-                        // hitung jumlah pesan yang belum dibaca untuk kontak ini
-                        $notifCount = Message::where('user_id', $contact->id)
-                            ->where('recipient_id', $userId)
-                            ->where('read', false)
-                            ->count();
-
-                        return [
-                            'id' => $contact->id ?? null,
-                            'status' => $contact->status ?? 'unknown',
-                            'photo' => $contact->photo ?? 'default.png',
-                            'name' => $contact->name ?? 'unknown',
-                            'lastSeen' => isset($contact->updated_at) && $contact->updated_at == $contact->created_at
-                                ? 'never'
-                                : ($contact->updated_at->diffForHumans() ?? 'unknown'),
-                            'role' => ($contact->Role->code === 'student' && $contact->Student)
-                                ? 'Santri ' . ($contact->Student->major ?? 'unknown')
-                                : ($contact->Role->name ?? 'unknown'),
-                            'notifCount' => $notifCount,
-                        ];
-                    }
-
-                    return null;
+        // If search query is present, search ALL users (globally)
+        if ($query) {
+            $contacts = User::where('id', '!=', $userId)
+                ->where(function ($q) use ($query) {
+                    $q->where('name', 'like', "%{$query}%")
+                        ->orWhere('username', 'like', "%{$query}%");
                 })
-                ->filter() // hapus nilai null
-                ->unique('id') // hapus duplikat berdasarkan id
-                ->values();
-
-            // ambil kontak berdasarkan role yang sama
-            $sameRoleContacts = User::where('id', '!=', $userId)
-                ->whereHas('Role', function ($query) use ($user) {
-                    $query->where('code', $user->Role->code);
-                })
-                ->with(['Role', 'Student']) // eager loading untuk relasi
+                ->with(['Role', 'Student'])
+                ->limit(20) // Limit results for performance
                 ->get()
                 ->map(function ($contact) use ($userId) {
-                    // hitung jumlah pesan yang belum dibaca untuk kontak ini
+                    // Count unread messages
                     $notifCount = Message::where('user_id', $contact->id)
                         ->where('recipient_id', $userId)
                         ->where('read', false)
@@ -151,17 +143,91 @@ class ChatController extends Controller
                     ];
                 });
 
-            // gabungkan kontak dari message dan role
-            $contacts = $messageContacts->merge($sameRoleContacts)
-                ->unique('id') // pastikan tidak ada duplikat
+            return response()->json($contacts);
+        }
+
+        // Existing logic for default view (No search query)
+        // If role not admin/super_admin
+        if (!in_array($user->Role->code, ['administration_admin', 'super_admin'])) {
+            // Get contacts from messages (recent chats)
+            $messageContacts = Message::where(function ($q) use ($userId) {
+                $q->where('user_id', $userId)
+                    ->orWhere('recipient_id', $userId);
+            })
+                ->with(['Recipient.Role', 'User.Role', 'Recipient.Student', 'User.Student'])
+                ->orderBy('created_at', 'desc') // Order by most recent
+                ->get()
+                ->map(function ($message) use ($userId) {
+                    $contact = $message->user_id === $userId ? $message->Recipient : $message->User;
+
+                    if ($contact) {
+                        $notifCount = Message::where('user_id', $contact->id)
+                            ->where('recipient_id', $userId)
+                            ->where('read', false)
+                            ->count();
+
+                        return [
+                            'id' => $contact->id ?? null,
+                            'status' => $contact->status ?? 'unknown',
+                            'photo' => $contact->photo ?? 'default.png',
+                            'name' => $contact->name ?? 'unknown',
+                            'lastSeen' => isset($contact->updated_at) && $contact->updated_at == $contact->created_at
+                                ? 'never'
+                                : ($contact->updated_at->diffForHumans() ?? 'unknown'),
+                            'role' => ($contact->Role->code === 'student' && $contact->Student)
+                                ? 'Santri ' . ($contact->Student->major ?? 'unknown')
+                                : ($contact->Role->name ?? 'unknown'),
+                            'notifCount' => $notifCount,
+                        ];
+                    }
+                    return null;
+                })
+                ->filter()
+                ->unique('id')
                 ->values();
-        } else {
-            // jika role administration_admin atau super_admin, ambil semua kontak
-            $contacts = User::where('id', '!=', $userId)
-                ->with(['Role', 'Student']) // eager loading untuk relasi
+
+            // Get contacts with same role
+            $sameRoleContacts = User::where('id', '!=', $userId)
+                ->whereHas('Role', function ($q) use ($user) {
+                    $q->where('code', $user->Role->code);
+                })
+                ->with(['Role', 'Student'])
+                ->limit(50) // Limit to avoid loading thousands of students
                 ->get()
                 ->map(function ($contact) use ($userId) {
-                    // hitung jumlah pesan yang belum dibaca untuk kontak ini
+                    $notifCount = Message::where('user_id', $contact->id)
+                        ->where('recipient_id', $userId)
+                        ->where('read', false)
+                        ->count();
+
+                    return [
+                        'id' => $contact->id ?? null,
+                        'status' => $contact->status ?? 'unknown',
+                        'photo' => $contact->photo ?? 'default.png',
+                        'name' => $contact->name ?? 'unknown',
+                        'lastSeen' => isset($contact->updated_at) && $contact->updated_at == $contact->created_at
+                            ? 'never'
+                            : ($contact->updated_at->diffForHumans() ?? 'unknown'),
+                        'role' => ($contact->Role->code === 'student' && $contact->Student)
+                            ? 'Santri ' . ($contact->Student->major ?? 'unknown')
+                            : ($contact->Role->name ?? 'unknown'),
+                        'notifCount' => $notifCount,
+                    ];
+                });
+
+            // Merge: Recent chats first, then same role
+            $contacts = $messageContacts->merge($sameRoleContacts)
+                ->unique('id')
+                ->values();
+        } else {
+            // Admin: Show all (limited) or just recent?
+            // Existing logic showed ALL, which might be heavy. Let's keep it but maybe limit or rely on search?
+            // For now, keeping existing behavior but maybe optimized.
+            $contacts = User::where('id', '!=', $userId)
+                ->with(['Role', 'Student'])
+                ->limit(100) // Safety limit
+                ->get()
+                ->map(function ($contact) use ($userId) {
                     $notifCount = Message::where('user_id', $contact->id)
                         ->where('recipient_id', $userId)
                         ->where('read', false)
@@ -191,32 +257,32 @@ class ChatController extends Controller
         $validated = $request->validate([
             'recipient_id' => 'required|exists:users,id',
         ]);
-    
+
         $userId = Auth::user()->id;
-    
+
         Message::where('recipient_id', $userId)
             ->where('user_id', $validated['recipient_id'])
             ->update(['read' => true]);
-    
+
         broadcast(new MessageRead($validated['recipient_id']))->toOthers();
-    
+
         return response()->json(['success' => true]);
     }
-    
+
 
     public function setStatus(User $user, Request $request)
     {
         $validated = $request->validate([
             'status' => 'required|in:online,offline,away,busy'
         ]);
-    
+
         $user->update(['status' => $validated['status']]);
-    
+
         broadcast(new UserStatusUpdated($user))->toOthers();
-    
+
         return response()->json(['success' => true]);
     }
-    
+
 
     public function editUser(Request $request, User $user)
     {

@@ -252,7 +252,7 @@
     margin-bottom: 1rem;
 }
 .chat-message {
-    max-width: 70%;
+    max-width: 100%;
     /* justify-content: flex-start !important; */
 }
 /* .chat-history {

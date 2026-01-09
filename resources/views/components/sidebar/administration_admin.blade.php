@@ -125,15 +125,15 @@
                 </li>
             @endif
             {{-- Permission check for semesters? For now using show_class/room context or we need new permission --}}
-            <li class="menu-item {{ request()->routeIs('administrationadmin.semesters.*') ? 'active' : '' }}">
-                <a href="{{ route('administrationadmin.semesters.index') }}" class="menu-link">Master Semester</a>
+            <li class="menu-item {{ request()->routeIs($rolePrefix . '.semesters.*') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.semesters.index') }}" class="menu-link">Master Semester</a>
             </li>
         </ul>
     </li>
 @endif
 @if ($permissions->contains('show_transaction'))
-    <li class="menu-item {{ request()->routeIs('administrationadmin.transaction.*') ? 'open active' : '' }}">
-        <a href="{{ route('administrationadmin.transaction.index') }}" class="menu-link menu-toggle">
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.transaction.*') ? 'open active' : '' }}">
+        <a href="{{ route($rolePrefix . '.transaction.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-dollar fs-6"></i>
             <div class="text-truncate">
                 Transaksi
@@ -141,15 +141,15 @@
         </a>
         <ul class="menu-sub">
             <li
-                class="menu-item {{ request()->routeIs('administrationadmin.transaction.index', 'administrationadmin.transaction.show', 'administrationadmin.transaction.edit') ? 'active' : '' }}">
-                <a href="{{ route('administrationadmin.transaction.index') }}" class="menu-link">Daftar Transaksi</a>
+                class="menu-item {{ request()->routeIs($rolePrefix . '.transaction.index', $rolePrefix . '.transaction.show', $rolePrefix . '.transaction.edit') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.transaction.index') }}" class="menu-link">Daftar Transaksi</a>
             </li>
         </ul>
     </li>
 @endif
 @if ($permissions->contains('show_journal'))
-    <li class="menu-item {{ request()->routeIs('administrationadmin.journals.*') ? 'open active' : '' }}">
-        <a href="{{ route('administrationadmin.journals.index') }}" class="menu-link menu-toggle">
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.journals.*') ? 'open active' : '' }}">
+        <a href="{{ route($rolePrefix . '.journals.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-calendar fs-6"></i>
             <div class="text-truncate">
                 Jurnal Mengajar
@@ -157,15 +157,15 @@
         </a>
         <ul class="menu-sub">
             <li
-                class="menu-item {{ request()->routeIs('administrationadmin.journals.index', 'administrationadmin.journals.show', 'administrationadmin.journals.edit') ? 'active' : '' }}">
-                <a href="{{ route('administrationadmin.journals.index') }}" class="menu-link">Daftar Jurnal</a>
+                class="menu-item {{ request()->routeIs($rolePrefix . '.journals.index', $rolePrefix . '.journals.show', $rolePrefix . '.journals.edit') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.journals.index') }}" class="menu-link">Daftar Jurnal</a>
             </li>
         </ul>
     </li>
 @endif
 @if ($permissions->contains('show_teaching_subject'))
-    <li class="menu-item {{ request()->routeIs('administrationadmin.teaching-subjects.*') ? 'open active' : '' }}">
-        <a href="{{ route('administrationadmin.teaching-subjects.index') }}" class="menu-link menu-toggle">
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.teaching-subjects.*') ? 'open active' : '' }}">
+        <a href="{{ route($rolePrefix . '.teaching-subjects.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-book fs-6"></i>
             <div class="text-truncate">
                 Mata Pelajaran
@@ -173,37 +173,37 @@
         </a>
         <ul class="menu-sub">
             <li
-                class="menu-item {{ request()->routeIs('administrationadmin.teaching-subjects.index', 'administrationadmin.teaching-subjects.show', 'administrationadmin.teaching-subjects.edit') ? 'active' : '' }}">
-                <a href="{{ route('administrationadmin.teaching-subjects.index') }}" class="menu-link">Daftar Mata
+                class="menu-item {{ request()->routeIs($rolePrefix . '.teaching-subjects.index', $rolePrefix . '.teaching-subjects.show', $rolePrefix . '.teaching-subjects.edit') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.teaching-subjects.index') }}" class="menu-link">Daftar Mata
                     Pelajaran</a>
             </li>
         </ul>
     </li>
     {{-- Materials Menu (Admin View) --}}
-    <li class="menu-item {{ request()->routeIs('administrationadmin.materials.*') ? 'open active' : '' }}">
-        <a href="{{ route('administrationadmin.materials.index') }}" class="menu-link menu-toggle">
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.materials.*') ? 'open active' : '' }}">
+        <a href="{{ route($rolePrefix . '.materials.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-book-open fs-6"></i>
             <div class="text-truncate">
                 Materi Belajar
             </div>
         </a>
         <ul class="menu-sub">
-            <li class="menu-item {{ request()->routeIs('administrationadmin.materials.index') ? 'active' : '' }}">
-                <a href="{{ route('administrationadmin.materials.index') }}" class="menu-link">Semua Materi</a>
+            <li class="menu-item {{ request()->routeIs($rolePrefix . '.materials.index') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.materials.index') }}" class="menu-link">Semua Materi</a>
             </li>
         </ul>
     </li>
     {{-- Quizzes Menu (Admin View) --}}
-    <li class="menu-item {{ request()->routeIs('administrationadmin.quizzes.*') ? 'open active' : '' }}">
-        <a href="{{ route('administrationadmin.quizzes.index') }}" class="menu-link menu-toggle">
-            <i class="menu-icon fa-solid fa-file-signature fs-6"></i>
+    <li class="menu-item {{ request()->routeIs($rolePrefix . '.quizzes.*') ? 'open active' : '' }}">
+        <a href="{{ route($rolePrefix . '.quizzes.index') }}" class="menu-link menu-toggle">
+            <i class="menu-icon fa-solid fa-file fs-6"></i>
             <div class="text-truncate">
-                Ujian (Quiz)
+                Ujian
             </div>
         </a>
         <ul class="menu-sub">
-            <li class="menu-item {{ request()->routeIs('administrationadmin.quizzes.index') ? 'active' : '' }}">
-                <a href="{{ route('administrationadmin.quizzes.index') }}" class="menu-link">Semua Ujian</a>
+            <li class="menu-item {{ request()->routeIs($rolePrefix . '.quizzes.index') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.quizzes.index') }}" class="menu-link">Semua Ujian</a>
             </li>
         </ul>
     </li>

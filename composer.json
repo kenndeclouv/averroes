@@ -11,8 +11,10 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.40.2",
+        "laravel/reverb": "^1.7",
         "laravel/tinker": "^2.9",
-        "minishlink/web-push": "^9.0"
+        "minishlink/web-push": "^9.0",
+        "pusher/pusher-php-server": "^7.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
