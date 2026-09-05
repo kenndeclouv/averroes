@@ -58,7 +58,7 @@
  *       $type = teacherType('teacher'); // Mengembalikan 'Pengajar'
  *
  *  ©️ 2025 by kenndeclouv
- *  https://kenndeclouv.my.id
+ *  https://kenndeclouv.com
  */
 
 use Illuminate\Support\Facades\Storage;

@@ -75,7 +75,7 @@
                     <div class="mb-3">
                         <label for="replacement_hour_description" class="form-label">Deskripsi Sebaran JP Badal</label>
                         <textarea class="form-control @error('replacement_hour_description') is-invalid @enderror"
-                            id="replacement_hour_description" name="replacement_hour_description" rows="3" required>{{ old('replacement_hour_description', $journal->replacement_hour_description) }}</textarea>
+                            id="replacement_hour_description" name="replacement_hour_description" rows="3">{{ old('replacement_hour_description', $journal->replacement_hour_description) }}</textarea>
                         <small>(ex: BADAL UST RUJIAN 1JP - MAPEL TAMBAHAN)</small>
                         @errorFeedback('replacement_hour_description')
                     </div>

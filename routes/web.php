@@ -354,6 +354,7 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
     });
 
     // TEACHING JOURNAL
+    Route::get('journals/export', [AdministrationAdminTeachingJournal::class, 'export'])->name('journals.export');
     Route::resource('journals', AdministrationAdminTeachingJournal::class);
 
     // TEACHING SUBJECTS
@@ -401,6 +402,7 @@ Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'can:isTeacher']
     });
 
     // TEACHING JOURNAL
+    Route::get('journals/export', [TeacherTeachingJournal::class, 'export'])->name('journals.export');
     Route::resource('journals', TeacherTeachingJournal::class);
 
     // QUIZZES

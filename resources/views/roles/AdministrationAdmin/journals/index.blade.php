@@ -31,12 +31,10 @@
                             }
                         },
                         {
-                            extend: "excelHtml5",
                             text: '<i class="fas fa-file-excel me-1"></i>Excel',
                             className: "dropdown-item",
-                            title: "Jurnal Mengajar Bulan " + date,
-                            exportOptions: {
-                                columns: ':not(:last-child)'
+                            action: function ( e, dt, node, config ) {
+                                window.location.href = "{{ route('administrationadmin.journals.export') }}?month={{ request('month', now()->format('Y-m')) }}&teacher_id={{ request('teacher_id') }}";
                             }
                         }
                     ]
@@ -59,6 +57,14 @@
                     </a>
                     <form method="GET" class="d-flex align-items-center"
                         action="{{ route('administrationadmin.journals.index') }}">
+                        <select name="teacher_id" class="form-select me-2" onchange="this.form.submit()">
+                            <option value="">Semua Guru</option>
+                            @foreach ($teachers as $teacher)
+                                <option value="{{ $teacher->id }}" {{ request('teacher_id') == $teacher->id ? 'selected' : '' }}>
+                                    {{ $teacher->name }}
+                                </option>
+                            @endforeach
+                        </select>
                         <label for="month" class="me-2 mb-0">Bulan:</label>
                         <input type="month" id="month" name="month" class="form-control me-2"
                             value="{{ $monthYear ?? now()->format('Y-m') }}" onchange="this.form.submit()">
@@ -84,7 +90,7 @@
                                 <td>{{ $journal->teacher->name }}</td>
                                 <td>
                                     @foreach ($journal->teachingSubjects as $subject)
-                                        <span class="badge bg-primary">{{ $subject->name }}</span>
+                                        <span class="badge bg-primary">{{ $subject->name }}</span> 
                                     @endforeach
                                 </td>
                                 <td>{{ $journal->total_regular_hours }}</td>

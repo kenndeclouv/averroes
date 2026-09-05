@@ -31,12 +31,10 @@
                             }
                         },
                         {
-                            extend: "excelHtml5",
                             text: '<i class="fas fa-file-excel me-1"></i>Excel',
                             className: "dropdown-item",
-                            title: "Jurnal Mengajar Bulan " + date,
-                            exportOptions: {
-                                columns: ':not(:last-child)'
+                            action: function ( e, dt, node, config ) {
+                                window.location.href = "{{ route('teacher.journals.export') }}?month={{ request('month', now()->format('Y-m')) }}";
                             }
                         }
                     ]
@@ -81,7 +79,7 @@
                                 <td>{{ formatDate($journal->date) }}</td>
                                 <td>
                                     @foreach ($journal->teachingSubjects as $subject)
-                                        <span class="badge bg-primary">{{ $subject->name }}</span>
+                                        <span class="badge bg-primary">{{ $subject->name }}</span> 
                                     @endforeach
                                 </td>
                                 <td>{{ $journal->total_regular_hours }}</td>
@@ -98,6 +96,18 @@
                             </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="2" class="text-end">Total</th>
+                            <th>
+                                {{ isset($journals) ? $journals->sum('total_regular_hours') : '0' }}
+                            </th>
+                            <th>
+                                {{ isset($journals) ? $journals->sum('total_replacement_hours') : '0' }}
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>

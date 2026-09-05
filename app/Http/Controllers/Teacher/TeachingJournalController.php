@@ -35,6 +35,29 @@ class TeachingJournalController extends Controller
         return view('roles.Teacher.journals.index', compact('journals', 'monthYear'));
     }
 
+    public function export(Request $request)
+    {
+        $teacher = Teacher::where('user_id', Auth::id())->firstOrFail();
+
+        $monthYear = $request->input('month');
+        if (!$monthYear || !preg_match('/^\d{4}-\d{2}$/', $monthYear)) {
+            $monthYear = \Carbon\Carbon::now()->format('Y-m');
+        }
+
+        [$year, $month] = explode('-', $monthYear);
+
+        $journals = TeachingJournal::with(['teacher', 'teachingSubjects'])
+            ->where('teacher_id', $teacher->id)
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->orderBy('date', 'desc')
+            ->get();
+
+        $dateFormatted = \Carbon\Carbon::parse($monthYear)->locale('id')->translatedFormat('F Y');
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TeachingJournalExport($journals, $dateFormatted), 'Jurnal_Mengajar_' . str_replace(' ', '_', $dateFormatted) . '.xlsx');
+    }
+
     public function show(TeachingJournal $journal)
     {
         $teacher = Teacher::where('user_id', Auth::id())->firstOrFail();
@@ -65,7 +88,7 @@ class TeachingJournalController extends Controller
             'total_regular_hours' => 'required|integer|min:0',
             'total_replacement_hours' => 'required|integer|min:0',
             'regular_hour_description' => 'required|string',
-            'replacement_hour_description' => 'required|string',
+            'replacement_hour_description' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
 
@@ -120,7 +143,7 @@ class TeachingJournalController extends Controller
             'total_regular_hours' => 'required|integer|min:0',
             'total_replacement_hours' => 'required|integer|min:0',
             'regular_hour_description' => 'required|string',
-            'replacement_hour_description' => 'required|string',
+            'replacement_hour_description' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
 

@@ -30,7 +30,7 @@ abstract class Controller
      * 6. Gunakan bahasa Inggris!
      *
      *  ©️ 2025 by kenndeclouv
-     *  https://kenndeclouv.my.id
+     *  https://kenndeclouv.com
      */
 
     /**

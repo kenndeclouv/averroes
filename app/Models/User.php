@@ -41,6 +41,22 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            if ($user->role_id) {
+                $user->roles()->attach($user->role_id);
+            }
+        });
+        
+        static::updated(function ($user) {
+            if ($user->isDirty('role_id') && $user->role_id) {
+                $user->roles()->syncWithoutDetaching([$user->role_id]);
+            }
+        });
+    }
+
     protected function casts(): array
     {
         return [

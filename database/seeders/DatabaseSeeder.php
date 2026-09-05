@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             FeatureSeeder::class,
             TeacherTypeSeeder::class,
+            TeachingSubjectSeeder::class,
         ]);
         // Super Admin
         $user = User::create([

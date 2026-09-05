@@ -20,13 +20,41 @@ class TeachingJournalController extends Controller
 
         [$year, $month] = explode('-', $monthYear);
 
-        $journals = TeachingJournal::with(['teacher', 'teachingSubjects'])
+        $query = TeachingJournal::with(['teacher', 'teachingSubjects'])
             ->whereYear('date', $year)
-            ->whereMonth('date', $month)
-            ->orderBy('date', 'desc')
-            ->get();
+            ->whereMonth('date', $month);
+            
+        if ($request->filled('teacher_id')) {
+            $query->where('teacher_id', $request->input('teacher_id'));
+        }
 
-        return view('roles.AdministrationAdmin.journals.index', compact('journals', 'monthYear'));
+        $journals = $query->orderBy('date', 'desc')->get();
+        $teachers = Teacher::all();
+
+        return view('roles.AdministrationAdmin.journals.index', compact('journals', 'monthYear', 'teachers'));
+    }
+
+    public function export(Request $request)
+    {
+        $monthYear = $request->input('month');
+        if (!$monthYear || !preg_match('/^\d{4}-\d{2}$/', $monthYear)) {
+            $monthYear = \Carbon\Carbon::now()->format('Y-m');
+        }
+
+        [$year, $month] = explode('-', $monthYear);
+
+        $query = TeachingJournal::with(['teacher', 'teachingSubjects'])
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month);
+            
+        if ($request->filled('teacher_id')) {
+            $query->where('teacher_id', $request->input('teacher_id'));
+        }
+
+        $journals = $query->orderBy('date', 'desc')->get();
+        $dateFormatted = \Carbon\Carbon::parse($monthYear)->locale('id')->translatedFormat('F Y');
+        
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TeachingJournalExport($journals, $dateFormatted), 'Jurnal_Mengajar_' . str_replace(' ', '_', $dateFormatted) . '.xlsx');
     }
 
     public function show(TeachingJournal $journal)
@@ -52,7 +80,7 @@ class TeachingJournalController extends Controller
             'total_regular_hours' => 'required|integer|min:0',
             'total_replacement_hours' => 'required|integer|min:0',
             'regular_hour_description' => 'required|string',
-            'replacement_hour_description' => 'required|string',
+            'replacement_hour_description' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
 
@@ -95,7 +123,7 @@ class TeachingJournalController extends Controller
             'total_regular_hours' => 'required|integer|min:0',
             'total_replacement_hours' => 'required|integer|min:0',
             'regular_hour_description' => 'required|string',
-            'replacement_hour_description' => 'required|string',
+            'replacement_hour_description' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
 

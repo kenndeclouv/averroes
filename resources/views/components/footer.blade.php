@@ -6,7 +6,7 @@
                 <script>
                     document.write(new Date().getFullYear());
                 </script> , made with ❤️ by
-                <a href="https://kenndeclouv.my.id" target="_blank" class="footer-link">kenn</a>
+                <a href="https://kenndeclouv.com" target="_blank" class="footer-link">kenn</a>
             </div>
         </div>
     </div>

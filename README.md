@@ -199,4 +199,4 @@ Penamaan view harus mengikuti konvensi berikut:
 -   Hindari penggunaan singkatan atau nama yang tidak mencerminkan fungsionalitas dari fitur, controller, atau route.
 -   Selalu gunakan bahasa Inggris dalam penamaan file, variabel, dan struktur proyek.
 
-Make with 💝 by [kenndeclouv](https://kenndeclouv.rf.gd)
+Make with 💝 by [kenndeclouv](https://kenndeclouv.com)
