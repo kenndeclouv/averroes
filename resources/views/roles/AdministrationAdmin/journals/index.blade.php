@@ -31,10 +31,17 @@
                             }
                         },
                         {
-                            text: '<i class="fas fa-file-excel me-1"></i>Excel',
+                            text: '<i class="fas fa-file-excel me-1"></i>Excel (Semua)',
                             className: "dropdown-item",
                             action: function ( e, dt, node, config ) {
                                 window.location.href = "{{ route('administrationadmin.journals.export') }}?month={{ request('month', now()->format('Y-m')) }}&teacher_id={{ request('teacher_id') }}";
+                            }
+                        },
+                        {
+                            text: '<i class="fas fa-file-excel me-1"></i>Excel (Pisah Guru)',
+                            className: "dropdown-item",
+                            action: function ( e, dt, node, config ) {
+                                window.location.href = "{{ route('administrationadmin.journals.export') }}?month={{ request('month', now()->format('Y-m')) }}&teacher_id={{ request('teacher_id') }}&per_teacher=1";
                             }
                         }
                     ]

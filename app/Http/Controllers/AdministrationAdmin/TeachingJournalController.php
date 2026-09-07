@@ -54,7 +54,20 @@ class TeachingJournalController extends Controller
         $journals = $query->orderBy('date', 'desc')->get();
         $dateFormatted = \Carbon\Carbon::parse($monthYear)->locale('id')->translatedFormat('F Y');
         
-        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TeachingJournalExport($journals, $dateFormatted), 'Jurnal_Mengajar_' . str_replace(' ', '_', $dateFormatted) . '.xlsx');
+        $fileName = 'Jurnal_Mengajar_' . str_replace(' ', '_', $dateFormatted) . '.xlsx';
+
+        if ($request->input('per_teacher') == '1' && !$request->filled('teacher_id')) {
+            $journalsByTeacher = $journals->groupBy(function ($journal) {
+                return $journal->teacher->name;
+            });
+            
+            return \Maatwebsite\Excel\Facades\Excel::download(
+                new \App\Exports\TeachingJournalMultipleSheetsExport($journalsByTeacher, $dateFormatted), 
+                $fileName
+            );
+        }
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\TeachingJournalExport($journals, $dateFormatted), $fileName);
     }
 
     public function show(TeachingJournal $journal)
