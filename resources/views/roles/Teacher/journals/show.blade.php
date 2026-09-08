@@ -51,10 +51,12 @@
                     <a href="{{ route('teacher.journals.index') }}" class="btn btn-secondary">
                         <i class="fa-solid fa-arrow-left"></i>
                     </a>
-                    <a href="{{ route('teacher.journals.edit', $journal) }}" class="btn btn-warning">
-                        <i class="fa-solid fa-edit"></i>
-                    </a>
-                    <x-delete :route="route('teacher.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus jurnal ini?'" :title="'Hapus Jurnal'" />
+                    @if(!$isLocked)
+                        <a href="{{ route('teacher.journals.edit', $journal) }}" class="btn btn-warning">
+                            <i class="fa-solid fa-edit"></i>
+                        </a>
+                        <x-delete :route="route('teacher.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus jurnal ini?'" :title="'Hapus Jurnal'" />
+                    @endif
                 </div>
             </div>
         </div>

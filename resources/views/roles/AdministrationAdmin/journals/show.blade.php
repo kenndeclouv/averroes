@@ -16,6 +16,10 @@
                     {{ $journal->teacher->name }}
                 </div>
                 <div class="mb-2">
+                    <strong>Diisi pada:</strong>
+                    {{ \Carbon\Carbon::parse($journal->created_at)->locale('id')->translatedFormat('l, d F Y H:i:s') }}
+                </div>
+                <div class="mb-2">
                     <strong>Tanggal:</strong>
                     {{ formatDate($journal->date) }}
                 </div>
@@ -51,10 +55,12 @@
                     <a href="{{ route('administrationadmin.journals.index') }}" class="btn btn-secondary">
                         <i class="fa-solid fa-arrow-left"></i>
                     </a>
-                    <a href="{{ route('administrationadmin.journals.edit', $journal) }}" class="btn btn-warning">
-                        <i class="fa-solid fa-edit"></i>
-                    </a>
-                    <x-delete :route="route('administrationadmin.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus jurnal ini?'" :title="'Hapus Jurnal'" />
+                    @if(!$isLocked)
+                        <a href="{{ route('administrationadmin.journals.edit', $journal) }}" class="btn btn-warning">
+                            <i class="fa-solid fa-edit"></i>
+                        </a>
+                        <x-delete :route="route('administrationadmin.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus jurnal ini?'" :title="'Hapus Jurnal'" />
+                    @endif
                 </div>
             </div>
         </div>

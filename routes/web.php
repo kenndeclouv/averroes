@@ -354,6 +354,7 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
     });
 
     // TEACHING JOURNAL
+    Route::post('journals/toggle-lock', [AdministrationAdminTeachingJournal::class, 'toggleLock'])->name('journals.toggle_lock');
     Route::get('journals/export', [AdministrationAdminTeachingJournal::class, 'export'])->name('journals.export');
     Route::resource('journals', AdministrationAdminTeachingJournal::class);
 

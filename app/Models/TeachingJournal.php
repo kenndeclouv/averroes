@@ -22,4 +22,15 @@ class TeachingJournal extends Model
     {
         return $this->belongsToMany(TeachingSubject::class, 'teaching_journal_subjects');
     }
+
+    public static function isLocked($month, $year)
+    {
+        $exception = TeachingJournalException::where('month', $month)->where('year', $year)->first();
+        if ($exception && $exception->is_unlocked) {
+            return false;
+        }
+
+        $autoLockDate = \Carbon\Carbon::createFromDate($year, $month, 1)->addMonth()->addDay(1)->startOfDay();
+        return \Carbon\Carbon::now()->greaterThanOrEqualTo($autoLockDate);
+    }
 }

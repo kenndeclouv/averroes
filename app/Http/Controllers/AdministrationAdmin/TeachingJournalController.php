@@ -7,6 +7,7 @@ use App\Models\TeachingJournal;
 use App\Models\TeachingJournalSubject;
 use App\Models\TeachingSubject;
 use App\Models\Teacher;
+use App\Models\TeachingJournalException;
 use Illuminate\Http\Request;
 
 class TeachingJournalController extends Controller
@@ -31,7 +32,9 @@ class TeachingJournalController extends Controller
         $journals = $query->orderBy('date', 'desc')->get();
         $teachers = Teacher::all();
 
-        return view('roles.AdministrationAdmin.journals.index', compact('journals', 'monthYear', 'teachers'));
+        $isLocked = TeachingJournal::isLocked($month, $year);
+
+        return view('roles.AdministrationAdmin.journals.index', compact('journals', 'monthYear', 'teachers', 'isLocked'));
     }
 
     public function export(Request $request)
@@ -73,7 +76,10 @@ class TeachingJournalController extends Controller
     public function show(TeachingJournal $journal)
     {
         $journal->load(['teacher', 'teachingSubjects']);
-        return view('roles.AdministrationAdmin.journals.show', compact('journal'));
+        $journalDate = \Carbon\Carbon::parse($journal->date);
+        $isLocked = TeachingJournal::isLocked($journalDate->month, $journalDate->year);
+        
+        return view('roles.AdministrationAdmin.journals.show', compact('journal', 'isLocked'));
     }
 
     public function create()
@@ -96,6 +102,11 @@ class TeachingJournalController extends Controller
             'replacement_hour_description' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
+
+        $journalDate = \Carbon\Carbon::parse($validated['date']);
+        if (TeachingJournal::isLocked($journalDate->month, $journalDate->year)) {
+            return back()->with('error', 'Bulan ini telah dikunci. Anda tidak dapat menambahkan jurnal.');
+        }
 
         $journal = TeachingJournal::create([
             'teacher_id' => $validated['teacher_id'],
@@ -120,6 +131,11 @@ class TeachingJournalController extends Controller
 
     public function edit(TeachingJournal $journal)
     {
+        $journalDate = \Carbon\Carbon::parse($journal->date);
+        if (TeachingJournal::isLocked($journalDate->month, $journalDate->year)) {
+            return back()->with('error', 'Bulan ini telah dikunci. Anda tidak dapat mengubah jurnal ini.');
+        }
+
         $teachers = Teacher::all();
         $subjects = TeachingSubject::all();
         $selectedSubjects = $journal->teachingSubjects->pluck('id')->toArray();
@@ -139,6 +155,11 @@ class TeachingJournalController extends Controller
             'replacement_hour_description' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
+
+        $journalDate = \Carbon\Carbon::parse($journal->date);
+        if (TeachingJournal::isLocked($journalDate->month, $journalDate->year)) {
+            return back()->with('error', 'Bulan ini telah dikunci. Anda tidak dapat mengubah jurnal ini.');
+        }
 
         $journal->update([
             'teacher_id' => $validated['teacher_id'],
@@ -167,9 +188,45 @@ class TeachingJournalController extends Controller
 
     public function destroy(TeachingJournal $journal)
     {
+        $journalDate = \Carbon\Carbon::parse($journal->date);
+        if (TeachingJournal::isLocked($journalDate->month, $journalDate->year)) {
+            return back()->with('error', 'Bulan ini telah dikunci. Anda tidak dapat menghapus jurnal ini.');
+        }
+
         $journal->delete();
 
         return redirect()->route('administrationadmin.journals.index')
             ->with('success', 'Teaching journal deleted successfully.');
+    }
+
+    public function toggleLock(Request $request)
+    {
+        $request->validate([
+            'monthYear' => 'required|date_format:Y-m',
+        ]);
+
+        [$year, $month] = explode('-', $request->input('monthYear'));
+        
+        $exception = TeachingJournalException::firstOrCreate(
+            ['month' => $month, 'year' => $year],
+            ['is_unlocked' => false]
+        );
+
+        $autoLockDate = \Carbon\Carbon::createFromDate($year, $month, 1)->addMonth()->addDay(1)->startOfDay();
+        $isAutoLocked = \Carbon\Carbon::now()->greaterThanOrEqualTo($autoLockDate);
+
+        if ($isAutoLocked) {
+            // If it's naturally locked, we toggle the exception
+            $exception->update([
+                'is_unlocked' => !$exception->is_unlocked
+            ]);
+            $msg = $exception->is_unlocked ? 'Kunci bulan ini berhasil dibuka.' : 'Bulan ini berhasil dikunci kembali.';
+        } else {
+            // It's not auto-locked yet. The admin can't force lock it earlier than auto-lock date with this logic,
+            // but we can just say it's not locked yet.
+            return back()->with('error', 'Bulan ini belum masuk periode kunci otomatis.');
+        }
+
+        return back()->with('success', $msg);
     }
 }

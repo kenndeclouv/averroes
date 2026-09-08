@@ -51,10 +51,31 @@
                 <h5 class="card-title">Jurnal Mengajar</h5>
             </div>
             <div class="card-body pb-0 pt-4">
+                @if($isLocked)
+                    <div class="alert alert-warning mb-3">
+                        <i class="fas fa-lock me-1"></i> Bulan ini telah dikunci. Anda tidak dapat menambahkan, mengubah, atau menghapus jurnal.
+                    </div>
+                @else
+                    @php
+                        $arr = explode('-', $monthYear ?? now()->format('Y-m'));
+                        $lockDate = \Carbon\Carbon::createFromDate($arr[0], $arr[1], 1)->addMonth()->addDay(1)->startOfDay();
+                        $now = \Carbon\Carbon::now()->startOfDay();
+                        $daysUntilLock = $now->diffInDays($lockDate, false);
+                    @endphp
+                    @if($daysUntilLock > 0 && $daysUntilLock <= 7)
+                        <div class="alert alert-info mb-3">
+                            <i class="fas fa-info-circle me-1"></i> Waktu pengisian/perubahan jurnal untuk bulan ini tersisa <strong>{{ $daysUntilLock }} hari</strong> lagi. Setelah berganti bulan (lewat tanggal 1), jurnal tidak dapat ditambah, diubah, atau dihapus.
+                        </div>
+                    @endif
+                @endif
                 <div class="d-flex justify-content-between align-items-center">
-                    <a href="{{ route('teacher.journals.create') }}" class="btn btn-primary mb-3">
-                        Tambah Jurnal
-                    </a>
+                    <div>
+                        @if(!$isLocked)
+                            <a href="{{ route('teacher.journals.create') }}" class="btn btn-primary mb-3">
+                                Tambah Jurnal
+                            </a>
+                        @endif
+                    </div>
                     <form method="GET" class="d-flex align-items-center" action="{{ route('teacher.journals.index') }}">
                         <label for="month" class="me-2 mb-0">Bulan:</label>
                         <input type="month" id="month" name="month" class="form-control me-2"
@@ -78,9 +99,11 @@
                             <tr>
                                 <td>{{ formatDate($journal->date) }}</td>
                                 <td>
-                                    @foreach ($journal->teachingSubjects as $subject)
-                                        <span class="badge bg-primary">{{ $subject->name }}</span> 
-                                    @endforeach
+                                    <div class="d-flex flex-wrap gap-1" style="max-width: 250px;">
+                                        @foreach ($journal->teachingSubjects as $subject)
+                                            <span class="badge bg-primary">{{ $subject->name }}</span> 
+                                        @endforeach
+                                    </div>
                                 </td>
                                 <td>{{ $journal->total_regular_hours }}</td>
                                 <td>{{ $journal->total_replacement_hours }}</td>
@@ -88,10 +111,12 @@
                                     <a href="{{ route('teacher.journals.show', $journal) }}" class="btn btn-info">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('teacher.journals.edit', $journal) }}" class="btn btn-warning">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <x-delete :route="route('teacher.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus data ini?'" :title="'Hapus Jurnal'" />
+                                    @if(!$isLocked)
+                                        <a href="{{ route('teacher.journals.edit', $journal) }}" class="btn btn-warning">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <x-delete :route="route('teacher.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus data ini?'" :title="'Hapus Jurnal'" />
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

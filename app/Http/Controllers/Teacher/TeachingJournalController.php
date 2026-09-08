@@ -32,7 +32,9 @@ class TeachingJournalController extends Controller
             ->orderBy('date', 'desc')
             ->get();
 
-        return view('roles.Teacher.journals.index', compact('journals', 'monthYear'));
+        $isLocked = TeachingJournal::isLocked($month, $year);
+
+        return view('roles.Teacher.journals.index', compact('journals', 'monthYear', 'isLocked'));
     }
 
     public function export(Request $request)
@@ -67,7 +69,11 @@ class TeachingJournalController extends Controller
             abort(403, 'Unauthorized');
         }
         $journal->load(['teacher', 'teachingSubjects']);
-        return view('roles.Teacher.journals.show', compact('journal'));
+        
+        $journalDate = \Carbon\Carbon::parse($journal->date);
+        $isLocked = TeachingJournal::isLocked($journalDate->month, $journalDate->year);
+        
+        return view('roles.Teacher.journals.show', compact('journal', 'isLocked'));
     }
 
     public function create()
@@ -91,6 +97,11 @@ class TeachingJournalController extends Controller
             'replacement_hour_description' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
+
+        $journalDate = \Carbon\Carbon::parse($validated['date']);
+        if (TeachingJournal::isLocked($journalDate->month, $journalDate->year)) {
+            return back()->with('error', 'Bulan ini telah dikunci. Anda tidak dapat menambahkan jurnal.');
+        }
 
         $journal = TeachingJournal::create([
             'teacher_id' => $teacher->id,
@@ -122,6 +133,11 @@ class TeachingJournalController extends Controller
             abort(403, 'Unauthorized');
         }
 
+        $journalDate = \Carbon\Carbon::parse($journal->date);
+        if (TeachingJournal::isLocked($journalDate->month, $journalDate->year)) {
+            return back()->with('error', 'Bulan ini telah dikunci. Anda tidak dapat mengubah jurnal ini.');
+        }
+
         // Tidak perlu pilihan teachers
         $subjects = TeachingSubject::all();
         $selectedSubjects = $journal->teachingSubjects->pluck('id')->toArray();
@@ -146,6 +162,11 @@ class TeachingJournalController extends Controller
             'replacement_hour_description' => 'nullable|string',
             'notes' => 'nullable|string',
         ]);
+
+        $journalDate = \Carbon\Carbon::parse($journal->date);
+        if (TeachingJournal::isLocked($journalDate->month, $journalDate->year)) {
+            return back()->with('error', 'Bulan ini telah dikunci. Anda tidak dapat mengubah jurnal ini.');
+        }
 
         $journal->update([
             'date' => $validated['date'],
@@ -178,6 +199,11 @@ class TeachingJournalController extends Controller
 
         if ($journal->teacher_id != $teacher->id) {
             abort(403, 'Unauthorized');
+        }
+
+        $journalDate = \Carbon\Carbon::parse($journal->date);
+        if (TeachingJournal::isLocked($journalDate->month, $journalDate->year)) {
+            return back()->with('error', 'Bulan ini telah dikunci. Anda tidak dapat menghapus jurnal ini.');
         }
 
         $journal->delete();

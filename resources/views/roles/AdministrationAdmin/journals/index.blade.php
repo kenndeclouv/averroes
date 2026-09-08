@@ -58,10 +58,51 @@
                 <h5 class="card-title">Jurnal Mengajar</h5>
             </div>
             <div class="card-body pb-0 pt-4">
-                <div class="d-flex justify-content-between align-items-center">
-                    <a href="{{ route('administrationadmin.journals.create') }}" class="btn btn-primary mb-3">
-                        Tambah Jurnal
-                    </a>
+                @if($isLocked)
+                    <div class="alert alert-warning mb-3">
+                        <i class="fas fa-lock me-1"></i> Bulan ini telah dikunci. Anda tidak dapat menambahkan, mengubah, atau menghapus jurnal.
+                    </div>
+                @else
+                    @php
+                        $arr = explode('-', $monthYear ?? now()->format('Y-m'));
+                        $lockDate = \Carbon\Carbon::createFromDate($arr[0], $arr[1], 1)->addMonth()->addDay(1)->startOfDay();
+                        $now = \Carbon\Carbon::now()->startOfDay();
+                        $daysUntilLock = $now->diffInDays($lockDate, false);
+                    @endphp
+                    @if($daysUntilLock > 0 && $daysUntilLock <= 7)
+                        <div class="alert alert-info mb-3">
+                            <i class="fas fa-info-circle me-1"></i> Waktu pengisian/perubahan jurnal untuk bulan ini tersisa <strong>{{ $daysUntilLock }} hari</strong> lagi. Setelah berganti bulan (lewat tanggal 1), jurnal tidak dapat ditambah, diubah, atau dihapus.
+                        </div>
+                    @endif
+                @endif
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center">
+                        @if(!$isLocked)
+                            <a href="{{ route('administrationadmin.journals.create') }}" class="btn btn-primary me-2">
+                                Tambah Jurnal
+                            </a>
+                        @endif
+                        <form method="POST" action="{{ route('administrationadmin.journals.toggle_lock') }}">
+                            @csrf
+                            <input type="hidden" name="monthYear" value="{{ $monthYear ?? now()->format('Y-m') }}">
+                            @if($isLocked)
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-unlock me-1"></i> Buka Kunci Bulan Ini
+                                </button>
+                            @else
+                                @php
+                                    $arr = explode('-', $monthYear ?? now()->format('Y-m'));
+                                    $autoLockDate = \Carbon\Carbon::createFromDate($arr[0], $arr[1], 1)->addMonth()->addDay(1)->startOfDay();
+                                    $isAutoLocked = \Carbon\Carbon::now()->greaterThanOrEqualTo($autoLockDate);
+                                @endphp
+                                @if($isAutoLocked)
+                                    <button type="submit" class="btn btn-secondary">
+                                        <i class="fas fa-lock me-1"></i> Kunci Kembali Bulan Ini
+                                    </button>
+                                @endif
+                            @endif
+                        </form>
+                    </div>
                     <form method="GET" class="d-flex align-items-center"
                         action="{{ route('administrationadmin.journals.index') }}">
                         <select name="teacher_id" class="form-select me-2" onchange="this.form.submit()">
@@ -96,9 +137,11 @@
                                 <td>{{ formatDate($journal->date) }}</td>
                                 <td>{{ $journal->teacher->name }}</td>
                                 <td>
-                                    @foreach ($journal->teachingSubjects as $subject)
-                                        <span class="badge bg-primary">{{ $subject->name }}</span> 
-                                    @endforeach
+                                    <div class="d-flex flex-wrap gap-1" style="max-width: 250px;">
+                                        @foreach ($journal->teachingSubjects as $subject)
+                                            <span class="badge bg-primary">{{ $subject->name }}</span> 
+                                        @endforeach
+                                    </div>
                                 </td>
                                 <td>{{ $journal->total_regular_hours }}</td>
                                 <td>{{ $journal->total_replacement_hours }}</td>
@@ -107,11 +150,13 @@
                                         class="btn btn-info" data-bs-toggle="tooltip" title="Lihat Jurnal">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('administrationadmin.journals.edit', $journal) }}"
-                                        class="btn btn-warning" data-bs-toggle="tooltip" title="Ubah Jurnal">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <x-delete :route="route('administrationadmin.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus data ini?'" :title="'Hapus Jurnal'" />
+                                    @if(!$isLocked)
+                                        <a href="{{ route('administrationadmin.journals.edit', $journal) }}"
+                                            class="btn btn-warning" data-bs-toggle="tooltip" title="Ubah Jurnal">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <x-delete :route="route('administrationadmin.journals.destroy', $journal->id)" :message="'Apakah kamu yakin ingin menghapus data ini?'" :title="'Hapus Jurnal'" />
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
