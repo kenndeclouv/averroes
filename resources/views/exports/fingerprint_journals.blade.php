@@ -17,14 +17,17 @@
     </thead>
     <tbody>
         @foreach($rows as $row)
-        <tr style="{{ $row['isWeekend'] ? 'background-color: #ffff00;' : '' }}">
-            <td style="border: 1px solid #000000;">{{ $row['date'] }}</td>
-            <td style="border: 1px solid #000000;">{{ $row['subjects'] }}</td>
-            <td style="border: 1px solid #000000; text-align: center;">{{ $row['datang'] ?? ($row['isWeekend'] ? '' : '-') }}</td>
-            <td style="border: 1px solid #000000; text-align: center;">{{ $row['pulang'] ?? ($row['isWeekend'] ? '' : '-') }}</td>
-            <td style="border: 1px solid #000000; text-align: center; {{ !$row['isWeekend'] && $row['keteranganBg'] ? 'background-color: ' . $row['keteranganBg'] . ';' : '' }}">{{ $row['keterangan'] }}</td>
-            <td style="border: 1px solid #000000; text-align: right;">{{ $row['jp_reguler'] ?: '' }}</td>
-            <td style="border: 1px solid #000000; text-align: right;">{{ $row['jp_badal'] ?: '' }}</td>
+        @php
+            $cellBg = $row['isWeekend'] ? 'background-color: #ffff00;' : '';
+        @endphp
+        <tr>
+            <td style="border: 1px solid #000000; {{ $cellBg }}">{{ $row['date'] }}</td>
+            <td style="border: 1px solid #000000; {{ $cellBg }}">{{ $row['subjects'] }}</td>
+            <td style="border: 1px solid #000000; text-align: center; {{ $cellBg }}">{{ $row['datang'] ?? ($row['isWeekend'] ? '' : '-') }}</td>
+            <td style="border: 1px solid #000000; text-align: center; {{ $cellBg }}">{{ $row['pulang'] ?? ($row['isWeekend'] ? '' : '-') }}</td>
+            <td style="border: 1px solid #000000; text-align: center; {{ $row['keteranganBg'] ? 'background-color: ' . $row['keteranganBg'] . ';' : $cellBg }}">{{ $row['keterangan'] }}</td>
+            <td style="border: 1px solid #000000; text-align: right; {{ $cellBg }}">{{ $row['jp_reguler'] ?: '' }}</td>
+            <td style="border: 1px solid #000000; text-align: right; {{ $cellBg }}">{{ $row['jp_badal'] ?: '' }}</td>
         </tr>
         @endforeach
     </tbody>

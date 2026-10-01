@@ -98,14 +98,11 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
             $keterangan   = '';
             $keteranganBg = '';
 
-            if ($isWeekend) {
-                $keterangan   = '';
-                $keteranganBg = '#ffff00'; // yellow row highlight
-            } elseif (count($dayLogs) > 0 && (!$datangTime || !$pulangTime)) {
+            if (count($dayLogs) > 0 && (!$datangTime || !$pulangTime)) {
                 $keterangan   = 'LUPA FINGER';
                 $keteranganBg = '#ffe699';
             } elseif (count($dayLogs) === 0 && ($dayJournals->isNotEmpty())) {
-                // Has journal entry but no finger at all
+                // Has journal entry but no finger at all (even on weekends)
                 $keterangan   = 'LUPA FINGER';
                 $keteranganBg = '#ffe699';
             }
