@@ -32,8 +32,8 @@ class TeachingJournalSummaryExport implements FromView, ShouldAutoSize, WithColu
         foreach ($this->journalsByTeacher as $teacherName => $journals) {
             $safeSheetName = substr(str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $teacherName), 0, 31);
             
-            $totalReguler = $journals->sum('total_regular_hours');
-            $totalBadal = $journals->sum('total_replacement_hours');
+            $totalReguler = $journals->sum(fn($j) => (int) $j->total_regular_hours);
+            $totalBadal   = $journals->sum(fn($j) => (int) $j->total_replacement_hours);
             
             $summary[] = [
                 'nama' => $teacherName,

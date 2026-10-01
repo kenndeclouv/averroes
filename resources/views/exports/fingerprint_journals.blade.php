@@ -25,8 +25,8 @@
             <td style="border: 1px solid #000000; text-align: center;">{{ $row['datang'] ?? ($row['isWeekend'] ? '' : '-') }}</td>
             <td style="border: 1px solid #000000; text-align: center;">{{ $row['pulang'] ?? ($row['isWeekend'] ? '' : '-') }}</td>
             <td style="border: 1px solid #000000; text-align: center; background-color: {{ $row['keteranganBg'] }};">{{ $row['keterangan'] }}</td>
-            <td style="border: 1px solid #000000; text-align: right;">{{ $row['jp_reguler'] }}</td>
-            <td style="border: 1px solid #000000; text-align: right;">{{ $row['jp_badal'] }}</td>
+            <td style="border: 1px solid #000000; text-align: right;">{{ $row['jp_reguler'] ?: '' }}</td>
+            <td style="border: 1px solid #000000; text-align: right;">{{ $row['jp_badal'] ?: '' }}</td>
         </tr>
         @endforeach
     </tbody>
