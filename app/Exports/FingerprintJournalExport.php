@@ -127,17 +127,37 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
         $totalHadir      = collect($rows)->sum('hadir');
         $totalJpReguler  = collect($rows)->sum('jp_reguler');
         $totalJpBadal    = collect($rows)->sum('jp_badal');
+        $totalHariKerja  = collect($rows)->where('isWeekend', false)->count();
+        $totalHariLibur  = collect($rows)->where('isWeekend', true)->count();
+        $totalLupaFinger = collect($rows)->where('keterangan', 'LUPA FINGER')->count();
+
+        $monthName = \Carbon\Carbon::create($this->year, $this->month, 1)->locale('id')->translatedFormat('F');
+
+        $jabatan = 'GURU';
+        if ($this->teacher) {
+            $types = $this->teacher->teacherTypes->pluck('name')->toArray();
+            if (!empty($types)) {
+                $jabatan = implode(', ', $types);
+            }
+        } else {
+            $jabatan = 'STAF';
+        }
 
         return view('exports.fingerprint_journals', [
-            'name'          => $this->name,
-            'teacher'       => $this->teacher,
-            'monthYear'     => $this->monthYear,
-            'year'          => $this->year,
-            'month'         => $this->month,
-            'rows'          => $rows,
-            'totalHadir'    => $totalHadir,
-            'totalJpReguler'=> $totalJpReguler,
-            'totalJpBadal'  => $totalJpBadal,
+            'name'            => $this->name,
+            'teacher'         => $this->teacher,
+            'jabatan'         => $jabatan,
+            'monthName'       => $monthName,
+            'monthYear'       => $this->monthYear,
+            'year'            => $this->year,
+            'month'           => $this->month,
+            'rows'            => $rows,
+            'totalHadir'      => $totalHadir,
+            'totalHariKerja'  => $totalHariKerja,
+            'totalHariLibur'  => $totalHariLibur,
+            'totalLupaFinger' => $totalLupaFinger,
+            'totalJpReguler'  => $totalJpReguler,
+            'totalJpBadal'    => $totalJpBadal,
         ]);
     }
 
@@ -149,8 +169,9 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
             'C' => 15, // Datang
             'D' => 15, // Pulang
             'E' => 20, // Keterangan
-            'F' => 15, // JP Reguler
-            'G' => 15, // JP Badal
+            'F' => 12, // Hadir
+            'G' => 15, // JP Reguler
+            'H' => 15, // JP Badal
         ];
     }
 }
