@@ -18,7 +18,7 @@
     <tbody>
         @foreach($rows as $row)
         @php
-            $cellBg = $row['isWeekend'] ? 'background-color: #ffff00;' : '';
+            $cellBg = $row['isWeekend'] ? 'background-color: #ffff8e;' : '';
         @endphp
         <tr>
             <td style="border: 1px solid #000000; {{ $cellBg }}">{{ $row['date'] }}</td>
