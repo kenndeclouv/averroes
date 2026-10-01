@@ -42,18 +42,32 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
         // Find best matching fingerprint name
         $bestMatch = null;
         $tName = strtolower(trim($this->title));
-        
+        $tNameNoSpace = str_replace(' ', '', $tName);
+
+        // 1. Exact match (with spaces)
         foreach ($this->fingerNames as $fName) {
             if (strtolower(trim($fName)) === $tName) {
                 $bestMatch = $fName;
                 break;
             }
         }
-        
+
+        // 2. Exact match ignoring spaces (e.g. "Nur Huda" vs "NURHUDA")
         if (!$bestMatch) {
             foreach ($this->fingerNames as $fName) {
-                $fNameL = strtolower(trim($fName));
-                if (strlen($fNameL) >= 3 && (str_contains($tName, $fNameL) || str_contains($fNameL, $tName))) {
+                $fNameNoSpace = str_replace(' ', '', strtolower(trim($fName)));
+                if ($fNameNoSpace === $tNameNoSpace) {
+                    $bestMatch = $fName;
+                    break;
+                }
+            }
+        }
+
+        // 3. Substring match ignoring spaces
+        if (!$bestMatch) {
+            foreach ($this->fingerNames as $fName) {
+                $fNameNoSpace = str_replace(' ', '', strtolower(trim($fName)));
+                if (strlen($fNameNoSpace) >= 3 && (str_contains($tNameNoSpace, $fNameNoSpace) || str_contains($fNameNoSpace, $tNameNoSpace))) {
                     $bestMatch = $fName;
                     break;
                 }
