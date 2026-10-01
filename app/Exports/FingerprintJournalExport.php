@@ -99,8 +99,8 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
             $keteranganBg = '';
 
             if ($isWeekend) {
-                $keterangan   = $weekendLabel;
-                $keteranganBg = '#ffff00'; // yellow
+                $keterangan   = '';
+                $keteranganBg = '#ffff00'; // yellow row highlight
             } elseif (count($dayLogs) > 0 && (!$datangTime || !$pulangTime)) {
                 $keterangan   = 'LUPA FINGER';
                 $keteranganBg = '#ffe699';
@@ -114,7 +114,7 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
             $hadir = (count($dayLogs) > 0 || $dayJournals->isNotEmpty()) && !$isWeekend ? 1 : 0;
 
             $rows[] = [
-                'date'          => $dateObj->format('d/m/Y'),
+                'date'          => $dateObj->locale('id')->translatedFormat('j F Y'),
                 'datang'        => $datangTime,
                 'pulang'        => $pulangTime,
                 'subjects'      => $subjects ?: ($dayJournals->isEmpty() && count($dayLogs) > 0 ? '-' : ''),
@@ -147,14 +147,13 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
     public function columnWidths(): array
     {
         return [
-            'A' => 22, // Tanggal
-            'B' => 30, // Guru
-            'C' => 45, // Subjek
-            'D' => 15, // Datang
-            'E' => 15, // Pulang
-            'F' => 20, // Keterangan
-            'G' => 15, // JP Reguler
-            'H' => 15, // JP Badal
+            'A' => 20, // Tanggal
+            'B' => 45, // Subjek
+            'C' => 15, // Datang
+            'D' => 15, // Pulang
+            'E' => 20, // Keterangan
+            'F' => 15, // JP Reguler
+            'G' => 15, // JP Badal
         ];
     }
 }

@@ -33,3 +33,18 @@
         </tr>
     </tfoot>
 </table>
+
+<table>
+    <tr><td></td></tr>
+    <tr>
+        <th colspan="3" style="font-weight: bold; background-color: #d9d9d9; border: 1px solid #000000;">LEGENDA WARNA KETERANGAN ABSENSI</th>
+    </tr>
+    <tr>
+        <td style="background-color: #ffff00; text-align: center; border: 1px solid #000000;">Warna Kuning (Satu Baris)</td>
+        <td colspan="2" style="border: 1px solid #000000;">Libur Akhir Pekan (Sabtu / Minggu)</td>
+    </tr>
+    <tr>
+        <td style="background-color: #ffe699; text-align: center; border: 1px solid #000000;">Warna Oranye Soft</td>
+        <td colspan="2" style="border: 1px solid #000000;">Lupa Finger (Scan < 2x / Tidak Finger Saat Mengajar)</td>
+    </tr>
+</table>
