@@ -104,11 +104,8 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
                     }
                 }
             }
-            
             $keterangan = '';
-            if (!$datangTime && !$pulangTime) {
-                $keterangan = 'BELUM ADA FINGER';
-            } elseif (!$datangTime || !$pulangTime) {
+            if (!$datangTime || !$pulangTime) {
                 $keterangan = 'LUPA FINGER';
             }
             
