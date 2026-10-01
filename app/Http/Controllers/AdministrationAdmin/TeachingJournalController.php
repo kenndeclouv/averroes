@@ -243,61 +243,101 @@ class TeachingJournalController extends Controller
 
         [$year, $month] = explode('-', $monthYear);
 
-        // 1. Parse Fingerprint Logs
-        $file = $request->file('fingerprint_log');
+        // 1. Parse Fingerprint Logs — tab-separated format
+        $file    = $request->file('fingerprint_log');
         $content = file_get_contents($file->getRealPath());
-        $lines = explode("\n", $content);
-        
-        $fingerLogs = [];
+        $lines   = explode("\n", $content);
+
+        // fingerLogs[fingerName][Y-m-d] = [HH:MM:SS, ...]
+        $fingerLogs  = [];
         $fingerNames = [];
+
         foreach ($lines as $line) {
-            // e.g. "17	IRWAN	Not Set6	 01/09/2026     04:05:17	1"
-            if (preg_match('/^\s*\d+\s+(.*?)\s+.*?\s+(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2}:\d{2})/', $line, $matches)) {
-                $name = trim($matches[1]);
-                $dateStr = $matches[2]; // DD/MM/YYYY
-                $timeStr = $matches[3]; // HH:MM:SS
-                
-                $dateObj = \Carbon\Carbon::createFromFormat('d/m/Y', $dateStr);
-                $dateYmd = $dateObj->format('Y-m-d');
-                
-                if (!isset($fingerLogs[$name])) {
-                    $fingerLogs[$name] = [];
-                    $fingerNames[] = $name;
+            // Match tab-separated: ID \t Name \t Dept \t [space]DD/MM/YYYY[spaces]HH:MM:SS \t DevID
+            if (!preg_match('/^\s*\d+\t(.+?)\t.+?\t\s*(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2}:\d{2})\t\d+/', $line, $m)) {
+                continue;
+            }
+            $name    = trim($m[1]);
+            $dateYmd = \Carbon\Carbon::createFromFormat('d/m/Y', $m[2])->format('Y-m-d');
+            $time    = $m[3];
+
+            if (!isset($fingerLogs[$name])) {
+                $fingerLogs[$name] = [];
+                $fingerNames[]     = $name;
+            }
+            $fingerLogs[$name][$dateYmd][] = $time;
+        }
+        $fingerNames = array_unique($fingerNames);
+
+        // 2. Fetch all DB teachers & journals for the month
+        $allDbTeachers = Teacher::all();
+
+        $journalsByTeacherDB = TeachingJournal::with(['teacher', 'teachingSubjects'])
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month)
+            ->when($request->filled('teacher_id'), fn($q) => $q->where('teacher_id', $request->input('teacher_id')))
+            ->orderBy('date', 'asc')
+            ->get()
+            ->groupBy(fn($j) => $j->teacher->name);
+
+        // 3. Build master list: union of DB teachers + finger-only people
+        //    masterList[key] = ['name' => displayName, 'teacher' => Teacher|null, 'fingerName' => string|null]
+        $masterList = [];
+
+        // Seed with all DB teachers
+        foreach ($allDbTeachers as $teacher) {
+            $masterList[$teacher->name] = [
+                'name'       => $teacher->name,
+                'teacher'    => $teacher,
+                'fingerName' => null,
+            ];
+        }
+
+        // Map finger names to DB teachers (or add as new entry)
+        foreach ($fingerNames as $fName) {
+            $fNorm   = str_replace(' ', '', strtolower($fName));
+            $matched = null;
+
+            foreach ($masterList as $dbName => $entry) {
+                $dbNorm = str_replace(' ', '', strtolower($dbName));
+                if ($fNorm === $dbNorm || str_contains($dbNorm, $fNorm) || str_contains($fNorm, $dbNorm)) {
+                    $matched = $dbName;
+                    break;
                 }
-                if (!isset($fingerLogs[$name][$dateYmd])) {
-                    $fingerLogs[$name][$dateYmd] = [];
-                }
-                $fingerLogs[$name][$dateYmd][] = $timeStr;
+            }
+
+            if ($matched) {
+                $masterList[$matched]['fingerName'] = $fName;
+            } else {
+                // Finger-only person not in DB
+                $masterList[$fName] = [
+                    'name'       => $fName,
+                    'teacher'    => null,
+                    'fingerName' => $fName,
+                ];
             }
         }
-        
-        $fingerNames = array_unique($fingerNames);
-        
-        // 2. Fetch Journals
-        $query = TeachingJournal::with(['teacher', 'teachingSubjects'])
-            ->whereYear('date', $year)
-            ->whereMonth('date', $month);
-            
-        if ($request->filled('teacher_id')) {
-            $query->where('teacher_id', $request->input('teacher_id'));
-        }
 
-        $journals = $query->orderBy('date', 'asc')->get();
-        
-        if ($journals->isEmpty()) {
-            return back()->with('error', 'Tidak ada data jurnal mengajar pada bulan tersebut.');
+        // If filtering by teacher_id, narrow the list
+        if ($request->filled('teacher_id')) {
+            $ft = Teacher::find($request->input('teacher_id'));
+            if ($ft) {
+                $masterList = array_filter($masterList, fn($e) => $e['name'] === $ft->name);
+            }
         }
-        
-        $journalsByTeacher = $journals->groupBy(function ($journal) {
-            return $journal->teacher->name;
-        });
 
         $dateFormatted = \Carbon\Carbon::parse($monthYear)->locale('id')->translatedFormat('F Y');
-        $fileName = 'Absensi_Finger_Print_' . str_replace(' ', '_', $dateFormatted) . '.xlsx';
+        $fileName      = 'Absensi_Finger_Print_' . str_replace(' ', '_', $dateFormatted) . '.xlsx';
 
-        // 3. Export
         return \Maatwebsite\Excel\Facades\Excel::download(
-            new \App\Exports\FingerprintJournalMultipleSheetsExport($journalsByTeacher, $dateFormatted, $fingerLogs, $fingerNames, $year, $month), 
+            new \App\Exports\FingerprintJournalMultipleSheetsExport(
+                $masterList,
+                $journalsByTeacherDB,
+                $dateFormatted,
+                $fingerLogs,
+                $year,
+                $month
+            ),
             $fileName
         );
     }

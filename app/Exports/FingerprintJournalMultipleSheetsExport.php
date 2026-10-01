@@ -7,21 +7,21 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Export
 {
-    protected $journalsByTeacher;
+    protected $masterList;
+    protected $journalsByTeacherDB;
     protected $monthYear;
     protected $fingerLogs;
-    protected $fingerNames;
     protected $year;
     protected $month;
 
-    public function __construct($journalsByTeacher, $monthYear, $fingerLogs, $fingerNames, $year, $month)
+    public function __construct($masterList, $journalsByTeacherDB, $monthYear, $fingerLogs, $year, $month)
     {
-        $this->journalsByTeacher = $journalsByTeacher;
-        $this->monthYear = $monthYear;
-        $this->fingerLogs = $fingerLogs;
-        $this->fingerNames = $fingerNames;
-        $this->year = $year;
-        $this->month = $month;
+        $this->masterList          = $masterList;
+        $this->journalsByTeacherDB = $journalsByTeacherDB;
+        $this->monthYear           = $monthYear;
+        $this->fingerLogs          = $fingerLogs;
+        $this->year                = $year;
+        $this->month               = $month;
     }
 
     public function sheets(): array
@@ -29,13 +29,33 @@ class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Expo
         $sheets = [];
 
         // Halaman pertama: Rangkuman
-        $sheets[] = new TeachingJournalSummaryExport($this->journalsByTeacher, $this->monthYear);
+        $allTeachersJournals = collect();
+        foreach ($this->masterList as $entry) {
+            $name = $entry['name'];
+            $allTeachersJournals[$name] = $this->journalsByTeacherDB[$name] ?? collect();
+        }
 
-        // Halaman berikutnya: Per guru
-        foreach ($this->journalsByTeacher as $teacherName => $journals) {
-            // we pass the first journal's teacher as well so we know their position
-            $teacher = $journals->first()->teacher;
-            $sheets[] = new FingerprintJournalExport($journals, $this->monthYear, $teacherName, $this->fingerLogs, $this->fingerNames, $this->year, $this->month, $teacher);
+        $sheets[] = new TeachingJournalSummaryExport($allTeachersJournals, $this->monthYear);
+
+        // Halaman per orang (DB teacher atau finger-only)
+        foreach ($this->masterList as $entry) {
+            $name       = $entry['name'];
+            $teacher    = $entry['teacher'];
+            $fingerName = $entry['fingerName'];
+
+            // Journals for this person (may be empty if they don't teach)
+            $journals = $this->journalsByTeacherDB[$name] ?? collect();
+
+            $sheets[] = new FingerprintJournalExport(
+                $journals,
+                $this->monthYear,
+                $name,
+                $this->fingerLogs,
+                $fingerName,
+                $this->year,
+                $this->month,
+                $teacher
+            );
         }
 
         return $sheets;
