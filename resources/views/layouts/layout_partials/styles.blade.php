@@ -10,7 +10,7 @@
 <!-- Core CSS -->
 <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css">
 <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}"
-class="template-customizer-theme-css">
+    class="template-customizer-theme-css">
 <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -25,7 +25,7 @@ class="template-customizer-theme-css">
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/toastr/toastr.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/apex-charts/apex-charts.css') }}">
 <link rel="stylesheet"
-href="https://cdn.jsdelivr.net/npm/datatables.net-buttons-bs5@2.2.3/css/buttons.bootstrap5.min.css">
+    href="https://cdn.jsdelivr.net/npm/datatables.net-buttons-bs5@2.2.3/css/buttons.bootstrap5.min.css">
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/flatpickr/flatpickr.css') }}">
 {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@form-validation@1.8.1/dist/css/formValidation.min.css"> --}}
 <link rel="stylesheet" href="{{ asset('assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css') }}">

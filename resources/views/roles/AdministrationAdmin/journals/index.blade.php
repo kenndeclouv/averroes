@@ -43,6 +43,13 @@
                             action: function ( e, dt, node, config ) {
                                 window.location.href = "{{ route('administrationadmin.journals.export') }}?month={{ request('month', now()->format('Y-m')) }}&teacher_id={{ request('teacher_id') }}&per_teacher=1";
                             }
+                        },
+                        {
+                            text: '<i class="fas fa-fingerprint me-1"></i>Excel (Log Fingerprint)',
+                            className: "dropdown-item",
+                            action: function ( e, dt, node, config ) {
+                                $('#fingerprintModal').modal('show');
+                            }
                         }
                     ]
                 }]
@@ -173,6 +180,36 @@
                         </tr>
                     </tfoot>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fingerprint Modal -->
+    <div class="modal fade" id="fingerprintModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ route('administrationadmin.journals.export_fingerprint') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <input type="hidden" name="month" value="{{ request('month', now()->format('Y-m')) }}">
+                    <input type="hidden" name="teacher_id" value="{{ request('teacher_id') }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel1">Upload Log Fingerprint</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col mb-3">
+                                <label for="fingerprint_log" class="form-label">File Log (.txt)</label>
+                                <input type="file" id="fingerprint_log" name="fingerprint_log" class="form-control" accept=".txt" required />
+                                <small class="text-muted mt-2 d-block">Upload file Attend. Logs.txt dari mesin fingerprint.</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+                        <button type="submit" class="btn btn-primary">Export</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -229,4 +229,76 @@ class TeachingJournalController extends Controller
 
         return back()->with('success', $msg);
     }
+
+    public function exportFingerprint(Request $request)
+    {
+        $request->validate([
+            'fingerprint_log' => 'required|file|mimes:txt',
+        ]);
+
+        $monthYear = $request->input('month');
+        if (!$monthYear || !preg_match('/^\d{4}-\d{2}$/', $monthYear)) {
+            $monthYear = \Carbon\Carbon::now()->format('Y-m');
+        }
+
+        [$year, $month] = explode('-', $monthYear);
+
+        // 1. Parse Fingerprint Logs
+        $file = $request->file('fingerprint_log');
+        $content = file_get_contents($file->getRealPath());
+        $lines = explode("\n", $content);
+        
+        $fingerLogs = [];
+        $fingerNames = [];
+        foreach ($lines as $line) {
+            // e.g. "17	IRWAN	Not Set6	 01/09/2026     04:05:17	1"
+            if (preg_match('/^\s*\d+\s+(.*?)\s+.*?\s+(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2}:\d{2})/', $line, $matches)) {
+                $name = trim($matches[1]);
+                $dateStr = $matches[2]; // DD/MM/YYYY
+                $timeStr = $matches[3]; // HH:MM:SS
+                
+                $dateObj = \Carbon\Carbon::createFromFormat('d/m/Y', $dateStr);
+                $dateYmd = $dateObj->format('Y-m-d');
+                
+                if (!isset($fingerLogs[$name])) {
+                    $fingerLogs[$name] = [];
+                    $fingerNames[] = $name;
+                }
+                if (!isset($fingerLogs[$name][$dateYmd])) {
+                    $fingerLogs[$name][$dateYmd] = [];
+                }
+                $fingerLogs[$name][$dateYmd][] = $timeStr;
+            }
+        }
+        
+        $fingerNames = array_unique($fingerNames);
+        
+        // 2. Fetch Journals
+        $query = TeachingJournal::with(['teacher', 'teachingSubjects'])
+            ->whereYear('date', $year)
+            ->whereMonth('date', $month);
+            
+        if ($request->filled('teacher_id')) {
+            $query->where('teacher_id', $request->input('teacher_id'));
+        }
+
+        $journals = $query->orderBy('date', 'asc')->get();
+        
+        if ($journals->isEmpty()) {
+            return back()->with('error', 'Tidak ada data jurnal mengajar pada bulan tersebut.');
+        }
+        
+        $journalsByTeacher = $journals->groupBy(function ($journal) {
+            return $journal->teacher->name;
+        });
+
+        $dateFormatted = \Carbon\Carbon::parse($monthYear)->locale('id')->translatedFormat('F Y');
+        $fileName = 'Absensi_Finger_Print_' . str_replace(' ', '_', $dateFormatted) . '.xlsx';
+
+        // 3. Export
+        return \Maatwebsite\Excel\Facades\Excel::download(
+            new \App\Exports\FingerprintJournalMultipleSheetsExport($journalsByTeacher, $dateFormatted, $fingerLogs, $fingerNames, $year, $month), 
+            $fileName
+        );
+    }
 }
