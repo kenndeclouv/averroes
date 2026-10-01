@@ -28,9 +28,10 @@ class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Expo
     {
         $sheets = [];
 
-        // No summary sheet for this? The screenshot only shows the fingerprint report.
-        // We'll just generate the teacher sheets.
-        
+        // Halaman pertama: Rangkuman
+        $sheets[] = new TeachingJournalSummaryExport($this->journalsByTeacher, $this->monthYear);
+
+        // Halaman berikutnya: Per guru
         foreach ($this->journalsByTeacher as $teacherName => $journals) {
             // we pass the first journal's teacher as well so we know their position
             $teacher = $journals->first()->teacher;
