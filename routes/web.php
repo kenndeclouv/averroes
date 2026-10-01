@@ -75,6 +75,7 @@ use App\Http\Controllers\AdministrationAdmin\TransactionController as Administra
 use App\Http\Controllers\AdministrationAdmin\TeachingJournalController as AdministrationAdminTeachingJournal;
 use App\Http\Controllers\AdministrationAdmin\TeachingSubjectController as AdministrationAdminTeachingSubject;
 use App\Http\Controllers\AdministrationAdmin\StudentParentController as AdministrationAdminParent;
+use App\Http\Controllers\AdministrationAdmin\TeacherTypeController as AdministrationAdminTeacherType;
 
 // TEACHER
 use App\Http\Controllers\Teacher\AnnouncementController as TeacherAnnouncement;
@@ -307,6 +308,14 @@ Route::prefix('administrationadmin')->name('administrationadmin.')->middleware([
         Route::delete('list/deletestudent/{student}', [AdministrationAdminRoom::class, 'deleteStudentFromRoom'])->middleware('permission:delete_student_from_room')->name('delete-student-from-room');
         Route::get('list/addstudent/{room}', [AdministrationAdminRoom::class, 'addStudentToRoomForm'])->middleware('permission:add_student_to_room')->name('add-student-to-room-form');
         Route::post('list/addstudent/{room}', [AdministrationAdminRoom::class, 'addStudentToRoom'])->middleware('permission:add_student_to_room')->name('add-student-to-room');
+    });
+    Route::prefix('teachertype')->name('teachertype.')->group(function () {
+        Route::get('/', [AdministrationAdminTeacherType::class, 'index'])->name('index');
+        Route::get('create', [AdministrationAdminTeacherType::class, 'create'])->name('create');
+        Route::post('store', [AdministrationAdminTeacherType::class, 'store'])->name('store');
+        Route::get('edit/{teachertype}', [AdministrationAdminTeacherType::class, 'edit'])->name('edit');
+        Route::put('update/{teachertype}', [AdministrationAdminTeacherType::class, 'update'])->name('update');
+        Route::delete('destroy/{teachertype}', [AdministrationAdminTeacherType::class, 'destroy'])->name('destroy');
     });
     Route::prefix('studentpermit')->name('studentpermit.')->middleware(['permission:show_student_permit'])->group(function () {
         Route::get('/', [AdministrationAdminStudentPermit::class, 'index'])->name('index');

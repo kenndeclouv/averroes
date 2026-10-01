@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
 {
-    protected $fillable = ['name', 'full_name', 'phone', 'birth_date', 'birth_place', 'address', 'room_id', 'classes_id', 'gender', 'last_degree', 'user_id'];
+    protected $fillable = [
+        'name', 'full_name', 'phone', 'birth_date', 'birth_place', 'address', 'room_id', 'classes_id', 'gender', 'last_degree', 'user_id',
+        'no_rekening', 'bank', 'gaji_pokok', 'tunjangan_fungsional', 'tunjangan_transport', 'rate_jp', 'potongan_alpha',
+    ];
     protected static function boot()
     {
         parent::boot();

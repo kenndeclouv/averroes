@@ -326,6 +326,46 @@ class TeachingJournalController extends Controller
             }
         }
 
+        // Filter masterList: only include people who have journals OR finger logs in this month
+        $activeMasterList = [];
+        foreach ($masterList as $key => $entry) {
+            $displayName   = $entry['teacher'] ? $entry['teacher']->name : ucwords(strtolower($entry['name']));
+            $entry['name'] = $displayName;
+
+            $hasJournals   = isset($journalsByTeacherDB[$entry['name']]) && $journalsByTeacherDB[$entry['name']]->isNotEmpty();
+            $hasFingerLogs = false;
+
+            if ($entry['fingerName'] && isset($fingerLogs[$entry['fingerName']])) {
+                foreach ($fingerLogs[$entry['fingerName']] as $ymd => $dayTimes) {
+                    if (str_starts_with($ymd, $monthYear) && !empty($dayTimes)) {
+                        $hasFingerLogs = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($hasJournals || $hasFingerLogs) {
+                $activeMasterList[$entry['name']] = $entry;
+            }
+        }
+        $masterList = $activeMasterList;
+
+        // Sort masterList so Teacher ID 45 (Muhammad Ken Izzulhaq) comes FIRST right after Rangkuman
+        $userKey = null;
+        foreach ($masterList as $key => $entry) {
+            $t = $entry['teacher'];
+            if (($t && $t->id == 45) || str_contains(strtolower($entry['name']), 'ken') || str_contains(strtolower($entry['name']), 'izzulhaq')) {
+                $userKey = $key;
+                break;
+            }
+        }
+
+        if ($userKey && isset($masterList[$userKey])) {
+            $userEntry = $masterList[$userKey];
+            unset($masterList[$userKey]);
+            $masterList = array_merge([$userKey => $userEntry], $masterList);
+        }
+
         $dateFormatted = \Carbon\Carbon::parse($monthYear)->locale('id')->translatedFormat('F Y');
         $fileName      = 'Absensi_Finger_Print_' . str_replace(' ', '_', $dateFormatted) . '.xlsx';
 

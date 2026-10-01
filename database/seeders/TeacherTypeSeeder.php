@@ -61,6 +61,8 @@ class TeacherTypeSeeder extends Seeder
 
             // Bendahara
             ['name' => 'Bendahara', 'slug' => 'treasurer', 'type' => 'functional_position'],
+            ['name' => 'Admin', 'slug' => 'admin', 'type' => 'functional_position'],
+            ['name' => 'Keuangan', 'slug' => 'keuangan', 'type' => 'functional_position'],
         ];
 
         foreach ($teacherTypes as $teacherType) {

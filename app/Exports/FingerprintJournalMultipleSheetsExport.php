@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\Export;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
+use App\Exports\KafalahExport;
 
 class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Export
 {
@@ -36,6 +37,16 @@ class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Expo
         }
 
         $sheets[] = new TeachingJournalSummaryExport($allTeachersJournals, $this->monthYear);
+
+        // Halaman kedua: Rencana Kafalah
+        $sheets[] = new KafalahExport(
+            $this->masterList,
+            $this->journalsByTeacherDB,
+            $this->monthYear,
+            $this->fingerLogs,
+            $this->year,
+            $this->month
+        );
 
         // Halaman per orang (DB teacher atau finger-only)
         foreach ($this->masterList as $entry) {

@@ -111,7 +111,7 @@
         $permissions->contains('show_teacher') ||
         $permissions->contains('show_semester'))
     <li
-        class="menu-item {{ request()->routeIs($rolePrefix . '.class.*', $rolePrefix . '.room.*', $rolePrefix . '.student.nis.*', $rolePrefix . '.teacher.nip.*', $rolePrefix . '.semesters.*') ? 'open active' : '' }}">
+        class="menu-item {{ request()->routeIs($rolePrefix . '.class.*', $rolePrefix . '.room.*', $rolePrefix . '.student.nis.*', $rolePrefix . '.teacher.nip.*', $rolePrefix . '.semesters.*', $rolePrefix . '.teachertype.*') ? 'open active' : '' }}">
         <a href="{{ route($rolePrefix . '.class.index') }}" class="menu-link menu-toggle">
             <i class="menu-icon fa-solid fa-folders fs-6"></i>
             <div class="text-truncate">
@@ -146,6 +146,9 @@
             {{-- Permission check for semesters? For now using show_class/room context or we need new permission --}}
             <li class="menu-item {{ request()->routeIs($rolePrefix . '.semesters.*') ? 'active' : '' }}">
                 <a href="{{ route($rolePrefix . '.semesters.index') }}" class="menu-link">Master Semester</a>
+            </li>
+            <li class="menu-item {{ request()->routeIs($rolePrefix . '.teachertype.*') ? 'active' : '' }}">
+                <a href="{{ route($rolePrefix . '.teachertype.index') }}" class="menu-link">Master Jabatan & Amanah</a>
             </li>
         </ul>
     </li>

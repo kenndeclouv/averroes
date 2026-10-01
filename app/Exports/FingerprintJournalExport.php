@@ -33,7 +33,8 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
 
     public function title(): string
     {
-        $title = str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $this->name);
+        $name  = ucwords(strtolower($this->name));
+        $title = str_replace(['*', ':', '/', '\\', '?', '[', ']'], '', $name);
         return substr($title, 0, 31);
     }
 
@@ -127,9 +128,41 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
         $totalHadir      = collect($rows)->sum('hadir');
         $totalJpReguler  = collect($rows)->sum('jp_reguler');
         $totalJpBadal    = collect($rows)->sum('jp_badal');
-        $totalHariKerja  = collect($rows)->where('isWeekend', false)->count();
-        $totalHariLibur  = collect($rows)->where('isWeekend', true)->count();
         $totalLupaFinger = collect($rows)->where('keterangan', 'LUPA FINGER')->count();
+
+        // Determine if teacher is internal staff vs external/part-time teacher
+        $isInternal = false;
+        if ($this->teacher) {
+            $internalSlugs = ['kepala-sekolah', 'mudir-ma-had', 'wakil-kepala-sekolah-humas', 'wakil-kepala-sekolah-kurikulum', 'sarpras', 'musyrif', 'tata-usaha', 'treasurer'];
+            $teacherTypeSlugs = $this->teacher->teacherTypes->pluck('slug')->toArray();
+            foreach ($internalSlugs as $slug) {
+                if (in_array($slug, $teacherTypeSlugs)) {
+                    $isInternal = true;
+                    break;
+                }
+            }
+        }
+
+        if ($isInternal || empty($this->journals) || count($this->journals) === 0) {
+            // Internal staff / non-teaching: Work days = Monday to Friday (weekdays)
+            $totalHariKerja = collect($rows)->where('isWeekend', false)->count();
+            $totalHariLibur = collect($rows)->where('isWeekend', true)->count();
+        } else {
+            // External teacher: Work days = count of days in month matching their teaching schedule days of week
+            $teachingDaysOfWeek = collect($this->journals)
+                ->map(fn($j) => \Carbon\Carbon::parse($j->date)->dayOfWeek)
+                ->unique()
+                ->toArray();
+
+            $totalHariKerja = 0;
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+                $dObj = \Carbon\Carbon::create($this->year, $this->month, $day);
+                if (in_array($dObj->dayOfWeek, $teachingDaysOfWeek)) {
+                    $totalHariKerja++;
+                }
+            }
+            $totalHariLibur = $daysInMonth - $totalHariKerja;
+        }
 
         $monthName = \Carbon\Carbon::create($this->year, $this->month, 1)->locale('id')->translatedFormat('F');
 

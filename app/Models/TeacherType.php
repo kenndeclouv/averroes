@@ -10,6 +10,11 @@ class TeacherType extends Model
 
     public function TeacherHasTypes()
     {
-        return $this->hasMany(TeacherType::class);
+        return $this->hasMany(TeacherHasType::class);
+    }
+
+    public function teachers()
+    {
+        return $this->belongsToMany(Teacher::class, 'teacher_has_types', 'teacher_type_id', 'teacher_id');
     }
 }

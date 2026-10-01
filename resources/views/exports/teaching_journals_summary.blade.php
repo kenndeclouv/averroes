@@ -1,3 +1,9 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
 <table>
     <thead>
         <tr>
@@ -38,12 +44,14 @@
             <th colspan="5" style="font-weight: bold; background-color: #d9d9d9; border: 1px solid #000000; text-align: left;">LEGENDA WARNA KETERANGAN ABSENSI</th>
         </tr>
         <tr>
-            <td style="background-color: #ffff8e; text-align: center; border: 1px solid #000000;">Warna Kuning (Satu Baris)</td>
+            <td style="background-color: #ffff8e; text-align: center; border: 1px solid #000000;"></td>
             <td colspan="4" style="border: 1px solid #000000;">Libur Akhir Pekan (Sabtu / Minggu)</td>
         </tr>
         <tr>
-            <td style="background-color: #ffe699; text-align: center; border: 1px solid #000000;">Warna Oranye Soft</td>
-            <td colspan="4" style="border: 1px solid #000000;">Lupa Finger (Scan < 2x / Tidak Finger Saat Mengajar)</td>
+            <td style="background-color: #ffe699; text-align: center; border: 1px solid #000000;"></td>
+            <td colspan="4" style="border: 1px solid #000000;">Lupa Finger (Scan &lt; 2x / Tidak Finger Saat Mengajar)</td>
         </tr>
     </tbody>
 </table>
+</body>
+</html>
