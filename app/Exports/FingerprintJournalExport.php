@@ -62,6 +62,22 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
 
         $logs = $bestMatch ? ($this->fingerLogs[$bestMatch] ?? []) : [];
         
+        $datangTimesSec = [];
+        $pulangTimesSec = [];
+
+        foreach ($logs as $dateYmd => $dayLogs) {
+            if (count($dayLogs) >= 2) {
+                $d = min($dayLogs);
+                $p = max($dayLogs);
+                $datangTimesSec[] = \Carbon\Carbon::parse($d)->secondsSinceMidnight();
+                $pulangTimesSec[] = \Carbon\Carbon::parse($p)->secondsSinceMidnight();
+            }
+        }
+        
+        // Default threshold if not enough data
+        $avgDatang = count($datangTimesSec) > 0 ? array_sum($datangTimesSec) / count($datangTimesSec) : 25200; // 07:00:00 default
+        $avgPulang = count($pulangTimesSec) > 0 ? array_sum($pulangTimesSec) / count($pulangTimesSec) : 57600; // 16:00:00 default
+        
         // Add fingerprint info to each journal
         foreach ($this->journals as $journal) {
             $dateObj = \Carbon\Carbon::parse($journal->date);
@@ -76,7 +92,11 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
                 $datangTime = min($dayLogs);
                 $pulangTime = max($dayLogs);
                 if ($datangTime === $pulangTime) {
-                    if ($datangTime < '12:00:00') {
+                    $scanSec = \Carbon\Carbon::parse($datangTime)->secondsSinceMidnight();
+                    $diffDatang = abs($scanSec - $avgDatang);
+                    $diffPulang = abs($scanSec - $avgPulang);
+                    
+                    if ($diffDatang < $diffPulang) {
                         $pulangTime = null;
                     } else {
                         $pulangTime = $datangTime;
