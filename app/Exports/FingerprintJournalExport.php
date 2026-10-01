@@ -7,10 +7,8 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWidths, WithTitle, WithStyles
+class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWidths, WithTitle
 {
     public $journals;
     public $monthYear;
@@ -117,10 +115,5 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
             'G' => 15, // JP Reguler
             'H' => 15, // JP Badal
         ];
-    }
-
-    public function styles(Worksheet $sheet)
-    {
-        return [];
     }
 }
