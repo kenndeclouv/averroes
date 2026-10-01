@@ -23,28 +23,27 @@
                 <td style="text-align: center; border: 1px solid #000000;">{{ $row['total_keseluruhan'] }}</td>
             </tr>
         @endforeach
-    </tbody>
-    <tfoot>
         <tr>
             <th colspan="2" style="font-weight: bold; text-align: right; border: 1px solid #000000; background-color: #F4E295;">Grand Total</th>
             <th style="font-weight: bold; text-align: center; border: 1px solid #000000; background-color: #F4E295;">{{ collect($summary)->sum('total_reguler') }}</th>
             <th style="font-weight: bold; text-align: center; border: 1px solid #000000; background-color: #F4E295;">{{ collect($summary)->sum('total_badal') }}</th>
             <th style="font-weight: bold; text-align: center; border: 1px solid #000000; background-color: #F4E295;">{{ collect($summary)->sum('total_keseluruhan') }}</th>
         </tr>
-    </tfoot>
-</table>
 
-<table>
-    <tr><td></td></tr>
-    <tr>
-        <th colspan="3" style="font-weight: bold; background-color: #d9d9d9; border: 1px solid #000000;">LEGENDA WARNA KETERANGAN ABSENSI</th>
-    </tr>
-    <tr>
-        <td style="background-color: #ffff8e; text-align: center; border: 1px solid #000000;">Warna Kuning (Satu Baris)</td>
-        <td colspan="2" style="border: 1px solid #000000;">Libur Akhir Pekan (Sabtu / Minggu)</td>
-    </tr>
-    <tr>
-        <td style="background-color: #ffe699; text-align: center; border: 1px solid #000000;">Warna Oranye Soft</td>
-        <td colspan="2" style="border: 1px solid #000000;">Lupa Finger (Scan < 2x / Tidak Finger Saat Mengajar)</td>
-    </tr>
+        <!-- Baris Kosong Pemisah -->
+        <tr><td colspan="5"></td></tr>
+
+        <!-- Legenda -->
+        <tr>
+            <th colspan="5" style="font-weight: bold; background-color: #d9d9d9; border: 1px solid #000000; text-align: left;">LEGENDA WARNA KETERANGAN ABSENSI</th>
+        </tr>
+        <tr>
+            <td style="background-color: #ffff8e; text-align: center; border: 1px solid #000000;">Warna Kuning (Satu Baris)</td>
+            <td colspan="4" style="border: 1px solid #000000;">Libur Akhir Pekan (Sabtu / Minggu)</td>
+        </tr>
+        <tr>
+            <td style="background-color: #ffe699; text-align: center; border: 1px solid #000000;">Warna Oranye Soft</td>
+            <td colspan="4" style="border: 1px solid #000000;">Lupa Finger (Scan < 2x / Tidak Finger Saat Mengajar)</td>
+        </tr>
+    </tbody>
 </table>

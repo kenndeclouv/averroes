@@ -6,53 +6,50 @@
             </th>
         </tr>
     </thead>
-</table>
-
-<table>
-    <tr>
-        <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">NAMA</td>
-        <td colspan="3" style="border: 1px solid #000000; font-weight: bold;">{{ strtoupper($name) }}</td>
-        <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">TOTAL HARI KERJA</td>
-        <td colspan="3" style="border: 1px solid #000000; text-align: center; font-weight: bold;">{{ $totalHariKerja }}</td>
-    </tr>
-    <tr>
-        <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">JABATAN</td>
-        <td colspan="3" style="border: 1px solid #000000;">{{ strtoupper($jabatan) }}</td>
-        <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">TOTAL HARI LIBUR</td>
-        <td colspan="3" style="border: 1px solid #000000; text-align: center; font-weight: bold;">{{ $totalHariLibur }}</td>
-    </tr>
-    <tr>
-        <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">BULAN</td>
-        <td colspan="3" style="border: 1px solid #000000;">{{ strtoupper($monthName) }}</td>
-        <td style="font-weight: bold; background-color: #ffe699; border: 1px solid #000000;">LUPA FINGER</td>
-        <td colspan="3" style="border: 1px solid #000000; text-align: center; font-weight: bold; background-color: #ffe699;">{{ $totalLupaFinger }}</td>
-    </tr>
-    <tr>
-        <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">TAHUN</td>
-        <td colspan="3" style="border: 1px solid #000000;">{{ $year }}</td>
-        <td style="font-weight: bold; background-color: #c6e0b4; border: 1px solid #000000;">TOTAL KEHADIRAN</td>
-        <td colspan="3" style="border: 1px solid #000000; text-align: center; font-weight: bold; background-color: #c6e0b4;">{{ $totalHadir }}</td>
-    </tr>
-</table>
-
-<table>
-    <tr><td></td></tr>
-</table>
-
-<table>
-    <thead>
-        <tr>
-            <th style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Tanggal</th>
-            <th style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Subjek</th>
-            <th style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Waktu Datang</th>
-            <th style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Waktu Pulang</th>
-            <th style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Keterangan</th>
-            <th style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Hadir</th>
-            <th style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">JP Reguler</th>
-            <th style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">JP Badal</th>
-        </tr>
-    </thead>
     <tbody>
+        <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">NAMA</td>
+            <td colspan="3" style="border: 1px solid #000000; font-weight: bold;">{{ strtoupper($name) }}</td>
+            <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">TOTAL HARI KERJA</td>
+            <td colspan="3" style="border: 1px solid #000000; text-align: center; font-weight: bold;">{{ $totalHariKerja }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">JABATAN</td>
+            <td colspan="3" style="border: 1px solid #000000;">{{ strtoupper($jabatan) }}</td>
+            <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">TOTAL HARI LIBUR</td>
+            <td colspan="3" style="border: 1px solid #000000; text-align: center; font-weight: bold;">{{ $totalHariLibur }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">BULAN</td>
+            <td colspan="3" style="border: 1px solid #000000;">{{ strtoupper($monthName) }}</td>
+            <td style="font-weight: bold; background-color: #ffe699; border: 1px solid #000000;">LUPA FINGER</td>
+            <td colspan="3" style="border: 1px solid #000000; text-align: center; font-weight: bold; background-color: #ffe699;">{{ $totalLupaFinger }}</td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold; background-color: #f2f2f2; border: 1px solid #000000;">TAHUN</td>
+            <td colspan="3" style="border: 1px solid #000000;">{{ $year }}</td>
+            <td style="font-weight: bold; background-color: #c6e0b4; border: 1px solid #000000;">TOTAL KEHADIRAN</td>
+            <td colspan="3" style="border: 1px solid #000000; text-align: center; font-weight: bold; background-color: #c6e0b4;">{{ $totalHadir }}</td>
+        </tr>
+
+        <!-- Baris Kosong Pemisah -->
+        <tr>
+            <td colspan="8"></td>
+        </tr>
+
+        <!-- Header Tabel Utama -->
+        <tr>
+            <td style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Tanggal</td>
+            <td style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Subjek</td>
+            <td style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Waktu Datang</td>
+            <td style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Waktu Pulang</td>
+            <td style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Keterangan</td>
+            <td style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">Hadir</td>
+            <td style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">JP Reguler</td>
+            <td style="background-color: #f2f2f2; font-weight: bold; border: 1px solid #000000;">JP Badal</td>
+        </tr>
+
+        <!-- Baris Data -->
         @foreach($rows as $row)
         @php
             $cellBg = $row['isWeekend'] ? 'background-color: #ffff8e;' : '';
