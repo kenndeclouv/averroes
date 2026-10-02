@@ -232,20 +232,36 @@ class TeachingJournalController extends Controller
 
     public function exportFingerprint(Request $request)
     {
-        $request->validate([
-            'fingerprint_log' => 'required|file|mimes:txt',
-        ]);
-
         $monthYear = $request->input('month');
         if (!$monthYear || !preg_match('/^\d{4}-\d{2}$/', $monthYear)) {
             $monthYear = \Carbon\Carbon::now()->format('Y-m');
         }
 
+        $logDir = storage_path('app/fingerprint_logs');
+        if (!file_exists($logDir)) {
+            @mkdir($logDir, 0777, true);
+        }
+
+        $storedFilePath = $logDir . '/' . $monthYear . '.txt';
+
+        // 1. Handle file upload (store or overwrite)
+        if ($request->hasFile('fingerprint_log')) {
+            $request->validate([
+                'fingerprint_log' => 'file|mimes:txt',
+            ]);
+            $file = $request->file('fingerprint_log');
+            $file->move($logDir, $monthYear . '.txt');
+        }
+
+        // Check if log file exists for this month
+        if (!file_exists($storedFilePath)) {
+            return back()->with('error', "File log fingerprint untuk bulan {$monthYear} belum ada di sistem. Silakan upload file .txt terlebih dahulu!");
+        }
+
         [$year, $month] = explode('-', $monthYear);
 
-        // 1. Parse Fingerprint Logs — tab-separated format
-        $file    = $request->file('fingerprint_log');
-        $content = file_get_contents($file->getRealPath());
+        // 2. Parse Fingerprint Logs — tab-separated format from stored file
+        $content = file_get_contents($storedFilePath);
         $lines   = explode("\n", $content);
 
         // fingerLogs[fingerName][Y-m-d] = [HH:MM:SS, ...]

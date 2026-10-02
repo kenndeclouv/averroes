@@ -17,6 +17,24 @@
     $totalRowEksternal = $endEksternal + 1;
 
     $grandTotalRow = $totalRowEksternal + 2;
+
+    if ($countInternal > 0 && $countEksternal > 0) {
+        $formulaT = "=T{$totalRowInternal}+T{$totalRowEksternal}";
+        $formulaU = "=U{$totalRowInternal}+U{$totalRowEksternal}";
+        $formulaV = "=V{$totalRowInternal}+V{$totalRowEksternal}";
+    } elseif ($countInternal > 0) {
+        $formulaT = "=T{$totalRowInternal}";
+        $formulaU = "=U{$totalRowInternal}";
+        $formulaV = "=V{$totalRowInternal}";
+    } elseif ($countEksternal > 0) {
+        $formulaT = "=T{$totalRowEksternal}";
+        $formulaU = "=U{$totalRowEksternal}";
+        $formulaV = "=V{$totalRowEksternal}";
+    } else {
+        $formulaT = 0;
+        $formulaU = 0;
+        $formulaV = 0;
+    }
 @endphp
 <table>
     <thead>
@@ -220,9 +238,9 @@
         <tr><td colspan="24"></td></tr>
         <tr>
             <th colspan="19" style="border: 1px solid #000000; font-weight: bold; text-align: right; background-color: #E9C62C;">Kafalah</th>
-            <th style="border: 1px solid #000000; background-color: #E9C62C; text-align: right; font-weight: bold;">=T{{ $totalRowInternal }}+T{{ $totalRowEksternal }}</th>
-            <th style="border: 1px solid #000000; background-color: #E9C62C; text-align: right; font-weight: bold;">=U{{ $totalRowInternal }}+U{{ $totalRowEksternal }}</th>
-            <th style="border: 1px solid #000000; background-color: #E9C62C; text-align: right; font-weight: bold;">=V{{ $totalRowInternal }}+V{{ $totalRowEksternal }}</th>
+            <th style="border: 1px solid #000000; background-color: #E9C62C; text-align: right; font-weight: bold;">{{ $formulaT }}</th>
+            <th style="border: 1px solid #000000; background-color: #E9C62C; text-align: right; font-weight: bold;">{{ $formulaU }}</th>
+            <th style="border: 1px solid #000000; background-color: #E9C62C; text-align: right; font-weight: bold;">{{ $formulaV }}</th>
             <th style="border: 1px solid #000000; background-color: #E9C62C;"></th>
             <th style="border: 1px solid #000000; background-color: #E9C62C;"></th>
         </tr>

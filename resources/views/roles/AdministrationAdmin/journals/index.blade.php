@@ -193,21 +193,46 @@
                     <input type="hidden" name="month" value="{{ request('month', now()->format('Y-m')) }}">
                     <input type="hidden" name="teacher_id" value="{{ request('teacher_id') }}">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel1">Upload Log Fingerprint</h5>
+                        <h5 class="modal-title" id="exampleModalLabel1">Export &amp; Log Fingerprint</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        @php
+                            $currentMonthYear = request('month', now()->format('Y-m'));
+                            $storedLogExists  = file_exists(storage_path("app/fingerprint_logs/{$currentMonthYear}.txt"));
+                        @endphp
+
+                        @if($storedLogExists)
+                            <div class="alert alert-success d-flex align-items-center mb-3" role="alert">
+                                <i class="fas fa-check-circle me-2 fs-5"></i>
+                                <div>
+                                    Log fingerprint bulan <strong>{{ $currentMonthYear }}</strong> sudah tersimpan di sistem.
+                                    <br><small class="text-muted">Klik <strong>Export Excel</strong> langsung tanpa upload, atau pilih file baru jika ingin memperbarui log.</small>
+                                </div>
+                            </div>
+                        @else
+                            <div class="alert alert-warning d-flex align-items-center mb-3" role="alert">
+                                <i class="fas fa-info-circle me-2 fs-5"></i>
+                                <div>
+                                    Log fingerprint bulan <strong>{{ $currentMonthYear }}</strong> belum tersimpan.
+                                    <br><small>Upload file <code>.txt</code> log fingerprint dari mesin absensi.</small>
+                                </div>
+                            </div>
+                        @endif
+
                         <div class="row">
                             <div class="col mb-3">
-                                <label for="fingerprint_log" class="form-label">File Log (.txt)</label>
-                                <input type="file" id="fingerprint_log" name="fingerprint_log" class="form-control" accept=".txt" required />
-                                <small class="text-muted mt-2 d-block">Upload file Attend. Logs.txt dari mesin fingerprint.</small>
+                                <label for="fingerprint_log" class="form-label">
+                                    File Log (.txt) {{ $storedLogExists ? '(Opsional - Jika Ingin Update)' : '(Wajib Upload)' }}
+                                </label>
+                                <input type="file" id="fingerprint_log" name="fingerprint_log" class="form-control" accept=".txt" {{ $storedLogExists ? '' : 'required' }} />
+                                <small class="text-muted mt-2 d-block">File log akan tersimpan otomatis di sistem per bulan.</small>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary">Export</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-file-excel me-1"></i> Export Excel</button>
                     </div>
                 </form>
             </div>
