@@ -68,17 +68,17 @@
                         </div>
                     @endif
                 @endif
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3 mb-3">
+                    <div class="w-100 w-md-auto">
                         @if(!$isLocked)
-                            <a href="{{ route('teacher.journals.create') }}" class="btn btn-primary mb-3">
-                                Tambah Jurnal
+                            <a href="{{ route('teacher.journals.create') }}" class="btn btn-primary text-nowrap w-100 w-md-auto">
+                                <i class="fas fa-plus me-1"></i> Tambah Jurnal
                             </a>
                         @endif
                     </div>
-                    <form method="GET" class="d-flex align-items-center" action="{{ route('teacher.journals.index') }}">
-                        <label for="month" class="me-2 mb-0">Bulan:</label>
-                        <input type="month" id="month" name="month" class="form-control me-2"
+                    <form method="GET" class="d-flex align-items-center w-100 w-md-auto" action="{{ route('teacher.journals.index') }}">
+                        <label for="month" class="me-2 mb-0 fw-semibold text-nowrap">Bulan:</label>
+                        <input type="month" id="month" name="month" class="form-control"
                             value="{{ $monthYear ?? now()->format('Y-m') }}" onchange="this.form.submit()">
                     </form>
                 </div>

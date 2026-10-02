@@ -19,7 +19,8 @@ class TeachingJournalController extends Controller
 
         $monthYear = $request->input('month');
         if (!$monthYear || !preg_match('/^\d{4}-\d{2}$/', $monthYear)) {
-            $monthYear = \Carbon\Carbon::now()->format('Y-m');
+            $now = \Carbon\Carbon::now();
+            $monthYear = ($now->day == 1) ? $now->copy()->subMonth()->format('Y-m') : $now->format('Y-m');
         }
 
         [$year, $month] = explode('-', $monthYear);
@@ -43,7 +44,8 @@ class TeachingJournalController extends Controller
 
         $monthYear = $request->input('month');
         if (!$monthYear || !preg_match('/^\d{4}-\d{2}$/', $monthYear)) {
-            $monthYear = \Carbon\Carbon::now()->format('Y-m');
+            $now = \Carbon\Carbon::now();
+            $monthYear = ($now->day == 1) ? $now->copy()->subMonth()->format('Y-m') : $now->format('Y-m');
         }
 
         [$year, $month] = explode('-', $monthYear);

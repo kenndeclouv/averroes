@@ -41,7 +41,7 @@
                             <input type="number" min="0"
                                 class="form-control @error('total_regular_hours') is-invalid @enderror"
                                 id="total_regular_hours" name="total_regular_hours"
-                                value="{{ old('total_regular_hours', 0) }}" required>
+                                value="{{ old('total_regular_hours') }}" placeholder="0" required>
                             @errorFeedback('total_regular_hours')
                         </div>
 
@@ -50,7 +50,7 @@
                             <input type="number" min="0"
                                 class="form-control @error('total_replacement_hours') is-invalid @enderror"
                                 id="total_replacement_hours" name="total_replacement_hours"
-                                value="{{ old('total_replacement_hours', 0) }}" required>
+                                value="{{ old('total_replacement_hours') }}" placeholder="0" required>
                             @errorFeedback('total_replacement_hours')
                         </div>
                     </div>

@@ -82,37 +82,37 @@
                         </div>
                     @endif
                 @endif
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex align-items-center">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3 mb-3">
+                    <div class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2">
                         @if(!$isLocked)
-                            <a href="{{ route('administrationadmin.journals.create') }}" class="btn btn-primary me-2">
-                                Tambah Jurnal
+                            <a href="{{ route('administrationadmin.journals.create') }}" class="btn btn-primary text-nowrap w-100 w-sm-auto">
+                                <i class="fas fa-plus me-1"></i> Tambah Jurnal
                             </a>
                         @endif
-                        <form method="POST" action="{{ route('administrationadmin.journals.toggle_lock') }}">
+                        <form method="POST" action="{{ route('administrationadmin.journals.toggle_lock') }}" class="w-100 w-sm-auto">
                             @csrf
-                            <input type="hidden" name="monthYear" value="{{ $monthYear ?? now()->format('Y-m') }}">
+                            <input type="hidden" name="monthYear" value="{{ $monthYear }}">
                             @if($isLocked)
-                                <button type="submit" class="btn btn-danger">
+                                <button type="submit" class="btn btn-danger text-nowrap w-100">
                                     <i class="fas fa-unlock me-1"></i> Buka Kunci Bulan Ini
                                 </button>
                             @else
                                 @php
-                                    $arr = explode('-', $monthYear ?? now()->format('Y-m'));
+                                    $arr = explode('-', $monthYear);
                                     $autoLockDate = \Carbon\Carbon::createFromDate($arr[0], $arr[1], 1)->addMonth()->addDay(1)->startOfDay();
                                     $isAutoLocked = \Carbon\Carbon::now()->greaterThanOrEqualTo($autoLockDate);
                                 @endphp
                                 @if($isAutoLocked)
-                                    <button type="submit" class="btn btn-secondary">
+                                    <button type="submit" class="btn btn-secondary text-nowrap w-100">
                                         <i class="fas fa-lock me-1"></i> Kunci Kembali Bulan Ini
                                     </button>
                                 @endif
                             @endif
                         </form>
                     </div>
-                    <form method="GET" class="d-flex align-items-center"
+                    <form method="GET" class="d-flex flex-column flex-sm-row align-items-stretch align-items-sm-center gap-2"
                         action="{{ route('administrationadmin.journals.index') }}">
-                        <select name="teacher_id" class="form-select me-2" onchange="this.form.submit()">
+                        <select name="teacher_id" class="form-select w-100 w-sm-auto" onchange="this.form.submit()">
                             <option value="">Semua Guru</option>
                             @foreach ($teachers as $teacher)
                                 <option value="{{ $teacher->id }}" {{ request('teacher_id') == $teacher->id ? 'selected' : '' }}>
@@ -120,9 +120,11 @@
                                 </option>
                             @endforeach
                         </select>
-                        <label for="month" class="me-2 mb-0">Bulan:</label>
-                        <input type="month" id="month" name="month" class="form-control me-2"
-                            value="{{ $monthYear ?? now()->format('Y-m') }}" onchange="this.form.submit()">
+                        <div class="d-flex align-items-center gap-2">
+                            <label for="month" class="mb-0 fw-semibold">Bulan:</label>
+                            <input type="month" id="month" name="month" class="form-control"
+                                value="{{ $monthYear }}" onchange="this.form.submit()">
+                        </div>
                     </form>
                 </div>
             </div>
