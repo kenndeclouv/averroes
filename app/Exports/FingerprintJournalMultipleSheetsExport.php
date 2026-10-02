@@ -5,6 +5,8 @@ namespace App\Exports;
 use Maatwebsite\Excel\Concerns\Export;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use App\Exports\KafalahExport;
+use App\Exports\RawFingerprintExport;
+use App\Exports\RawJournalExport;
 
 class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Export
 {
@@ -14,8 +16,9 @@ class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Expo
     protected $fingerLogs;
     protected $year;
     protected $month;
+    protected $rawFingerLines;
 
-    public function __construct($masterList, $journalsByTeacherDB, $monthYear, $fingerLogs, $year, $month)
+    public function __construct($masterList, $journalsByTeacherDB, $monthYear, $fingerLogs, $year, $month, $rawFingerLines = [])
     {
         $this->masterList          = $masterList;
         $this->journalsByTeacherDB = $journalsByTeacherDB;
@@ -23,6 +26,7 @@ class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Expo
         $this->fingerLogs          = $fingerLogs;
         $this->year                = $year;
         $this->month               = $month;
+        $this->rawFingerLines      = $rawFingerLines;
     }
 
     public function sheets(): array
@@ -48,6 +52,8 @@ class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Expo
             $this->month
         );
 
+
+
         // Halaman per orang (DB teacher atau finger-only)
         foreach ($this->masterList as $entry) {
             $name       = $entry['name'];
@@ -68,6 +74,10 @@ class FingerprintJournalMultipleSheetsExport implements WithMultipleSheets, Expo
                 $teacher
             );
         }
+
+        // Halaman Raw Data (Paling Akhir)
+        $sheets[] = new RawFingerprintExport($this->rawFingerLines);
+        $sheets[] = new RawJournalExport($this->journalsByTeacherDB);
 
         return $sheets;
     }

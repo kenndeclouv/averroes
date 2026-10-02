@@ -91,21 +91,23 @@
                         <div class="d-flex align-items-center mb-2">
                             <div class="avatar me-4">
                                 <span class="avatar-initial rounded bg-label-info"><i
-                                        class="fas fa-calendar-alt fs-5"></i></span>
+                                        class="fas fa-book fs-5"></i></span>
                             </div>
-                            <h4 class="mb-0">{{ $totalIjin }}</h4>
+                            <h4 class="mb-0">{{ $totalJurnalBulanIni }}</h4>
                         </div>
-                        <p class="mb-2">Total Ijin</p>
+                        <p class="mb-2">Total Jurnal (Bulan Ini)</p>
                     </div>
                 </div>
             </div>
             <div class="col-12 mt-4">
                 <div class="card card-border-shadow-secondary">
+                    <div class="card-header">
+                        <h5 class="card-title">Total Jurnal Mengajar pekan ini</h5>
+                    </div>
                     <div class="card-body">
                         <div id="chart"></div>
                     </div>
                 </div>
-                {{-- @dd($permits) --}}
                 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
                 <script>
                     function formatDates(days) {
@@ -157,11 +159,11 @@
                                 curve: "smooth"
                             },
                             series: [{
-                                name: 'Santri',
-                                data: {!! json_encode($permits->pluck('count')) !!}
+                                name: 'Jurnal',
+                                data: {!! json_encode($journals->pluck('count')) !!}
                             }],
                             xaxis: {
-                                categories: formatDates({!! json_encode($permits->pluck('date')) !!}),
+                                categories: formatDates({!! json_encode($journals->pluck('date')) !!}),
                                 labels: {
                                     style: {
                                         colors: '#9e9e9e',

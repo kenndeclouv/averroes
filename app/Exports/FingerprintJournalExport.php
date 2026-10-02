@@ -205,6 +205,7 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
             'F' => 12, // Hadir
             'G' => 15, // JP Reguler
             'H' => 15, // JP Badal
+            'I' => 15, // Total JP
         ];
     }
 }

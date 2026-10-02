@@ -395,7 +395,8 @@ class TeachingJournalController extends Controller
                 $dateFormatted,
                 $fingerLogs,
                 $year,
-                $month
+                $month,
+                $lines
             ),
             $fileName
         );

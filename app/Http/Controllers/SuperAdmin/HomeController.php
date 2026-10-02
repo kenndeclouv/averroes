@@ -24,12 +24,15 @@ class HomeController extends Controller
         $totalSantri = Student::all()->where('name', '!=', 'Super Admin')->count();
         $totalUstadz = Teacher::all()->where('name', '!=', 'Super Admin')->count();
         $totalIjin = StudentPermit::count();
+        $totalJurnalBulanIni = \App\Models\TeachingJournal::whereMonth('date', Carbon::now()->month)
+            ->whereYear('date', Carbon::now()->year)
+            ->count();
 
         $startOfWeek = Carbon::now()->startOfWeek(-1);
         $endOfWeek = Carbon::now()->endOfWeek();
 
-        $permits = StudentPermit::selectRaw('DATE(`from`) as date, COUNT(*) as count')
-            ->whereBetween('from', [$startOfWeek, $endOfWeek])
+        $journals = \App\Models\TeachingJournal::selectRaw('DATE(`date`) as date, COUNT(*) as count')
+            ->whereBetween('date', [$startOfWeek, $endOfWeek])
             ->groupBy('date')
             ->orderBy('date')
             ->get();
@@ -40,6 +43,6 @@ class HomeController extends Controller
             ->take(2)
             ->get();
 
-        return view('roles.SuperAdmin.index', compact('totalSantri', 'totalSantriAktif', 'totalSantriNonAktif', 'totalUstadz', 'totalIjin', 'announcements', 'permits'));
+        return view('roles.SuperAdmin.index', compact('totalSantri', 'totalSantriAktif', 'totalSantriNonAktif', 'totalUstadz', 'totalJurnalBulanIni', 'announcements', 'journals'));
     }
 }
