@@ -1,6 +1,8 @@
+const CACHE_NAME = "averroes-cache-v1";
+
 self.addEventListener("install", (event) => {
     event.waitUntil(
-        caches.open("averroes-cache").then((cache) => {
+        caches.open(CACHE_NAME).then((cache) => {
             const urlsToCache = [
                 "/",
                 "/login",
@@ -37,6 +39,21 @@ self.addEventListener("install", (event) => {
                         return cache.put(url, response);
                     })
                 )
+            );
+        })
+    );
+});
+
+// Bersihkan cache versi lama saat service worker baru aktif
+self.addEventListener("activate", (event) => {
+    event.waitUntil(
+        caches.keys().then((cacheNames) => {
+            return Promise.all(
+                cacheNames.map((cacheName) => {
+                    if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                    }
+                })
             );
         })
     );
