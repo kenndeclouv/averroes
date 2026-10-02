@@ -64,7 +64,7 @@ class KafalahExport implements FromView, ShouldAutoSize, WithColumnWidths, WithC
                 if (!empty($dayLogs)) {
                     $logsInMonthCount++;
                 }
-                if ((!empty($dayLogs) || $dayJournals->isNotEmpty()) && !$isWeekend) {
+                if (!empty($dayLogs) || $dayJournals->isNotEmpty()) {
                     $hadirCount++;
                 }
             }

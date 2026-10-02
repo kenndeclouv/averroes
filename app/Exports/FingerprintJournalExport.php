@@ -109,7 +109,7 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
             }
 
             // Determine if person was present (had finger OR has journal)
-            $hadir = (count($dayLogs) > 0 || $dayJournals->isNotEmpty()) && !$isWeekend ? 1 : 0;
+            $hadir = (count($dayLogs) > 0 || $dayJournals->isNotEmpty()) ? 1 : 0;
 
             $rows[] = [
                 'date'          => $dateObj->locale('id')->translatedFormat('j F Y'),
@@ -133,7 +133,7 @@ class FingerprintJournalExport implements FromView, ShouldAutoSize, WithColumnWi
         // Determine if teacher is internal staff vs external/part-time teacher
         $isInternal = false;
         if ($this->teacher) {
-            $internalSlugs = ['kepala-sekolah', 'mudir-ma-had', 'wakil-kepala-sekolah-humas', 'wakil-kepala-sekolah-kurikulum', 'sarpras', 'musyrif', 'tata-usaha', 'treasurer'];
+            $internalSlugs = ['kepala-sekolah', 'mudir-ma-had', 'wakil-kepala-sekolah-humas', 'wakil-kepala-sekolah-kurikulum', 'sarpras', 'musyrif', 'tata-usaha', 'treasurer', 'admin', 'keuangan'];
             $teacherTypeSlugs = $this->teacher->teacherTypes->pluck('slug')->toArray();
             foreach ($internalSlugs as $slug) {
                 if (in_array($slug, $teacherTypeSlugs)) {
