@@ -26,14 +26,14 @@
                 <td style="border: 1px solid #000000;">=HYPERLINK("#'{{ $row['sheet_name'] }}'!A1", "{{ $row['nama'] }}")</td>
                 <td style="text-align: center; border: 1px solid #000000;">{{ $row['total_reguler'] }}</td>
                 <td style="text-align: center; border: 1px solid #000000;">{{ $row['total_badal'] }}</td>
-                <td style="text-align: center; border: 1px solid #000000;">{{ $row['total_keseluruhan'] }}</td>
+                <td style="text-align: center; border: 1px solid #000000;">=SUM(C{{ $loop->iteration + 2 }},D{{ $loop->iteration + 2 }})</td>
             </tr>
         @endforeach
         <tr>
             <th colspan="2" style="font-weight: bold; text-align: right; border: 1px solid #000000; background-color: #F4E295;">Grand Total</th>
-            <th style="font-weight: bold; text-align: center; border: 1px solid #000000; background-color: #F4E295;">{{ collect($summary)->sum('total_reguler') }}</th>
-            <th style="font-weight: bold; text-align: center; border: 1px solid #000000; background-color: #F4E295;">{{ collect($summary)->sum('total_badal') }}</th>
-            <th style="font-weight: bold; text-align: center; border: 1px solid #000000; background-color: #F4E295;">{{ collect($summary)->sum('total_keseluruhan') }}</th>
+            <th style="font-weight: bold; text-align: center; border: 1px solid #000000; background-color: #F4E295;">=SUM(C3:C{{ count($summary) + 2 }})</th>
+            <th style="font-weight: bold; text-align: center; border: 1px solid #000000; background-color: #F4E295;">=SUM(D3:D{{ count($summary) + 2 }})</th>
+            <th style="font-weight: bold; text-align: center; border: 1px solid #000000; background-color: #F4E295;">=SUM(E3:E{{ count($summary) + 2 }})</th>
         </tr>
 
         <!-- Baris Kosong Pemisah -->

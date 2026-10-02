@@ -31,21 +31,7 @@
                             }
                         },
                         {
-                            text: '<i class="fas fa-file-excel me-1"></i>Excel (Semua)',
-                            className: "dropdown-item",
-                            action: function ( e, dt, node, config ) {
-                                window.location.href = "{{ route('administrationadmin.journals.export') }}?month={{ request('month', now()->format('Y-m')) }}&teacher_id={{ request('teacher_id') }}";
-                            }
-                        },
-                        {
-                            text: '<i class="fas fa-file-excel me-1"></i>Excel (Pisah Guru)',
-                            className: "dropdown-item",
-                            action: function ( e, dt, node, config ) {
-                                window.location.href = "{{ route('administrationadmin.journals.export') }}?month={{ request('month', now()->format('Y-m')) }}&teacher_id={{ request('teacher_id') }}&per_teacher=1";
-                            }
-                        },
-                        {
-                            text: '<i class="fas fa-fingerprint me-1"></i>Excel (Log Fingerprint)',
+                            text: '<i class="fas fa-file-excel me-1"></i>Excel (Rekap Kafalah & Jurnal)',
                             className: "dropdown-item",
                             action: function ( e, dt, node, config ) {
                                 $('#fingerprintModal').modal('show');
@@ -190,7 +176,7 @@
     <div class="modal fade" id="fingerprintModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{ route('administrationadmin.journals.export_fingerprint') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('administrationadmin.journals.export_fingerprint') }}" method="POST" enctype="multipart/form-data" onsubmit="setTimeout(() => { $('#fingerprintModal').modal('hide'); Swal.fire('Berhasil!', 'File Excel sedang diproses dan akan segera diunduh.', 'success'); }, 500);">
                     @csrf
                     <input type="hidden" name="month" value="{{ request('month', now()->format('Y-m')) }}">
                     <input type="hidden" name="teacher_id" value="{{ request('teacher_id') }}">

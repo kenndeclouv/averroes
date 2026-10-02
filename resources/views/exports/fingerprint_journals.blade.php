@@ -73,19 +73,19 @@
             <td style="border: 1px solid #000000; text-align: center; {{ $cellBg }}">{{ $row['pulang'] ?? ($row['isWeekend'] ? '' : '-') }}</td>
             <td style="border: 1px solid #000000; text-align: center; {{ $row['keteranganBg'] ? 'background-color: ' . $row['keteranganBg'] . ';' : $cellBg }}">{{ $row['keterangan'] }}</td>
             <td style="border: 1px solid #000000; text-align: center; {{ $cellBg }}">{{ $row['hadir'] }}</td>
-            <td style="border: 1px solid #000000; text-align: right; {{ $cellBg }}">{{ $row['jp_reguler'] ?: '' }}</td>
-            <td style="border: 1px solid #000000; text-align: right; {{ $cellBg }}">{{ $row['jp_badal'] ?: '' }}</td>
-            <td style="border: 1px solid #000000; text-align: right; {{ $cellBg }}">=SUM(G{{ $loop->iteration + 8 }}:H{{ $loop->iteration + 8 }})</td>
+            <td style="border: 1px solid #000000; text-align: center; {{ $cellBg }}">{{ $row['jp_reguler'] ?: '' }}</td>
+            <td style="border: 1px solid #000000; text-align: center; {{ $cellBg }}">{{ $row['jp_badal'] ?: '' }}</td>
+            <td style="border: 1px solid #000000; text-align: center; {{ $cellBg }}">=SUM(G{{ $loop->iteration + 8 }},H{{ $loop->iteration + 8 }})</td>
         </tr>
         @endforeach
     </tbody>
     <tfoot>
         <tr>
             <td colspan="5" style="background-color: #c6e0b4; font-weight: bold; border: 1px solid #000000;">Total</td>
-            <td style="background-color: #c6e0b4; font-weight: bold; border: 1px solid #000000; text-align: center;">{{ $totalHadir }}</td>
-            <td style="background-color: #c6e0b4; font-weight: bold; border: 1px solid #000000; text-align: right;">{{ $totalJpReguler }}</td>
-            <td style="background-color: #c6e0b4; font-weight: bold; border: 1px solid #000000; text-align: right;">{{ $totalJpBadal }}</td>
-            <td style="background-color: #c6e0b4; font-weight: bold; border: 1px solid #000000; text-align: right;">=SUM(I9:I{{ count($rows) + 8 }})</td>
+            <td style="background-color: #c6e0b4; font-weight: bold; border: 1px solid #000000; text-align: center;">=SUM(F9:F{{ count($rows) + 8 }})</td>
+            <td style="background-color: #c6e0b4; font-weight: bold; border: 1px solid #000000; text-align: center;">=SUM(G9:G{{ count($rows) + 8 }})</td>
+            <td style="background-color: #c6e0b4; font-weight: bold; border: 1px solid #000000; text-align: center;">=SUM(H9:H{{ count($rows) + 8 }})</td>
+            <td style="background-color: #c6e0b4; font-weight: bold; border: 1px solid #000000; text-align: center;">=SUM(I9:I{{ count($rows) + 8 }})</td>
         </tr>
     </tfoot>
 </table>
