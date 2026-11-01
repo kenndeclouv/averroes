@@ -70,11 +70,11 @@ class UserController extends Controller
         // Actually User model usually doesn't have 'name' based on typical Laravel setup unless added.
         // Looking at AdminController, it updates 'name' on the User model. So User likely has 'name'.
         if ($request->has('name')) {
-            $user->name = $request->name; // Assuming user table has name column based on AdminController
+            $userData['name'] = $request->name;
         }
 
         if ($request->filled('password')) {
-            $userData['password'] = Hash::make($request->password);
+            $userData['password'] = $request->password;
         }
 
         $user->update($userData);
