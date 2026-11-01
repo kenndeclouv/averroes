@@ -46,11 +46,11 @@
                         </div>
 
                         <div class="col-md-6">
-                            <label for="total_replacement_hours" class="form-label">Total Jam Badal</label>
+                            <label for="total_replacement_hours" class="form-label">Total Jam Badal <span class="text-muted fw-normal">(Opsional)</span></label>
                             <input type="number" min="0"
                                 class="form-control @error('total_replacement_hours') is-invalid @enderror"
                                 id="total_replacement_hours" name="total_replacement_hours"
-                                value="{{ old('total_replacement_hours') }}" placeholder="0" required>
+                                value="{{ old('total_replacement_hours') }}" placeholder="0">
                             @errorFeedback('total_replacement_hours')
                         </div>
                     </div>
