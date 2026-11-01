@@ -1053,7 +1053,7 @@
                                 o = n.querySelector("input");
                             "text" === o.getAttribute("type")
                                 ? (o.setAttribute("type", "password"),
-                                  i.classList.replace("fa-eye-slash", "fa-eye"))
+                                  i.classList.replace("fa-eye", "fa-eye-slash"))
                                 : "password" === o.getAttribute("type") &&
                                   (o.setAttribute("type", "text"),
                                   i.classList.replace("fa-eye-slash", "fa-eye"));

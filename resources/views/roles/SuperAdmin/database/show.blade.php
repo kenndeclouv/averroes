@@ -42,22 +42,30 @@
                 const data = {};
                 inputs.each(function() {
                     const columnName = $(this).data('column');
-                    const value = $(this).val();
-                    data[columnName] = value;
+                    if (columnName && columnName !== 'id') {
+                        data[columnName] = $(this).val();
+                    }
                 });
                 selects.each(function() {
                     const columnName = $(this).data('column');
-                    const value = $(this).val();
-                    data[columnName] = value;
+                    if (columnName && columnName !== 'id') {
+                        data[columnName] = $(this).val();
+                    }
                 });
                 const id = row.data('id');
                 const tableName = '{{ $table }}';
+                const csrfToken = $('meta[name="csrf-token"]').attr('content') || '{{ csrf_token() }}';
+                const isDarkMode = document.documentElement.getAttribute('data-style') === 'dark';
 
                 $.ajax({
                     url: `/superadmin/database/update/${tableName}/${id}`,
-                    method: 'PUT',
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {
-                        _token: '{{ csrf_token() }}',
+                        _token: csrfToken,
+                        _method: 'PUT',
                         data: data
                     },
                     success: function(response) {
@@ -72,7 +80,8 @@
                         });
                     },
                     error: function(xhr) {
-                        alert('Terjadi kesalahan: ' + xhr.responseJSON.message);
+                        const errorMsg = xhr.responseJSON ? xhr.responseJSON.message : (xhr.responseText || 'Terjadi kesalahan sistem');
+                        alert('Terjadi kesalahan: ' + errorMsg);
                     }
                 });
             });

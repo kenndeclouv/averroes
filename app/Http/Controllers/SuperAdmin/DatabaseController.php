@@ -264,6 +264,9 @@ class DatabaseController extends Controller
     {
         try {
             $data = $request->input('data');
+            if (is_array($data)) {
+                unset($data['id']);
+            }
             DB::table($tableName)->where('id', $id)->update($data);
 
             return response()->json(['message' => 'Data berhasil diperbarui'], 200);

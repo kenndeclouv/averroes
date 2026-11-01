@@ -30,15 +30,23 @@
                                 <input type="email" class="form-control" id="email" name="email"
                                     placeholder="Masukkan email" autofocus="on" value="{{ old('email', request('email')) }}">
                             </div>
-                            <div class="mb-6">
+                            <div class="mb-6 form-password-toggle">
                                 <label for="password" class="form-label">Password Baru</label>
-                                <input type="password" class="form-control" id="password" name="password"
-                                    placeholder="Masukkan password baru" autofocus="on" value="{{ old('password') }}">
+                                <div class="input-group input-group-merge">
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                        value="{{ old('password') }}" aria-describedby="password">
+                                    <span class="input-group-text cursor-pointer"><i class="fa fa-eye-slash"></i></span>
+                                </div>
                             </div>
-                            <div class="mb-6">
+                            <div class="mb-6 form-password-toggle">
                                 <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation"
-                                    placeholder="Masukkan password baru" autofocus="on" value="{{ old('password_confirmation') }}">
+                                <div class="input-group input-group-merge">
+                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation"
+                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                        value="{{ old('password_confirmation') }}" aria-describedby="password_confirmation">
+                                    <span class="input-group-text cursor-pointer"><i class="fa fa-eye-slash"></i></span>
+                                </div>
                             </div>
                             <div class="mb-6">
                                 <button class="btn btn-primary d-grid w-100" type="submit">Reset Password</button>

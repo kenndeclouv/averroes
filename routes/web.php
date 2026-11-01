@@ -113,8 +113,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/forgot-password', [ForgotPasswordController::class, 'index'])->middleware('guest')->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'email'])->middleware('guest')->name('password.email');
-Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'reset'])->middleware('guest')->name('password.reset');
-Route::post('/reset-password', [ForgotPasswordController::class, 'update'])->middleware('guest')->name('password.update');
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'reset'])->name('password.reset');
+Route::post('/reset-password', [ForgotPasswordController::class, 'update'])->name('password.update');
 
 Route::get('/email/verify', [EmailVerificationController::class, 'notice'])->middleware('auth')->name('verification.notice');
 Route::post('/email/verification-notification', [EmailVerificationController::class, 'resend', 'throttle:6,1'])->middleware('auth')->name('verification.send');
@@ -200,7 +200,7 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'can:isSup
         Route::post('/sql', [SuperAdminDatabase::class, 'sql'])->name('sql');
         Route::get('/show/{tableName}', [SuperAdminDatabase::class, 'showTable'])->name('show');
         Route::post('/store/{tableName}', [SuperAdminDatabase::class, 'store'])->name('store');
-        Route::put('/update/{tableName}/{id}', [SuperAdminDatabase::class, 'update'])->name('update');
+        Route::match(['put', 'post'], '/update/{tableName}/{id}', [SuperAdminDatabase::class, 'update'])->name('update');
         Route::delete('/destroy/{tableName}/{id}', [SuperAdminDatabase::class, 'destroy'])->name('destroy');
         Route::delete('/empty/{tableName}', [SuperAdminDatabase::class, 'empty'])->name('empty');
     });
