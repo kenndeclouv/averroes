@@ -90,6 +90,7 @@
         </div>
     </a>
 </li>
+@if (Route::has('superadmin.backup.index'))
 <li class="menu-item {{ request()->routeIs('superadmin.backup.*') ? 'open active' : '' }}">
     <a href="{{ route('superadmin.backup.index') }}" class="menu-link ">
         <i class="menu-icon fa-solid fa-cloud-arrow-down fs-6"></i>
@@ -98,6 +99,7 @@
         </div>
     </a>
 </li>
+@endif
 
 {{-- <li class="menu-header small text-uppercase">
     <span class="menu-header-text">Menu setiap role</span>

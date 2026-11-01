@@ -41,7 +41,7 @@
             @include('components.sidenav')
 
             <div class="layout-page">
-                @if (session()->has('impersonate_by'))
+                @if (session()->has('impersonate_by') && Route::has('impersonate.leave'))
                     <div class="bg-warning text-dark py-2 px-4 d-flex justify-content-between align-items-center shadow-sm sticky-top" style="z-index: 1080;">
                         <div class="d-flex align-items-center gap-2">
                             <i class="fa-solid fa-user-secret fs-5"></i>

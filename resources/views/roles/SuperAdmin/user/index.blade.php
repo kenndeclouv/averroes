@@ -32,7 +32,7 @@
                                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User">
                                                 <i class="fa-solid fa-pencil"></i>
                                             </a>
-                                            @if (auth()->id() !== $user->id)
+                                            @if (auth()->id() !== $user->id && Route::has('superadmin.user.impersonate'))
                                                 <form action="{{ route('superadmin.user.impersonate', $user->id) }}" method="POST" class="d-inline"
                                                     onsubmit="return confirm('Apakah kamu yakin ingin login sebagai {{ $user->name ?? $user->username }}?')">
                                                     @csrf
