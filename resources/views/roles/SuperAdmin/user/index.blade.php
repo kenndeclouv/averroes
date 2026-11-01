@@ -27,9 +27,21 @@
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->roles->pluck('name')->implode(', ') }}</td>
                                     <td>
-                                        <a href="{{ route('superadmin.user.edit', $user->id) }}" class="btn btn-warning"
-                                            data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User"><i
-                                                class="fa-solid fa-pencil"></i></a>
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ route('superadmin.user.edit', $user->id) }}" class="btn btn-warning btn-sm"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="Edit User">
+                                                <i class="fa-solid fa-pencil"></i>
+                                            </a>
+                                            @if (auth()->id() !== $user->id)
+                                                <form action="{{ route('superadmin.user.impersonate', $user->id) }}" method="POST" class="d-inline"
+                                                    onsubmit="return confirm('Apakah kamu yakin ingin login sebagai {{ $user->name ?? $user->username }}?')">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-info btn-sm" data-bs-toggle="tooltip" data-bs-placement="top" title="Login Sebagai User Ini">
+                                                        <i class="fa-solid fa-user-secret"></i>
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

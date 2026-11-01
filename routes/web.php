@@ -132,6 +132,8 @@ Route::post('/api/subscribe', function (Request $request) {
 /**
  * **Common Routes**
  */
+Route::get('impersonate/leave', [\App\Http\Controllers\SuperAdmin\ImpersonateController::class, 'leave'])->middleware('auth')->name('impersonate.leave');
+
 Route::prefix('account')->name('account.')->middleware(['auth'])->group(function () {
     Route::get('/', [AccountController::class, 'index'])->name('index');
     Route::put('update/{user}', [AccountController::class, 'update'])->name('update');
@@ -225,6 +227,17 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'can:isSup
         Route::get('/', [\App\Http\Controllers\SuperAdmin\UserController::class, 'index'])->name('index');
         Route::get('edit/{user}', [\App\Http\Controllers\SuperAdmin\UserController::class, 'edit'])->name('edit');
         Route::put('update/{user}', [\App\Http\Controllers\SuperAdmin\UserController::class, 'update'])->name('update');
+        Route::post('impersonate/{user}', [\App\Http\Controllers\SuperAdmin\ImpersonateController::class, 'impersonate'])->name('impersonate');
+    });
+
+    Route::prefix('backup')->name('backup.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'index'])->name('index');
+        Route::post('database', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'backupDatabase'])->name('database');
+        Route::post('total', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'backupTotal'])->name('total');
+        Route::get('download/{filename}', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'download'])->name('download');
+        Route::post('restore/{filename}', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'restore'])->name('restore');
+        Route::post('upload-restore', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'uploadAndRestore'])->name('upload-restore');
+        Route::delete('destroy/{filename}', [\App\Http\Controllers\SuperAdmin\BackupController::class, 'destroy'])->name('destroy');
     });
 });
 

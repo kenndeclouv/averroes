@@ -36,6 +36,18 @@
     @include('components.alert')
     <div class="layout-wrapper layout-content-navbar  layout-without-menu">
         <div class="layout-page">
+            @if (session()->has('impersonate_by'))
+                <div class="bg-warning text-dark py-2 px-4 d-flex justify-content-between align-items-center shadow-sm sticky-top" style="z-index: 1080;">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="fa-solid fa-user-secret fs-5"></i>
+                        <span>Mode Impersonasi: Sedang login sebagai <strong>{{ auth()->user()->name ?? auth()->user()->username }}</strong> ({{ auth()->user()->roles->pluck('name')->implode(', ') }}).</span>
+                    </div>
+                    <a href="{{ route('impersonate.leave') }}" class="btn btn-sm btn-dark">
+                        <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Kembali ke Super Admin
+                    </a>
+                </div>
+            @endif
+
             <!-- Navbar -->
             @include('components.nav')
 
