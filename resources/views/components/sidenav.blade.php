@@ -1,10 +1,14 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme pb-5">
+    @php
+        $user = Auth::user();
+        $activeRole = $user?->active_role;
+        $activeRoleCode = $user?->active_role_code;
+        $homeRoute = str_replace('_', '', $activeRoleCode ?? 'login') . '.home';
+        $homeUrl = Route::has($homeRoute) ? route($homeRoute) : url('/');
+    @endphp
     <div class="app-brand demo" style="padding-left: 22px">
-        <a href="{{ route(str_replace('_', '', Auth::user()->roles->first()->code ?? 'login') . '.home') }}"
-            class="app-brand-link">
+        <a href="{{ $homeUrl }}" class="app-brand-link">
             <span class="app-brand-logo demo">
-                {{-- <img src="{{ asset(env('APP_LOGO')) }}" alt="{{ config('app.name') . ' logo' }}"
-                    style="max-width:40px; border-radius:5px"> --}}
                 <i class="icon-averroes fs-2 text-primary"></i>
             </span>
             <span
@@ -17,8 +21,7 @@
     </div>
     <ul class="menu-inner py-1">
         <li class="menu-item {{ request()->routeIs('*.home') ? 'active' : '' }}">
-            <a href="{{ route(str_replace('_', '', Auth::user()->roles->first()->code ?? 'login') . '.home') }}"
-                class="menu-link">
+            <a href="{{ $homeUrl }}" class="menu-link">
                 <i class="menu-icon fa-solid fa-house fs-6"></i>
                 <div class="text-truncate">
                     Beranda
@@ -27,39 +30,35 @@
         </li>
 
         <li class="menu-header small text-uppercase">
-            <span class="menu-header-text">Menu</span>
+            <span class="menu-header-text">Menu {{ $user && $user->roles->count() > 1 ? '(' . ($activeRole?->name ?? 'Utama') . ')' : '' }}</span>
         </li>
-        {{--
-        /**
-         * Dokumentasi Penyertaan Sidebar Otomatis
-         *
-         * Bagian kode ini secara dinamis menyertakan sidebar
-         * berdasarkan peran pengguna. Sidebar dibangun menggunakan
-         * komponen Blade, yang memungkinkan pendekatan modular dan
-         * mudah dipelihara untuk merender menu navigasi.
-         *
-        {{--
-         * Sidebar disertakan menggunakan baris berikut:
-         * @foreach (Auth::user()->roles as $role)
-         *   @include('components.sidebar.' . $role->code)
-         * @endforeach
-         *
-         * 'Role' pengguna yang terautentikasi menentukan komponen
-         * sidebar mana yang dimuat. Komponen sidebar yang tersedia adalah:
-         *
-         * - components.sidebar.super_admin
-         * - components.sidebar.administration_admin
-         * - components.sidebar.student
-         * - components.sidebar.teacher
-         *
-         * Pastikan membuat role dan nama sidebar yang sama (GUNAKAN PENULISAN SNAKE CASE)
-         * Pendekatan ini memastikan bahwa pengguna hanya melihat item menu
-         * yang relevan dengan izin dan peran mereka dalam aplikasi.
-         */
-        --}}
-        @foreach (Auth::user()->roles as $role)
-            @include('components.sidebar.' . $role->code)
-        @endforeach
+
+        {{-- Menampilkan menu sidebar sesuai peran yang sedang aktif --}}
+        @if ($activeRoleCode && view()->exists('components.sidebar.' . $activeRoleCode))
+            @include('components.sidebar.' . $activeRoleCode)
+        @else
+            @foreach ($user->roles as $role)
+                @if (view()->exists('components.sidebar.' . $role->code))
+                    @include('components.sidebar.' . $role->code)
+                @endif
+            @endforeach
+        @endif
+
+        @if ($user && $user->roles->count() > 1)
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Ganti Mode Peran</span>
+            </li>
+            @foreach ($user->roles as $r)
+                @if ($r->code !== $activeRoleCode)
+                    <li class="menu-item">
+                        <a href="{{ route('switch.role', $r->code) }}" class="menu-link">
+                            <i class="menu-icon fa-solid fa-arrows-rotate fs-6 text-primary"></i>
+                            <div class="text-truncate">Mode {{ $r->name }}</div>
+                        </a>
+                    </li>
+                @endif
+            @endforeach
+        @endif
 
         <li class="menu-header small text-uppercase">
             <span class="menu-header-text">Profile</span>

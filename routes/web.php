@@ -133,6 +133,7 @@ Route::post('/api/subscribe', function (Request $request) {
  * **Common Routes**
  */
 Route::get('impersonate/leave', [\App\Http\Controllers\SuperAdmin\ImpersonateController::class, 'leave'])->middleware('auth')->name('impersonate.leave');
+Route::get('switch-role/{roleCode}', [\App\Http\Controllers\RoleSwitchController::class, 'switch'])->middleware('auth')->name('switch.role');
 
 Route::prefix('account')->name('account.')->middleware(['auth'])->group(function () {
     Route::get('/', [AccountController::class, 'index'])->name('index');

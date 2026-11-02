@@ -78,11 +78,66 @@ class User extends Authenticatable
 
     /**
      * Legacy accessor for backward compatibility.
-     * Returns the first role found.
+     * Returns the active role or first role found.
      */
     public function getRoleAttribute()
     {
+        return $this->active_role ?? $this->roles->first();
+    }
+
+    /**
+     * Get the currently active role context.
+     * Synchronizes automatically with the accessed URL prefix or active session.
+     */
+    public function getActiveRoleAttribute()
+    {
+        if ($this->roles->isEmpty()) {
+            return null;
+        }
+
+        // 1. Auto-detect from URL prefix if valid for this user
+        if (request()) {
+            $prefixRoleMap = [
+                'superadmin' => 'super_admin',
+                'teacher' => 'teacher',
+                'administrationadmin' => 'administration_admin',
+                'student' => 'student',
+                'studentregistrant' => 'student_registrant',
+                'treasurer' => 'treasurer',
+                'parent' => 'parent',
+                'facilitiesadmin' => 'facilities_admin',
+            ];
+
+            foreach ($prefixRoleMap as $prefix => $roleCode) {
+                if (request()->is($prefix . '*') && $this->hasRole($roleCode)) {
+                    if (session('active_role') !== $roleCode) {
+                        session(['active_role' => $roleCode]);
+                    }
+                    return $this->roles->firstWhere('code', $roleCode);
+                }
+            }
+        }
+
+        // 2. Read from session if set and valid
+        $sessionRoleCode = session('active_role');
+        if ($sessionRoleCode && $this->hasRole($sessionRoleCode)) {
+            return $this->roles->firstWhere('code', $sessionRoleCode);
+        }
+
+        // 3. Fallback: prioritize super_admin if user has it, otherwise first role
+        if ($this->hasRole('super_admin')) {
+            return $this->roles->firstWhere('code', 'super_admin');
+        }
+
         return $this->roles->first();
+    }
+
+    /**
+     * Get the active role's code string.
+     */
+    public function getActiveRoleCodeAttribute()
+    {
+        return $this->active_role?->code ?? $this->roles->first()?->code;
     }
 
     public function hasRole($roleCode)
@@ -151,7 +206,7 @@ class User extends Authenticatable
     }
     public function Teacher()
     {
-        return $this->hasOne(Teacher::class);
+        return $this->hasOne(Teacher::class)->withoutGlobalScope('excludeSuperAdmin');
     }
     public function StudentRegistrant()
     {

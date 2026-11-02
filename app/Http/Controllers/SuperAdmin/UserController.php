@@ -84,34 +84,35 @@ class UserController extends Controller
         // Sync roles
         $user->roles()->sync($request->roles);
 
+        $assignedRoleCodes = Role::whereIn('id', $request->roles)->pluck('code')->toArray();
+
         // Check and create Teacher record if needed
-        if (in_array(3, $request->roles) || in_array(7, $request->roles) || in_array(8, $request->roles)) { // 3, 7, 8 are Teacher roles
+        if (in_array('teacher', $assignedRoleCodes) || in_array(3, $request->roles) || in_array(7, $request->roles) || in_array(8, $request->roles)) {
             if (!$user->Teacher) {
-                // Ensure user_id is passed and handled, similar to TeacherController store method
                 \App\Models\Teacher::create([
                     'user_id' => $user->id,
                     'name' => $user->name ?? $user->username,
-                    // 'nip' can be null initially as per TeacherController logic (it has specific generator)
+                    'full_name' => $user->name ?? $user->username,
+                    'gender' => 'male',
+                    'birth_date' => now()->subYears(25)->toDateString(),
+                    'birth_place' => 'Indonesia',
+                    'type' => 'teacher',
                 ]);
             }
         }
 
         // Check and create Student record if needed
-        if (in_array(4, $request->roles)) { // 4 is Student role
+        if (in_array('student', $assignedRoleCodes) || in_array(4, $request->roles)) {
             if (!$user->Student) {
-                // Logic adapted from StudentController store method
-                // Check if generateNIS helper exists, otherwise use fallback
                 $nis = function_exists('generateNIS') ? generateNIS() : (\App\Models\Student::max('nis') + 1);
 
                 \App\Models\Student::create([
                     'user_id' => $user->id,
                     'name' => $user->name ?? $user->username,
                     'nis' => (string)$nis,
-                    'is_graduate' => false, // Default from StudentController logic
-                    // Attachments are nullable in Student model, so we can skip them here
+                    'is_graduate' => false,
                 ]);
 
-                // Ensure user is active as per StudentController
                 if (!$user->is_active) {
                     $user->update(['is_active' => true]);
                 }
@@ -119,12 +120,11 @@ class UserController extends Controller
         }
 
         // Check and create StudentParent record if needed
-        if (in_array(6, $request->roles)) { // 6 is Parent role
+        if (in_array('parent', $assignedRoleCodes) || in_array(6, $request->roles)) {
             if (!$user->StudentParent) {
                 \App\Models\StudentParent::create([
                     'user_id' => $user->id,
                     'name' => $user->name ?? $user->username,
-                    // Add other available fields
                 ]);
             }
         }

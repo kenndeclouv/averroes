@@ -16,7 +16,17 @@ class Teacher extends Model
         parent::boot();
 
         static::addGlobalScope('excludeSuperAdmin', function (Builder $builder) {
-            $builder->where('id', '!=', 1);
+            // Jangan exclude jika sedang mencari user_id milik user yang sedang login
+            $currentUserId = \Illuminate\Support\Facades\Auth::id();
+            $wheres = $builder->getQuery()->wheres ?? [];
+            $isOwnUserQuery = $currentUserId && collect($wheres)->contains(function ($where) use ($currentUserId) {
+                return isset($where['column']) && in_array($where['column'], ['user_id', 'teachers.user_id'])
+                    && isset($where['value']) && $where['value'] == $currentUserId;
+            });
+
+            if (!$isOwnUserQuery) {
+                $builder->where('teachers.id', '!=', 1);
+            }
         });
     }
     public function User()

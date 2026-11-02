@@ -23,7 +23,21 @@ class MainController extends Controller
 
     public function index()
     {
-        $role = Auth::user()->roles->first()->code;
-        return redirect()->route(str_replace('_', '', $role) . ".home");
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login.index');
+        }
+
+        $roleCode = $user->active_role_code;
+        if (!$roleCode) {
+            return redirect()->route('login.index');
+        }
+
+        $routeName = str_replace('_', '', $roleCode) . ".home";
+        if (\Illuminate\Support\Facades\Route::has($routeName)) {
+            return redirect()->route($routeName);
+        }
+
+        return redirect()->to('/');
     }
 }
