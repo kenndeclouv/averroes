@@ -25,62 +25,57 @@
         {{-- <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div> --}}
         <ul class="navbar-nav flex-row align-items-center ms-auto gap-2">
             @if ($user && $user->roles->count() > 1)
-                <!-- Multi-Role Switcher -->
-                <li class="nav-item dropdown me-1 me-xl-2">
-                    <button class="btn btn-sm btn-outline-primary dropdown-toggle d-flex align-items-center gap-1 px-2 py-1 shadow-xs"
-                        type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Ganti Mode Peran (Multi-Role)">
+                <!-- Role Switcher -->
+                <li class="nav-item dropdown-role-switcher dropdown me-2 me-xl-0" data-bs-toggle="tooltip"
+                    data-bs-placement="bottom" data-bs-title="Peran: {{ $user->active_role?->name }}">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" aria-expanded="false">
                         @if ($user->active_role_code === 'super_admin')
-                            <i class="fa-solid fa-crown text-warning"></i>
+                            <i class="fa-solid fa-crown fa-xl"></i>
                         @elseif ($user->active_role_code === 'teacher')
-                            <i class="fa-solid fa-chalkboard-user text-info"></i>
+                            <i class="fa-solid fa-chalkboard-user fa-xl"></i>
                         @elseif ($user->active_role_code === 'administration_admin')
-                            <i class="fa-solid fa-user-tie text-success"></i>
+                            <i class="fa-solid fa-user-tie fa-xl"></i>
                         @elseif ($user->active_role_code === 'student')
-                            <i class="fa-solid fa-user-graduate text-primary"></i>
+                            <i class="fa-solid fa-user-graduate fa-xl"></i>
                         @elseif ($user->active_role_code === 'treasurer')
-                            <i class="fa-solid fa-wallet text-danger"></i>
+                            <i class="fa-solid fa-wallet fa-xl"></i>
                         @elseif ($user->active_role_code === 'facilities_admin')
-                            <i class="fa-solid fa-screwdriver-wrench text-secondary"></i>
+                            <i class="fa-solid fa-screwdriver-wrench fa-xl"></i>
                         @else
-                            <i class="fa-solid fa-user-gear"></i>
+                            <i class="fa-solid fa-user-gear fa-xl"></i>
                         @endif
-                        <span class="d-none d-md-inline fw-semibold ms-1">{{ $user->active_role?->name ?? 'Ganti Peran' }}</span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li class="dropdown-header text-uppercase small text-muted">
-                            <i class="fa-solid fa-arrows-rotate me-1"></i> Beralih Peran
-                        </li>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
                         @foreach ($user->roles as $r)
                             <li>
-                                <a class="dropdown-item d-flex justify-content-between align-items-center {{ $user->active_role_code === $r->code ? 'active' : '' }}"
+                                <a class="dropdown-item {{ $user->active_role_code === $r->code ? 'active' : '' }}"
                                     href="{{ route('switch.role', $r->code) }}">
-                                    <span class="d-flex align-items-center">
+                                    <span>
                                         @if ($r->code === 'super_admin')
-                                            <i class="fa-solid fa-crown me-2 text-warning"></i>
+                                            <i class="fa-solid fa-crown me-3"></i>
                                         @elseif ($r->code === 'teacher')
-                                            <i class="fa-solid fa-chalkboard-user me-2 text-info"></i>
+                                            <i class="fa-solid fa-chalkboard-user me-3"></i>
                                         @elseif ($r->code === 'administration_admin')
-                                            <i class="fa-solid fa-user-tie me-2 text-success"></i>
+                                            <i class="fa-solid fa-user-tie me-3"></i>
                                         @elseif ($r->code === 'student')
-                                            <i class="fa-solid fa-user-graduate me-2 text-primary"></i>
+                                            <i class="fa-solid fa-user-graduate me-3"></i>
                                         @elseif ($r->code === 'treasurer')
-                                            <i class="fa-solid fa-wallet me-2 text-danger"></i>
+                                            <i class="fa-solid fa-wallet me-3"></i>
                                         @elseif ($r->code === 'facilities_admin')
-                                            <i class="fa-solid fa-screwdriver-wrench me-2 text-secondary"></i>
+                                            <i class="fa-solid fa-screwdriver-wrench me-3"></i>
+                                        @elseif ($r->code === 'parent')
+                                            <i class="fa-solid fa-users me-3"></i>
                                         @else
-                                            <i class="fa-solid fa-user-tag me-2"></i>
+                                            <i class="fa-solid fa-user-tag me-3"></i>
                                         @endif
                                         {{ $r->name }}
                                     </span>
-                                    @if ($user->active_role_code === $r->code)
-                                        <i class="fa-solid fa-check ms-3"></i>
-                                    @endif
                                 </a>
                             </li>
                         @endforeach
                     </ul>
                 </li>
-                <!-- / Multi-Role Switcher -->
+                <!-- / Role Switcher -->
             @endif
 
             <!-- Style Switcher -->
