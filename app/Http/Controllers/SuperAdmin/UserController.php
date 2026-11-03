@@ -104,12 +104,22 @@ class UserController extends Controller
         // Check and create Student record if needed
         if (in_array('student', $assignedRoleCodes) || in_array(4, $request->roles)) {
             if (!$user->Student) {
-                $nis = function_exists('generateNIS') ? generateNIS() : (\App\Models\Student::max('nis') + 1);
+                $nis = function_exists('generateNIS') ? generateNIS() : str_pad((\App\Models\Student::withoutGlobalScopes()->max('id') ?? 0) + 1, 4, '0', STR_PAD_LEFT);
+                $nisn = '00' . rand(10000000, 99999999);
+                while (\App\Models\Student::withoutGlobalScopes()->where('nisn', $nisn)->exists()) {
+                    $nisn = '00' . rand(10000000, 99999999);
+                }
 
                 \App\Models\Student::create([
                     'user_id' => $user->id,
                     'name' => $user->name ?? $user->username,
+                    'full_name' => $user->name ?? $user->username,
                     'nis' => (string)$nis,
+                    'nisn' => $nisn,
+                    'gender' => 'male',
+                    'birth_date' => now()->subYears(15)->toDateString(),
+                    'birth_place' => 'Indonesia',
+                    'student_status' => 'Non Yatim Piatu',
                     'is_graduate' => false,
                 ]);
 

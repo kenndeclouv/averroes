@@ -202,7 +202,7 @@ class User extends Authenticatable
     }
     public function Student()
     {
-        return $this->hasOne(Student::class);
+        return $this->hasOne(Student::class)->withoutGlobalScope('excludeSuperAdmin');
     }
     public function Teacher()
     {
