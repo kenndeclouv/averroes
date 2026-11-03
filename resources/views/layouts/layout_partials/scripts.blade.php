@@ -12,4 +12,18 @@
 <!-- Main JS -->
 <script src="{{ asset('assets/js/main.js') }}"></script>
 
+<script>
+    (function() {
+        function enforceMobileSidebar() {
+            if (window.innerWidth < 1200) {
+                document.documentElement.classList.add('mobile-layout');
+            } else {
+                document.documentElement.classList.remove('mobile-layout');
+            }
+        }
+        enforceMobileSidebar();
+        window.addEventListener('resize', enforceMobileSidebar);
+    })();
+</script>
+
 @yield('page-script')

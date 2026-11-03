@@ -30,6 +30,7 @@ Agar sidebar dan navigasi tidak berantakan saat user memiliki banyak role, siste
    - Mengakses `/parent/*` ➔ Mode aktif otomatis menjadi `parent`.
    - Mengakses `/facilitiesadmin/*` ➔ Mode aktif otomatis menjadi `facilities_admin`.
 3. **Fallback:** Jika session kosong dan tidak sedang membuka prefix spesifik, peran aktif mengutamakan `super_admin` (jika user memilikinya), atau role pertama di tabel `roles`.
+4. **Tampilan Nama Role di UI:** Di bagian header profil navbar maupun greeting card dashboard/title, selalu gunakan peran yang sedang aktif: `Auth::user()->active_role?->name ?? 'User'` (bukan meng-implode semua role dengan `pluck('name')`), agar tampilan tetap ringkas dan rapi ketika akun memiliki banyak role.
 
 ### B. Role Switcher di Navbar
 - Terletak di [resources/views/components/nav.blade.php](resources/views/components/nav.blade.php).
@@ -43,7 +44,21 @@ Agar sidebar dan navigasi tidak berantakan saat user memiliki banyak role, siste
 - **Hanya menampilkan satu komponen sidebar** sesuai `active_role_code`, yaitu `@include('components.sidebar.' . $activeRoleCode)`.
 - Link **Logo** dan menu **Beranda** otomatis mengarah ke home dashboard peran yang aktif (`route(str_replace('_', '', $activeRoleCode) . '.home')`).
 
-### D. Otomatisasi Gate di `AppServiceProvider`
+### D. Tampilan Mobile & Bottom Navbar
+- Pada layar mobile (`< 1200px`), navbar diposisikan di **bawah layar (bottom floating navbar)** agar mudah dijangkau satu tangan (ergonomis).
+- **Layout Minimalis & Bersih:**
+  - **Sisi Kiri:** Foto Profil (Avatar Akun). Logo Averroes di navbar mobile disembunyikan agar tampilan tidak sesak.
+  - **Sisi Kanan:** Tombol toggle pembuka sidebar (`layout-menu-toggle`, ikon grid `fa-grid-2`).
+- **Dropdown All-in-One Akun (Pop Upward):**
+  - Mengklik avatar akun di sisi kiri akan membuka menu ke atas (*pop upward*) yang menyatukan:
+    1. Info Identitas & Role aktif pengguna.
+    2. Bagian **Beralih Peran** (jika akun memiliki multi-role).
+    3. Bagian **Tema Tampilan** (Light, Dark, System).
+    4. Navigasi ke **My Profile** & Tombol **Log Out**.
+- **Sidebar Slide dari Kanan:** Pada tampilan mobile, sidebar `#layout-menu` muncul meluncur (*slide-in*) dari sisi **kanan ke kiri** (bukan dari kiri seperti desktop).
+- Styling dikelola di [public/assets/css/demo.css](public/assets/css/demo.css) dan diinjeksi via inline fallback di [resources/views/layouts/layout_partials/styles.blade.php](resources/views/layouts/layout_partials/styles.blade.php).
+
+### E. Otomatisasi Gate di `AppServiceProvider`
 Di [app/Providers/AppServiceProvider.php](app/Providers/AppServiceProvider.php):
 - Gate otomatis dibuat untuk setiap role di database dengan format: `is` + CamelCase dari `code` role.
   - `super_admin` ➔ `isSuperAdmin`

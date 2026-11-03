@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/core.css') }}" class="template-customizer-core-css">
 <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}"
     class="template-customizer-theme-css">
-<link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}?v={{ file_exists(public_path('assets/css/demo.css')) ? filemtime(public_path('assets/css/demo.css')) : '1.2' }}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <!-- Vendors CSS -->
@@ -33,3 +33,93 @@
 @yield('page-style')
 
 <link rel="stylesheet" href="{{ asset('assets/font/style.css') }}">
+
+<!-- Mobile Bottom Navbar & Right Sidebar Overrides -->
+<style id="mobile-layout-core-override">
+@media (max-width: 1199.98px) {
+    html body .layout-wrapper:not(.layout-without-menu) .layout-page,
+    html body .layout-page,
+    html.layout-navbar-fixed body .layout-page {
+        padding-top: 0 !important;
+    }
+
+    html body #layout-navbar,
+    html.layout-navbar-fixed body #layout-navbar,
+    html body .layout-navbar.navbar-detached {
+        position: fixed !important;
+        bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px)) !important;
+        top: auto !important;
+        left: 0.75rem !important;
+        right: 0.75rem !important;
+        width: calc(100% - 1.5rem) !important;
+        margin: 0 !important;
+        z-index: 1075 !important;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.22) !important;
+        border-radius: 0.85rem !important;
+    }
+
+    html body .content-wrapper {
+        padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    /* Dropdown Menus Pop UPWARDS on Mobile */
+    html body #layout-navbar .dropdown-menu {
+        position: absolute !important;
+        bottom: 100% !important;
+        top: auto !important;
+        margin-bottom: 0.65rem !important;
+        transform: none !important;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.2) !important;
+        max-height: calc(100vh - 6rem) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 0.75rem !important;
+    }
+
+    /* Mobile Profile Dropdown Anchored to the Left */
+    html body #layout-navbar .mobile-profile-dropdown .dropdown-menu,
+    html body #layout-navbar .dropdown-menu.dropdown-menu-start {
+        left: 0 !important;
+        right: auto !important;
+        inset: auto auto 100% 0 !important;
+        min-width: 270px !important;
+        max-width: calc(100vw - 2rem) !important;
+    }
+
+    /* Dropdowns that are anchored to the Right */
+    html body #layout-navbar .dropdown-menu.dropdown-menu-end:not(.dropdown-menu-start) {
+        left: auto !important;
+        right: 0 !important;
+        inset: auto 0 100% auto !important;
+    }
+
+    /* Sidebar Slides In from the RIGHT side */
+    html body #layout-menu,
+    html body .layout-menu,
+    html.layout-navbar-fixed body #layout-menu {
+        left: auto !important;
+        right: 0 !important;
+        transform: translate3d(100%, 0, 0) !important;
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.25) !important;
+        will-change: transform, -webkit-transform;
+    }
+
+    html.layout-menu-expanded body #layout-menu,
+    html.layout-menu-expanded body .layout-menu {
+        transform: translate3d(0, 0, 0) !important;
+    }
+
+    #layout-menu .layout-menu-toggle i {
+        transform: rotate(180deg) !important;
+    }
+
+    .drag-target {
+        right: 0 !important;
+        left: auto !important;
+    }
+
+    body.modal-open #layout-navbar {
+        z-index: 1040 !important;
+    }
+}
+</style>

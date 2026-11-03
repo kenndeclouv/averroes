@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Dashboard ' . Auth::user()->roles->pluck('name')->implode(', '))
+@section('title', 'Dashboard ' . (Auth::user()->active_role?->name ?? 'Ustadz'))
 
 @section('content')
     <div class="container-xxl flex-grow-1 container-p-y">
@@ -16,7 +16,7 @@
                                     {{ formatDate(now(), 'd F Y H:i') }}
                                 </p>
                                 <span
-                                    class="badge bg-label-primary fs-5 ">{{ Auth::user()->roles->pluck('name')->implode(', ') }}</span>
+                                    class="badge bg-label-primary fs-5 ">{{ Auth::user()->active_role?->name ?? 'Ustadz' }}</span>
 
                             </div>
                         </div>

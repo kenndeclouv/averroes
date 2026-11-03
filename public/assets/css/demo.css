@@ -206,3 +206,105 @@ div:where(.swal2-container) {
     opacity: 0;
     visibility: hidden;
 }
+
+/*
+* Mobile Navigation & Sidebar Customization (< 1200px)
+* 1. Bottom floating navbar
+* 2. Sidebar slide from RIGHT to LEFT
+* 3. Dropdowns popping upward
+******************************************************************************/
+@media (max-width: 1199.98px) {
+    /* 1. Navbar pinned at the bottom on mobile */
+    .layout-navbar-fixed .layout-wrapper:not(.layout-horizontal):not(.layout-without-menu) .layout-page,
+    .layout-navbar-fixed .layout-wrapper:not(.layout-without-menu) .layout-page,
+    .layout-page {
+        padding-top: 0 !important;
+    }
+
+    html body #layout-navbar,
+    html body .layout-navbar,
+    html.layout-navbar-fixed body #layout-navbar {
+        position: fixed !important;
+        bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px)) !important;
+        top: auto !important;
+        left: 0.75rem !important;
+        right: 0.75rem !important;
+        width: calc(100% - 1.5rem) !important;
+        margin: 0 !important;
+        z-index: 1075 !important;
+        box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.2) !important;
+        border-radius: 0.85rem !important;
+    }
+
+    /* Page bottom padding so content is never covered by bottom navbar */
+    html body .content-wrapper {
+        padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+
+    .container-xxl.container-p-y {
+        padding-top: 1rem !important;
+    }
+
+    /* 2. Dropdown menus pop UPWARDS from bottom navbar */
+    html body #layout-navbar .dropdown-menu {
+        position: absolute !important;
+        bottom: 100% !important;
+        top: auto !important;
+        margin-bottom: 0.65rem !important;
+        transform: none !important;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+        max-height: calc(100vh - 6rem) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+        border-radius: 0.75rem !important;
+    }
+
+    /* Mobile Profile Dropdown Anchored to the Left */
+    html body #layout-navbar .mobile-profile-dropdown .dropdown-menu,
+    html body #layout-navbar .dropdown-menu.dropdown-menu-start {
+        left: 0 !important;
+        right: auto !important;
+        inset: auto auto 100% 0 !important;
+        min-width: 270px !important;
+        max-width: calc(100vw - 2rem) !important;
+    }
+
+    /* Dropdowns that are anchored to the Right */
+    html body #layout-navbar .dropdown-menu.dropdown-menu-end:not(.dropdown-menu-start) {
+        left: auto !important;
+        right: 0 !important;
+        inset: auto 0 100% auto !important;
+    }
+
+    /* 3. Sidebar slides in from the RIGHT side */
+    html body #layout-menu,
+    html body .layout-menu,
+    html.layout-navbar-fixed body #layout-menu {
+        left: auto !important;
+        right: 0 !important;
+        transform: translate3d(100%, 0, 0) !important;
+        box-shadow: -4px 0 24px rgba(0, 0, 0, 0.25) !important;
+        will-change: transform, -webkit-transform;
+    }
+
+    html.layout-menu-expanded body #layout-menu,
+    html.layout-menu-expanded body .layout-menu {
+        transform: translate3d(0, 0, 0) !important;
+    }
+
+    /* Toggle chevron inside sidebar brand points back to the right */
+    #layout-menu .layout-menu-toggle i {
+        transform: rotate(180deg) !important;
+    }
+
+    /* Swipe gesture boundary on the right edge */
+    .drag-target {
+        right: 0 !important;
+        left: auto !important;
+    }
+
+    /* When modal is open, navbar drops z-index so backdrop covers it */
+    body.modal-open #layout-navbar {
+        z-index: 1040 !important;
+    }
+}

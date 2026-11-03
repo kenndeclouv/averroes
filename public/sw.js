@@ -1,4 +1,4 @@
-const CACHE_NAME = "averroes-cache-v1";
+const CACHE_NAME = "averroes-cache-v3112026";
 
 self.addEventListener("install", (event) => {
     event.waitUntil(
